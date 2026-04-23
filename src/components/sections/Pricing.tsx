@@ -3,7 +3,17 @@
 import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import type { PricingPlan } from '@/lib/api'
+
+interface PricingPlan {
+  id: string
+  name: string
+  classes: number
+  price: number
+  currency: string
+  description?: string
+  features: string[]
+  isDefault?: boolean
+}
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },

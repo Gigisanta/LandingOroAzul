@@ -3,7 +3,14 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import type { GalleryImage } from '@/lib/api'
+
+interface GalleryImage {
+  id: string
+  title?: string
+  altText?: string
+  imageUrl: string
+  category: string
+}
 
 interface GalleryProps {
   images: GalleryImage[]

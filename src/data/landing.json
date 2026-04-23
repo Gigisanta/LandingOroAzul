@@ -1,0 +1,234 @@
+{
+  "business": {
+    "name": "Oro Azul",
+    "phone": "+54 11 0000 0000",
+    "whatsapp": "5491100000000",
+    "email": "info@oroazul.com",
+    "address": "Buenos Aires, Argentina",
+    "instagram": "oroazul.natatorio",
+    "facebook": "oroazulnatatorio"
+  },
+  "plans": [
+    {
+      "id": "plan-bebe",
+      "name": "Bebés",
+      "classes": 8,
+      "price": 25000,
+      "currency": "ARS",
+      "description": "Estimulación acuática temprana para bebés de 6 meses a 3 años",
+      "features": [
+        "Guía certificado en natación infantil",
+        "Grupos reducidos (máx. 6 bebés)",
+        "Pileta climatizada 28°C",
+        "Acompañamiento parental",
+        "Estimulación acuática temprana"
+      ]
+    },
+    {
+      "id": "plan-infantil",
+      "name": "Infantil",
+      "classes": 8,
+      "price": 28000,
+      "currency": "ARS",
+      "description": "Clases para niños de 4 a 12 años",
+      "features": [
+        "Profesor certificado",
+        "Grupos reducidos (máx. 8 niños)",
+        "Pileta climatizada 28°C",
+        "Niveles por habilidad",
+        "Clases divertidas y seguras"
+      ]
+    },
+    {
+      "id": "plan-adulto",
+      "name": "Adultos",
+      "classes": 8,
+      "price": 32000,
+      "currency": "ARS",
+      "description": "Clases para adolescentes y adultos",
+      "features": [
+        "Instructor certificado",
+        "Grupos reducidos (máx. 10 adultos)",
+        "Pileta climatizada 28°C",
+        "Horarios flexibles",
+        "Técnica personalizada"
+      ]
+    },
+    {
+      "id": "plan-aquagym",
+      "name": "AquaGym",
+      "classes": 6,
+      "price": 35000,
+      "currency": "ARS",
+      "description": "Fitness acuático para mayores de 16 años",
+      "features": [
+        "Instructor certificado en fitness acuático",
+        "Grupos de 12 personas",
+        "Pileta climatizada 28°C",
+        "Ejercicios de resistencia",
+        "Bajo impacto en articulaciones"
+      ]
+    }
+  ],
+  "activities": [
+    {
+      "id": "bebes",
+      "name": "Bebés",
+      "ages": "6 meses - 3 años",
+      "icon": "👶",
+      "features": [
+        "Guía certificado en natación infantil",
+        "Grupos reducidos (máx. 6 bebés)",
+        "Pileta climatizada 28°C",
+        "Acompañamiento parental",
+        "Estimulación acuática temprana"
+      ],
+      "schedule": [
+        { "day": "Lunes", "time": "10:00 - 10:30" },
+        { "day": "Miércoles", "time": "10:00 - 10:30" },
+        { "day": "Viernes", "time": "10:00 - 10:30" }
+      ]
+    },
+    {
+      "id": "ninos",
+      "name": "Niños",
+      "ages": "4 - 12 años",
+      "icon": "🏊",
+      "features": [
+        "Profesor certificado",
+        "Grupos reducidos (máx. 8 niños)",
+        "Pileta climatizada 28°C",
+        "Niveles por habilidad",
+        "Clases divertidas y seguras"
+      ],
+      "schedule": [
+        { "day": "Lunes", "time": "16:00 - 16:45" },
+        { "day": "Martes", "time": "16:00 - 16:45" },
+        { "day": "Miércoles", "time": "16:00 - 16:45" },
+        { "day": "Jueves", "time": "16:00 - 16:45" },
+        { "day": "Viernes", "time": "16:00 - 16:45" },
+        { "day": "Sábado", "time": "09:00 - 09:45" }
+      ]
+    },
+    {
+      "id": "adultos",
+      "name": "Adultos",
+      "ages": "13+ años",
+      "icon": "🧑‍🏫",
+      "features": [
+        "Instructor certificado",
+        "Grupos reducidos (máx. 10 adultos)",
+        "Pileta climatizada 28°C",
+        "Horarios flexibles",
+        "Técnica personalizada"
+      ],
+      "schedule": [
+        { "day": "Lunes", "time": "18:00 - 18:45" },
+        { "day": "Martes", "time": "18:00 - 18:45" },
+        { "day": "Miércoles", "time": "18:00 - 18:45" },
+        { "day": "Jueves", "time": "18:00 - 18:45" },
+        { "day": "Viernes", "time": "18:00 - 18:45" }
+      ]
+    },
+    {
+      "id": "aquagym",
+      "name": "AquaGym",
+      "ages": "16+ años",
+      "icon": "💪",
+      "features": [
+        "Instructor certificado en fitness acuático",
+        "Grupos de 12 personas",
+        "Pileta climatizada 28°C",
+        "Ejercicios de resistencia",
+        "Bajo impacto en articulaciones"
+      ],
+      "schedule": [
+        { "day": "Lunes", "time": "19:00 - 19:45" },
+        { "day": "Miércoles", "time": "19:00 - 19:45" },
+        { "day": "Viernes", "time": "19:00 - 19:45" }
+      ]
+    },
+    {
+      "id": "libre",
+      "name": "Pileta Libre",
+      "ages": "Todos",
+      "icon": "🏊‍♀️",
+      "features": [
+        "Acceso libre a la pileta",
+        "Horarios extendidos",
+        "Pileta climatizada 28°C",
+        "Sector profundidad variable",
+        "Ideal para práctica libre"
+      ],
+      "schedule": [
+        { "day": "Lunes", "time": "08:00 - 20:00" },
+        { "day": "Martes", "time": "08:00 - 20:00" },
+        { "day": "Miércoles", "time": "08:00 - 20:00" },
+        { "day": "Jueves", "time": "08:00 - 20:00" },
+        { "day": "Viernes", "time": "08:00 - 20:00" },
+        { "day": "Sábado", "time": "08:00 - 18:00" },
+        { "day": "Domingo", "time": "09:00 - 13:00" }
+      ]
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "1",
+      "name": "María García",
+      "text": "Mi hija de 3 años aprendió a flotar en solo 2 meses. Las profesoras son increíbles y la pileta está siempre impecable.",
+      "rating": 5,
+      "plan": "Bebés"
+    },
+    {
+      "id": "2",
+      "name": "Carlos Rodríguez",
+      "text": "Después de años sin nadar, logré aprender a los 45. El ambiente es muy tranquilo y los instructores tienen una paciencia infinita.",
+      "rating": 5,
+      "plan": "Adultos"
+    },
+    {
+      "id": "3",
+      "name": "Laura Fernández",
+      "text": "El AquaGym me cambió la vida. Llevo 6 meses y bajé 5 kilos, además de mejorar mi postura. Totalmente recomendado.",
+      "rating": 5,
+      "plan": "AquaGym"
+    },
+    {
+      "id": "4",
+      "name": "Diego Martínez",
+      "text": "Mi hijo adolescente superó todos sus miedos al agua. La atención personalizada hace la diferencia.",
+      "rating": 5,
+      "plan": "Infantil"
+    }
+  ],
+  "gallery": [
+    {
+      "id": "1",
+      "title": "Pileta Climatizada",
+      "altText": "Pileta principal climatizada a 28°C",
+      "imageUrl": "/images/pool-main.jpg",
+      "category": "facility"
+    },
+    {
+      "id": "2",
+      "title": "Clases Infantiles",
+      "altText": "Niños aprendiendo a nadar",
+      "imageUrl": "/images/children-class.jpg",
+      "category": "classes"
+    },
+    {
+      "id": "3",
+      "title": "AquaGym",
+      "altText": "Clase de fitness acuático",
+      "imageUrl": "/images/aquagym.jpg",
+      "category": "classes"
+    },
+    {
+      "id": "4",
+      "title": "Vestuarios",
+      "altText": "Vestuarios modernos y limpios",
+      "imageUrl": "/images/locker-rooms.jpg",
+      "category": "facility"
+    }
+  ]
+}

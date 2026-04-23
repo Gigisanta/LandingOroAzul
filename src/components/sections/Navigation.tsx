@@ -12,7 +12,11 @@ const navLinks = [
   { href: '#contacto', label: 'Contacto' },
 ]
 
-export default function Navigation() {
+interface NavigationProps {
+  whatsapp: string
+}
+
+export default function Navigation({ whatsapp }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -73,7 +77,7 @@ export default function Navigation() {
               </a>
             ))}
             <a
-              href="https://wa.me/5491100000000"
+              href={`https://wa.me/${whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 bg-[#25D366] hover:bg-[#20BA5A] text-white text-sm font-semibold rounded-lg transition-colors"
@@ -127,7 +131,7 @@ export default function Navigation() {
                   </a>
                 ))}
                 <a
-                  href="https://wa.me/5491100000000"
+                  href={`https://wa.me/${whatsapp}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-4 px-4 py-3 bg-[#25D366] hover:bg-[#20BA5A] text-white font-semibold rounded-lg text-center transition-colors"

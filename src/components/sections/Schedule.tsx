@@ -1,10 +1,27 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { api, type Activity } from '@/lib/api'
+
+interface ScheduleItem {
+  day: string
+  time: string
+}
+
+interface Activity {
+  id: string
+  name: string
+  ages: string
+  icon: string
+  features: string[]
+  schedule: ScheduleItem[]
+}
+
+interface ScheduleProps {
+  activities: Activity[]
+}
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -16,57 +33,9 @@ const fadeIn = {
   exit: { opacity: 0, y: -20, transition: { duration: 0.2 } },
 }
 
-export default function Schedule() {
-  const [activities, setActivities] = useState<Activity[]>([])
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+export default function Schedule({ activities }: ScheduleProps) {
+  const [selectedActivity, setSelectedActivity] = useState<Activity>(activities[0])
   const reducedMotion = useReducedMotion()
-
-  useEffect(() => {
-    async function loadActivities() {
-      try {
-        const data = await api.activities()
-        setActivities(data)
-        if (data.length > 0) {
-          setSelectedActivity(data[0])
-        }
-      } catch (err) {
-        console.error('Failed to load activities:', err)
-        setError('No se pudieron cargar los horarios')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    loadActivities()
-  }, [])
-
-  if (isLoading) {
-    return (
-      <section id="horarios" className="py-24 px-4 bg-gradient-to-b from-white to-[#F0F8FF]">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#005691' }}>
-              Nuestros Horarios
-            </h2>
-          </div>
-          <div className="flex justify-center py-12">
-            <div className="w-12 h-12 border-4 border-[#00A8E8] border-t-transparent rounded-full animate-spin" />
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  if (error || !selectedActivity) {
-    return (
-      <section id="horarios" className="py-24 px-4 bg-gradient-to-b from-white to-[#F0F8FF]">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-gray-500">No se pudieron cargar los horarios. Intenta más tarde.</p>
-        </div>
-      </section>
-    )
-  }
 
   return (
     <section id="horarios" className="py-24 px-4 bg-gradient-to-b from-white to-[#F0F8FF]">

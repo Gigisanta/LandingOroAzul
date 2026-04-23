@@ -3,10 +3,19 @@
 import { motion } from 'framer-motion'
 import { MapPin, Phone, Mail, Clock } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import type { LandingSettings } from '@/lib/api'
+
+interface Business {
+  name: string
+  phone: string
+  whatsapp: string
+  email: string
+  address: string
+  instagram: string
+  facebook: string
+}
 
 interface ContactProps {
-  settings: LandingSettings
+  business: Business
 }
 
 const fadeInUp = {
@@ -26,7 +35,7 @@ const staggerContainer = {
   },
 }
 
-export default function Contact({ settings }: ContactProps) {
+export default function Contact({ business }: ContactProps) {
   const reducedMotion = useReducedMotion()
 
   return (
@@ -64,7 +73,7 @@ export default function Contact({ settings }: ContactProps) {
             viewport={{ once: true, margin: '-50px' }}
           >
             <div className="space-y-6">
-              {settings.address && (
+              {business.address && (
                 <motion.div variants={fadeInUp} className="flex items-start gap-4">
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -76,12 +85,12 @@ export default function Contact({ settings }: ContactProps) {
                     <h3 className="font-semibold mb-1" style={{ color: '#005691' }}>
                       Dirección
                     </h3>
-                    <p className="text-gray-600">{settings.address}</p>
+                    <p className="text-gray-600">{business.address}</p>
                   </div>
                 </motion.div>
               )}
 
-              {settings.phone && (
+              {business.phone && (
                 <motion.div variants={fadeInUp} className="flex items-start gap-4">
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -94,16 +103,16 @@ export default function Contact({ settings }: ContactProps) {
                       Teléfono
                     </h3>
                     <a
-                      href={`tel:${settings.phone.replace(/\s/g, '')}`}
+                      href={`tel:${business.phone.replace(/\s/g, '')}`}
                       className="text-gray-600 hover:text-[#00A8E8] transition-colors"
                     >
-                      {settings.phone}
+                      {business.phone}
                     </a>
                   </div>
                 </motion.div>
               )}
 
-              {settings.email && (
+              {business.email && (
                 <motion.div variants={fadeInUp} className="flex items-start gap-4">
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -116,10 +125,10 @@ export default function Contact({ settings }: ContactProps) {
                       Email
                     </h3>
                     <a
-                      href={`mailto:${settings.email}`}
+                      href={`mailto:${business.email}`}
                       className="text-gray-600 hover:text-[#00A8E8] transition-colors"
                     >
-                      {settings.email}
+                      {business.email}
                     </a>
                   </div>
                 </motion.div>

@@ -3,7 +3,21 @@
 import { motion } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
-export default function Footer() {
+interface Business {
+  name: string
+  phone: string
+  whatsapp: string
+  email: string
+  address: string
+  instagram: string
+  facebook: string
+}
+
+interface FooterProps {
+  business: Business
+}
+
+export default function Footer({ business }: FooterProps) {
   const reducedMotion = useReducedMotion()
   const currentYear = new Date().getFullYear()
 
@@ -18,7 +32,7 @@ export default function Footer() {
             viewport={{ once: true }}
             className="text-center md:text-left"
           >
-            <h3 className="text-2xl font-bold text-white mb-2">Oro Azul</h3>
+            <h3 className="text-2xl font-bold text-white mb-2">{business.name}</h3>
             <p className="text-white/60 text-sm">
               Aprendé a nadar toda tu vida
             </p>
@@ -73,7 +87,7 @@ export default function Footer() {
             className="flex gap-4"
           >
             <a
-              href="https://instagram.com/oroazul"
+              href={`https://instagram.com/${business.instagram}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors"
@@ -84,7 +98,7 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="https://facebook.com/oroazul"
+              href={`https://facebook.com/${business.facebook}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors"
@@ -106,7 +120,7 @@ export default function Footer() {
           className="mt-8 pt-8 border-t border-white/10 text-center"
         >
           <p className="text-white/40 text-sm">
-            © {currentYear} Oro Azul Natatorio. Todos los derechos reservados.
+            © {currentYear} {business.name} Natatorio. Todos los derechos reservados.
           </p>
         </motion.div>
       </div>

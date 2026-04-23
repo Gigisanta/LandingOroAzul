@@ -2,7 +2,14 @@
 
 import { motion } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import type { Testimonial } from '@/lib/api'
+
+interface Testimonial {
+  id: string
+  name: string
+  text: string
+  rating: number
+  plan?: string
+}
 
 interface TestimonialsProps {
   testimonials: Testimonial[]
