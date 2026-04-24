@@ -84,7 +84,7 @@ export default function Water({ width = 12, length = 25 }: WaterProps) {
 
   return (
     <mesh ref={meshRef} position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <planeGeometry args={[width, length, 64, 64]} />
+      <planeGeometry args={[width, length, 32, 32]} />
       <shaderMaterial
         vertexShader={waterVertexShader}
         fragmentShader={waterFragmentShader}

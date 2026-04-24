@@ -76,12 +76,12 @@ export default function Scene({ children }: SceneProps) {
         frameloop="always"
         camera={{ position: [0, 8, 15], fov: 50 }}
         gl={{
-          antialias: false,
+          antialias: true,
           powerPreference: 'high-performance',
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.2,
         }}
-        dpr={[1, 1.5]}
+        dpr={[1, 2]}
       >
         <Suspense fallback={null}>
           <ScrollControls pages={3} damping={0.2}>
