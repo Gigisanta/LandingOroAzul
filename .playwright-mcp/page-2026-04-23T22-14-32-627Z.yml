@@ -1,0 +1,93 @@
+- generic:
+  - generic [active]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - navigation [ref=e6]:
+            - button "previous" [disabled] [ref=e7]:
+              - img "previous" [ref=e8]
+            - generic [ref=e10]:
+              - generic [ref=e11]: 1/
+              - text: "1"
+            - button "next" [disabled] [ref=e12]:
+              - img "next" [ref=e13]
+          - img
+        - generic [ref=e15]:
+          - link "Next.js 15.5.15 (outdated) Webpack" [ref=e16] [cursor=pointer]:
+            - /url: https://nextjs.org/docs/messages/version-staleness
+            - img [ref=e17]
+            - generic "An outdated version detected (latest is 16.2.4), upgrade is highly recommended!" [ref=e19]: Next.js 15.5.15 (outdated)
+            - generic [ref=e20]: Webpack
+          - img
+      - dialog "Build Error" [ref=e22]:
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - generic [ref=e27]:
+              - generic [ref=e29]: Build Error
+              - generic [ref=e30]:
+                - button "Copy Error Info" [ref=e31] [cursor=pointer]:
+                  - img [ref=e32]
+                - button "No related documentation found" [disabled] [ref=e34]:
+                  - img [ref=e35]
+                - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e37] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
+                  - img [ref=e38]
+            - paragraph [ref=e47]: x Expression expected
+          - generic [ref=e49]:
+            - generic [ref=e51]:
+              - img [ref=e53]
+              - generic [ref=e56]: ./src/components/sections/Schedule.tsx
+              - button "Open in editor" [ref=e57] [cursor=pointer]:
+                - img [ref=e59]
+            - generic [ref=e62]:
+              - generic [ref=e63]: "Error:"
+              - text: x
+              - generic [ref=e64]: Expression expected ,-[
+              - text: /Users/prueba/Desktop/LandingOroAzul/src/components/sections/Schedule.tsx
+              - generic [ref=e65]: :42:1]
+              - text: "39"
+              - generic [ref=e66]: "|"
+              - text: "40"
+              - generic [ref=e67]: "| return ("
+              - text: "41"
+              - generic [ref=e68]: "| <section id=\"horarios\" className=\"py-24 px-4 relative z-10\" style={{ background: '#0A1628' }}"
+              - text: "42"
+              - generic [ref=e69]: "| <div className=\"max-w-6xl mx-auto\"> :"
+              - generic [ref=e70]: ^
+              - text: "43"
+              - generic [ref=e71]: "| {/* Section Header */}"
+              - text: "44"
+              - generic [ref=e72]: "| <div className=\"text-center mb-12\">"
+              - text: "45"
+              - generic [ref=e73]: "| <h2 className=\"text-4xl md:text-5xl font-bold mb-4 text-white\"> `----"
+              - text: x
+              - generic [ref=e74]: Expected ',', got 'className' ,-[
+              - text: /Users/prueba/Desktop/LandingOroAzul/src/components/sections/Schedule.tsx
+              - generic [ref=e75]: :42:1]
+              - text: "39"
+              - generic [ref=e76]: "|"
+              - text: "40"
+              - generic [ref=e77]: "| return ("
+              - text: "41"
+              - generic [ref=e78]: "| <section id=\"horarios\" className=\"py-24 px-4 relative z-10\" style={{ background: '#0A1628' }}"
+              - text: "42"
+              - generic [ref=e79]: "| <div className=\"max-w-6xl mx-auto\"> :"
+              - generic [ref=e80]: ^^^^^^^^^
+              - text: "43"
+              - generic [ref=e81]: "| {/* Section Header */}"
+              - text: "44"
+              - generic [ref=e82]: "| <div className=\"text-center mb-12\">"
+              - text: "45"
+              - generic [ref=e83]: "| <h2 className=\"text-4xl md:text-5xl font-bold mb-4 text-white\"> `---- Caused by: Syntax Error"
+        - generic [ref=e84]:
+          - generic [ref=e85]: "1"
+          - generic [ref=e86]: "2"
+    - generic [ref=e91] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e92]:
+        - img [ref=e93]
+      - button "Open issues overlay" [ref=e97]:
+        - generic [ref=e98]:
+          - generic [ref=e99]: "0"
+          - generic [ref=e100]: "1"
+        - generic [ref=e101]: Issue
+  - alert [ref=e102]
