@@ -58,7 +58,7 @@ function PricingCard({ plan, index }: PricingCardProps) {
       <div
         className={`h-full flex flex-col rounded-2xl p-6 transition-all duration-300 ${
           isPopular
-            ? 'bg-[#00A8E8]/20 backdrop-blur-md border border-[#00A8E8]/50 shadow-lg shadow-[#00A8E8]/10'
+            ? 'bg-[var(--color-turquoise)]/20 backdrop-blur-md border border-[var(--color-turquoise)]/50 shadow-lg shadow-[var(--color-turquoise)]/10'
             : 'bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/20'
         }`}
       >
@@ -66,7 +66,7 @@ function PricingCard({ plan, index }: PricingCardProps) {
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <span
               className="px-4 py-1 text-xs font-semibold text-white rounded-full"
-              style={{ backgroundColor: '#005691' }}
+              style={{ backgroundColor: 'var(--color-primary)' }}
             >
               Más Popular
             </span>
@@ -93,7 +93,7 @@ function PricingCard({ plan, index }: PricingCardProps) {
           <div className="text-center mb-4">
             <span
               className="inline-block px-3 py-1 text-xs font-medium rounded-full text-white"
-              style={{ backgroundColor: '#00A8E8' }}
+              style={{ backgroundColor: 'var(--color-turquoise)' }}
             >
               {plan.classes} clases/mes
             </span>
@@ -101,15 +101,15 @@ function PricingCard({ plan, index }: PricingCardProps) {
 
           <ul className="space-y-2">
             <li className="flex items-center gap-2 text-sm">
-              <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#00A8E8' }} />
+              <Check className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-turquoise)' }} />
               <span className="text-white/70">Pileta climatizada 28°C</span>
             </li>
             <li className="flex items-center gap-2 text-sm">
-              <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#00A8E8' }} />
+              <Check className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-turquoise)' }} />
               <span className="text-white/70">Grupo reducido</span>
             </li>
             <li className="flex items-center gap-2 text-sm">
-              <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#00A8E8' }} />
+              <Check className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-turquoise)' }} />
               <span className="text-white/70">Acceso a pileta libre</span>
             </li>
           </ul>
@@ -123,8 +123,8 @@ function PricingCard({ plan, index }: PricingCardProps) {
             aria-label={`Consultar por ${plan.name} vía WhatsApp`}
             className={`w-full py-3 px-4 rounded-lg font-semibold text-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
               isPopular
-                ? 'bg-[#005691] hover:bg-[#004a7a] text-white focus-visible:ring-[#005691]'
-                : 'bg-[#00A8E8] hover:bg-[#0090c0] text-white focus-visible:ring-[#00A8E8]'
+                ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white focus-visible:ring-[var(--color-primary)]'
+                : 'bg-[var(--color-turquoise)] hover:bg-[var(--color-turquoise-dark)] text-white focus-visible:ring-[var(--color-turquoise)]'
             }`}
           >
             Consultar por WhatsApp
@@ -193,13 +193,13 @@ export default function Pricing({ plans }: PricingProps) {
             className="inline-block px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-md"
           >
             <p className="text-sm text-white/70">
-              <span className="font-semibold text-[#00A8E8]">
+              <span className="font-semibold text-[var(--color-turquoise)]">
                 Inscripción:
               </span>{' '}
               2 cuotas de $25.000
             </p>
             <p className="text-sm text-white/70 mt-1">
-              <span className="font-semibold text-[#00A8E8]">
+              <span className="font-semibold text-[var(--color-turquoise)]">
                 Métodos de pago:
               </span>{' '}
               Efectivo, Transferencia, Mercado Pago

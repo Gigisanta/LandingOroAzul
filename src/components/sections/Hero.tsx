@@ -30,7 +30,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
   return (
     <section className="relative min-h-[100dvh] flex flex-col items-center justify-center px-4 pt-20">
       {/* Dark gradient overlay for better text contrast */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A1628]/95 via-[#0A1628]/80 to-[#0A1628]/95 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-dark)]/95 via-[var(--color-dark)]/80 to-[var(--color-dark)]/95 pointer-events-none" />
       {/* Content */}
       <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center text-center">
         {/* Title */}
@@ -49,7 +49,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           <motion.h2
             variants={reducedMotion ? {} : fadeInUp}
             className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)]"
-            style={{ color: '#00A8E8' }}
+            style={{ color: 'var(--color-turquoise)' }}
           >
             toda tu vida
           </motion.h2>
@@ -77,7 +77,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           <motion.a
             variants={reducedMotion ? {} : fadeInUp}
             href="#horarios"
-            className="px-8 py-3 min-h-[44px] bg-[#005691] hover:bg-[#004a7a] text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+            className="px-8 py-3 min-h-[44px] bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
           >
             Ver horarios
           </motion.a>
@@ -109,7 +109,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
             >
               <div
                 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-1 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
-                style={{ color: '#00A8E8' }}
+                style={{ color: 'var(--color-turquoise)' }}
               >
                 {stat.value}
               </div>

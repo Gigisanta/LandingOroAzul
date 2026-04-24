@@ -49,7 +49,7 @@ export default function Gallery({ images }: GalleryProps) {
       : images.filter((img) => img.category === activeCategory)
 
   return (
-    <section id="galeria" className="py-24 px-4 bg-[#0A1628]/95 backdrop-blur-md">
+    <section id="galeria" className="py-24 px-4 bg-[var(--color-dark)]/95 backdrop-blur-md">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -82,7 +82,7 @@ export default function Gallery({ images }: GalleryProps) {
               aria-pressed={activeCategory === cat.id}
               className={`px-5 py-3 rounded-full font-medium text-sm transition-all duration-200 min-h-[44px] flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 ${
                 activeCategory === cat.id
-                  ? 'bg-[#00A8E8] text-white'
+                  ? 'bg-[var(--color-turquoise)] text-white'
                   : 'bg-white/10 text-white/70 hover:bg-white/20'
               }`}
             >

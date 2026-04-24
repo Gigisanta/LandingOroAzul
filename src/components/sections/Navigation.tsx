@@ -53,7 +53,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
         <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#005691] to-[#00A8E8] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-turquoise)] flex items-center justify-center">
               <svg
                 className="w-6 h-6 text-white"
                 fill="none"
@@ -86,7 +86,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
               href={`https://wa.me/${whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 bg-[#25D366] hover:bg-[#20BA5A] text-white text-sm font-semibold rounded-lg transition-colors"
+              className="px-4 py-2 bg-[var(--color-whatsapp)] hover:bg-[var(--color-whatsapp-dark)] text-white text-sm font-semibold rounded-lg transition-colors"
             >
               WhatsApp
             </a>
@@ -125,7 +125,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
               exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="absolute right-0 top-0 bottom-0 w-72 p-6 pt-20"
-              style={{ backgroundColor: '#0A1628' }}
+              style={{ backgroundColor: 'var(--color-dark)' }}
             >
               <div className="flex flex-col gap-4">
                 {navLinks.map((link) => (
@@ -142,7 +142,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
                   href={`https://wa.me/${whatsapp}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 px-4 py-3 bg-[#25D366] hover:bg-[#20BA5A] text-white font-semibold rounded-lg text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                  className="mt-4 px-4 py-3 bg-[var(--color-whatsapp)] hover:bg-[var(--color-whatsapp-dark)] text-white font-semibold rounded-lg text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                 >
                   WhatsApp
                 </a>

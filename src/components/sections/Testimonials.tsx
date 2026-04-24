@@ -51,7 +51,7 @@ function StarRating({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <svg
           key={star}
-          className={`w-4 h-4 ${star <= rating ? 'text-[#00A8E8]' : 'text-gray-600'}`}
+          className={`w-4 h-4 ${star <= rating ? 'text-[var(--color-turquoise)]' : 'text-gray-600'}`}
           fill="currentColor"
           viewBox="0 0 20 20"
         >
@@ -79,7 +79,7 @@ function TestimonialCard({ testimonial, direction }: { testimonial: Testimonial;
         </div>
 
         <div className="flex items-center gap-4 mb-6 relative z-10">
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#005691] to-[#00A8E8] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-[#005691]/30">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-turquoise)] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-[var(--color-primary)]/30">
             {testimonial.name.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -94,7 +94,7 @@ function TestimonialCard({ testimonial, direction }: { testimonial: Testimonial;
         {testimonial.plan && (
           <span
             className="inline-block px-4 py-1.5 text-sm font-medium rounded-full text-white relative z-10"
-            style={{ backgroundColor: '#00A8E8' }}
+            style={{ backgroundColor: 'var(--color-turquoise)' }}
           >
             {testimonial.plan}
           </span>
@@ -217,7 +217,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
                 index === currentIndex ? 'w-8' : 'w-2.5'
               } ${
                 index === currentIndex
-                  ? 'bg-[#00A8E8]'
+                  ? 'bg-[var(--color-turquoise)]'
                   : 'bg-white/30 hover:bg-white/50'
               }`}
               aria-label={`Ir al testimonio ${index + 1}`}

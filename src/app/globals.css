@@ -4,8 +4,12 @@
 
 :root {
   --color-primary: #005691;
+  --color-primary-dark: #004a7a;
   --color-turquoise: #00A8E8;
+  --color-turquoise-dark: #0090c0;
   --color-dark: #0A1628;
+  --color-whatsapp: #25D366;
+  --color-whatsapp-dark: #20BA5A;
 }
 
 * {

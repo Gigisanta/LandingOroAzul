@@ -22,7 +22,7 @@ export default function Footer({ business }: FooterProps) {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="py-12 px-4" style={{ backgroundColor: '#0A1628' }}>
+    <footer className="py-12 px-4" style={{ backgroundColor: 'var(--color-dark)' }}>
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo & Brand */}
