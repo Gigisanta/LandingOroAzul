@@ -28,7 +28,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-20">
+    <section className="relative min-h-[100dvh] flex flex-col items-center justify-center px-4 pt-20">
       {/* Content */}
       <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center text-center">
         {/* Title */}
@@ -75,14 +75,14 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           <motion.a
             variants={reducedMotion ? {} : fadeInUp}
             href="#horarios"
-            className="px-8 py-4 bg-[#005691] hover:bg-[#004a7a] text-white font-semibold rounded-lg transition-colors duration-200 text-center"
+            className="px-8 py-3 min-h-[44px] bg-[#005691] hover:bg-[#004a7a] text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center"
           >
             Ver horarios
           </motion.a>
           <motion.a
             variants={reducedMotion ? {} : fadeInUp}
             href="#precios"
-            className="px-8 py-4 border-2 border-white/50 hover:border-white text-white font-semibold rounded-lg transition-colors duration-200 text-center"
+            className="px-8 py-3 min-h-[44px] border-2 border-white/50 hover:border-white text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center"
           >
             Ver precios
           </motion.a>

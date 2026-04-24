@@ -81,7 +81,7 @@ export default function Gallery({ images }: GalleryProps) {
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-5 py-2 rounded-full font-medium text-sm transition-all duration-200 ${
+              className={`px-5 py-3 rounded-full font-medium text-sm transition-all duration-200 min-h-[44px] flex items-center ${
                 activeCategory === cat.id
                   ? 'bg-[#005691] text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'

@@ -89,7 +89,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden w-10 h-10 flex items-center justify-center text-white"
+            className="md:hidden w-11 h-11 flex items-center justify-center text-white"
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
