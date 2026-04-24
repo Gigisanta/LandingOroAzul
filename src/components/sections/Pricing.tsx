@@ -58,8 +58,8 @@ function PricingCard({ plan, index }: PricingCardProps) {
       <div
         className={`h-full flex flex-col rounded-2xl p-6 transition-all duration-300 ${
           isPopular
-            ? 'bg-white border-2 border-[#005691] shadow-lg shadow-[#005691]/20'
-            : 'bg-white/10 backdrop-blur-sm hover:bg-white/20'
+            ? 'bg-[#00A8E8]/20 backdrop-blur-md border border-[#00A8E8]/50 shadow-lg shadow-[#00A8E8]/10'
+            : 'bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/20'
         }`}
       >
         {isPopular && (
@@ -74,20 +74,20 @@ function PricingCard({ plan, index }: PricingCardProps) {
         )}
 
         <div className="text-center pb-4 border-b border-white/10">
-          <h3 className="text-xl font-bold mb-2" style={{ color: '#005691' }}>
+          <h3 className="text-xl font-bold mb-2 text-white">
             {plan.name}
           </h3>
           {plan.description && (
-            <p className="text-sm text-gray-500">{plan.description}</p>
+            <p className="text-sm text-white/50">{plan.description}</p>
           )}
         </div>
 
         <div className="flex-1 py-4">
           <div className="text-center mb-4">
-            <span className="text-4xl font-bold" style={{ color: '#0A1628' }}>
+            <span className="text-4xl font-bold text-white">
               {formatPrice(Number(plan.price))}
             </span>
-            <span className="text-gray-500 text-sm">/mes</span>
+            <span className="text-white/50 text-sm">/mes</span>
           </div>
 
           <div className="text-center mb-4">
@@ -102,15 +102,15 @@ function PricingCard({ plan, index }: PricingCardProps) {
           <ul className="space-y-2">
             <li className="flex items-center gap-2 text-sm">
               <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#00A8E8' }} />
-              <span className="text-gray-600">Pileta climatizada 28°C</span>
+              <span className="text-white/70">Pileta climatizada 28°C</span>
             </li>
             <li className="flex items-center gap-2 text-sm">
               <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#00A8E8' }} />
-              <span className="text-gray-600">Grupo reducido</span>
+              <span className="text-white/70">Grupo reducido</span>
             </li>
             <li className="flex items-center gap-2 text-sm">
               <Check className="w-4 h-4 flex-shrink-0" style={{ color: '#00A8E8' }} />
-              <span className="text-gray-600">Acceso a pileta libre</span>
+              <span className="text-white/70">Acceso a pileta libre</span>
             </li>
           </ul>
         </div>
@@ -120,10 +120,11 @@ function PricingCard({ plan, index }: PricingCardProps) {
             href={`https://wa.me/5491100000000?text=Hola!%20Quiero%20info%20sobre%20${encodeURIComponent(plan.name)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className={`w-full py-3 px-4 rounded-lg font-semibold text-center transition-colors duration-200 block ${
+            aria-label={`Consultar por ${plan.name} vía WhatsApp`}
+            className={`w-full py-3 px-4 rounded-lg font-semibold text-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
               isPopular
-                ? 'bg-[#005691] hover:bg-[#004a7a] text-white'
-                : 'bg-[#00A8E8] hover:bg-[#0090c0] text-white'
+                ? 'bg-[#005691] hover:bg-[#004a7a] text-white focus-visible:ring-[#005691]'
+                : 'bg-[#00A8E8] hover:bg-[#0090c0] text-white focus-visible:ring-[#00A8E8]'
             }`}
           >
             Consultar por WhatsApp
@@ -142,7 +143,7 @@ export default function Pricing({ plans }: PricingProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="precios" className="py-20 px-4 relative z-10">
+    <section id="precios" className="py-20 px-4 relative z-10" style={{ background: 'rgba(10, 22, 40, 0.95)', backdropFilter: 'blur(8px)' }}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -154,14 +155,13 @@ export default function Pricing({ plans }: PricingProps) {
         >
           <motion.h2
             variants={reducedMotion ? {} : fadeInUp}
-            className="text-4xl md:text-5xl font-bold mb-4"
-            style={{ color: '#0A1628' }}
+            className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >
             Nuestros Planes
           </motion.h2>
           <motion.p
             variants={fadeInUp}
-            className="text-lg text-gray-600 max-w-2xl mx-auto"
+            className="text-lg text-white/70 max-w-2xl mx-auto"
           >
             Encontrá el plan perfecto para vos. Todas las clases incluyen acceso a nuestras
             instalaciones.
@@ -190,17 +190,16 @@ export default function Pricing({ plans }: PricingProps) {
           className="mt-12 text-center"
         >
           <div
-            className="inline-block px-6 py-4 rounded-2xl"
-            style={{ backgroundColor: 'rgba(0, 168, 232, 0.1)' }}
+            className="inline-block px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-md"
           >
-            <p className="text-sm text-gray-600">
-              <span className="font-semibold" style={{ color: '#005691' }}>
+            <p className="text-sm text-white/70">
+              <span className="font-semibold text-[#00A8E8]">
                 Inscripción:
               </span>{' '}
               2 cuotas de $25.000
             </p>
-            <p className="text-sm text-gray-600 mt-1">
-              <span className="font-semibold" style={{ color: '#005691' }}>
+            <p className="text-sm text-white/70 mt-1">
+              <span className="font-semibold text-[#00A8E8]">
                 Métodos de pago:
               </span>{' '}
               Efectivo, Transferencia, Mercado Pago

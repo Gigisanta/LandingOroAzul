@@ -39,7 +39,7 @@ export default function Contact({ business }: ContactProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="contacto" className="py-24 px-4 bg-white">
+    <section id="contacto" className="py-24 px-4 bg-[#0A1628]/95 backdrop-blur-md">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -51,14 +51,13 @@ export default function Contact({ business }: ContactProps) {
         >
           <motion.h2
             variants={reducedMotion ? {} : fadeInUp}
-            className="text-4xl md:text-5xl font-bold mb-4"
-            style={{ color: '#005691' }}
+            className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >
             Encontranos
           </motion.h2>
           <motion.p
             variants={fadeInUp}
-            className="text-lg text-gray-600 max-w-2xl mx-auto"
+            className="text-lg text-white/70 max-w-2xl mx-auto"
           >
             Vení a conocernos. Te esperamos para que disfrutes del agua.
           </motion.p>
@@ -82,10 +81,10 @@ export default function Contact({ business }: ContactProps) {
                     <MapPin className="w-6 h-6" style={{ color: '#00A8E8' }} />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1" style={{ color: '#005691' }}>
+                    <h3 className="font-semibold mb-1 text-white">
                       Dirección
                     </h3>
-                    <p className="text-gray-600">{business.address}</p>
+                    <p className="text-white/70">{business.address}</p>
                   </div>
                 </motion.div>
               )}
@@ -99,12 +98,12 @@ export default function Contact({ business }: ContactProps) {
                     <Phone className="w-6 h-6" style={{ color: '#00A8E8' }} />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1" style={{ color: '#005691' }}>
+                    <h3 className="font-semibold mb-1 text-white">
                       Teléfono
                     </h3>
                     <a
                       href={`tel:${business.phone.replace(/\s/g, '')}`}
-                      className="text-gray-600 hover:text-[#00A8E8] transition-colors"
+                      className="text-white/70 hover:text-[#00A8E8] transition-colors"
                     >
                       {business.phone}
                     </a>
@@ -121,12 +120,12 @@ export default function Contact({ business }: ContactProps) {
                     <Mail className="w-6 h-6" style={{ color: '#00A8E8' }} />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1" style={{ color: '#005691' }}>
+                    <h3 className="font-semibold mb-1 text-white">
                       Email
                     </h3>
                     <a
                       href={`mailto:${business.email}`}
-                      className="text-gray-600 hover:text-[#00A8E8] transition-colors"
+                      className="text-white/70 hover:text-[#00A8E8] transition-colors"
                     >
                       {business.email}
                     </a>
@@ -142,12 +141,12 @@ export default function Contact({ business }: ContactProps) {
                   <Clock className="w-6 h-6" style={{ color: '#00A8E8' }} />
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-1" style={{ color: '#005691' }}>
+                  <h3 className="font-semibold mb-1 text-white">
                     Horarios
                   </h3>
-                  <p className="text-gray-600">Lunes a Viernes: 8:00 - 20:00</p>
-                  <p className="text-gray-600">Sábados: 8:00 - 18:00</p>
-                  <p className="text-gray-600">Domingos: 9:00 - 13:00</p>
+                  <p className="text-white/70">Lunes a Viernes: 8:00 - 20:00</p>
+                  <p className="text-white/70">Sábados: 8:00 - 18:00</p>
+                  <p className="text-white/70">Domingos: 9:00 - 13:00</p>
                 </div>
               </motion.div>
             </div>
@@ -156,7 +155,7 @@ export default function Contact({ business }: ContactProps) {
           {/* Map */}
           <motion.div
             variants={fadeInUp}
-            className="rounded-2xl overflow-hidden h-80 md:h-full min-h-[320px] border border-[#005691]/20"
+            className="rounded-2xl overflow-hidden h-80 md:h-full min-h-[320px] border border-white/20"
           >
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.5!2d-58.4!3d-34.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDM2JzAwLjAiUyA1OMKwMjQnMDAuMCJX!5e0!3m2!1ses!2sar!4v1600000000000!5m2!1ses!2sar"

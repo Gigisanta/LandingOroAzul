@@ -18,9 +18,8 @@ interface GalleryProps {
 
 const categories = [
   { id: 'all', label: 'Todas' },
-  { id: 'pool', label: 'Pileta' },
+  { id: 'facility', label: 'Pileta' },
   { id: 'classes', label: 'Clases' },
-  { id: 'facilities', label: 'Instalaciones' },
 ]
 
 const fadeInUp = {
@@ -50,7 +49,7 @@ export default function Gallery({ images }: GalleryProps) {
       : images.filter((img) => img.category === activeCategory)
 
   return (
-    <section id="galeria" className="py-24 px-4 bg-white">
+    <section id="galeria" className="py-24 px-4 bg-[#0A1628]/95 backdrop-blur-md">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -62,29 +61,29 @@ export default function Gallery({ images }: GalleryProps) {
         >
           <motion.h2
             variants={reducedMotion ? {} : fadeInUp}
-            className="text-4xl md:text-5xl font-bold mb-4"
-            style={{ color: '#005691' }}
+            className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >
             Nuestra Galería
           </motion.h2>
           <motion.p
             variants={fadeInUp}
-            className="text-lg text-gray-600 max-w-2xl mx-auto"
+            className="text-lg text-white/70 max-w-2xl mx-auto"
           >
             Conocé nuestras instalaciones y momentos especiales en Oro Azul.
           </motion.p>
         </motion.div>
 
         {/* Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
+        <div className="flex flex-wrap justify-center gap-2 mb-10" role="group" aria-label="Filtrar galería por categoría">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-5 py-3 rounded-full font-medium text-sm transition-all duration-200 min-h-[44px] flex items-center ${
+              aria-pressed={activeCategory === cat.id}
+              className={`px-5 py-3 rounded-full font-medium text-sm transition-all duration-200 min-h-[44px] flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 ${
                 activeCategory === cat.id
-                  ? 'bg-[#005691] text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-[#00A8E8] text-white'
+                  : 'bg-white/10 text-white/70 hover:bg-white/20'
               }`}
             >
               {cat.label}

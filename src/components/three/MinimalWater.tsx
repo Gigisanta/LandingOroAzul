@@ -94,9 +94,9 @@ const fluidWaterFragmentShader = /* glsl */ `
     vec3 halfDir = normalize(sunDir + viewDir);
     float spec = pow(max(dot(normal, halfDir), 0.0), 128.0);
 
-    // Sun disk reflection - sharp sparkle
+    // Sun disk reflection - sharp sparkle (reduced from 500 for performance)
     vec3 reflectDir = reflect(-sunDir, normal);
-    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 500.0);
+    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 200.0);
 
     // Base water color - poolcore clean aqua
     vec3 color = uWaterColor;
@@ -115,9 +115,9 @@ const fluidWaterFragmentShader = /* glsl */ `
     // Sun sparkle
     color += vec3(1.0, 0.98, 0.95) * sunReflect * 4.0;
 
-    // Subtle caustic shimmer - poolcore style
-    float shimmer1 = sin(vUv.x * 100.0 + uTime * 1.5) * sin(vUv.y * 100.0 + uTime * 1.2);
-    float shimmer2 = sin(vUv.x * 60.0 - uTime * 1.0) * sin(vUv.y * 80.0 + uTime * 1.3);
+    // Subtle caustic shimmer - poolcore style (reduced frequency for performance)
+    float shimmer1 = sin(vUv.x * 40.0 + uTime * 1.5) * sin(vUv.y * 40.0 + uTime * 1.2);
+    float shimmer2 = sin(vUv.x * 30.0 - uTime * 1.0) * sin(vUv.y * 40.0 + uTime * 1.3);
     float shimmer = (shimmer1 + shimmer2) * 0.5 * 0.03;
     color += vec3(0.2, 0.4, 0.5) * shimmer;
 

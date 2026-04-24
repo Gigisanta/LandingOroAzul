@@ -18,16 +18,23 @@ interface NavigationProps {
 
 export default function Navigation({ whatsapp }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isHidden, setIsHidden] = useState(false)
+  const [lastScrollY, setLastScrollY] = useState(0)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+      const currentY = window.scrollY
+      const isScrollingDown = currentY > lastScrollY
+
+      setIsScrolled(currentY > 50)
+      setIsHidden(isScrollingDown && currentY > 120)
+      setLastScrollY(currentY)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [lastScrollY])
 
   return (
     <>
@@ -35,13 +42,12 @@ export default function Navigation({ whatsapp }: NavigationProps) {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? 'py-3 backdrop-blur-md'
-            : 'py-5 bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          isHidden ? '-translate-y-full opacity-0' : 'translate-y-0'
+        } ${isScrolled ? 'py-1 opacity-80' : 'py-5 opacity-100'}`}
         style={{
-          backgroundColor: isScrolled ? 'rgba(10, 22, 40, 0.9)' : 'transparent',
+          backgroundColor: isScrolled ? 'rgba(10, 22, 40, 0.3)' : 'rgba(10, 22, 40, 0.9)',
+          backdropFilter: isScrolled ? 'none' : 'blur(12px)',
         }}
       >
         <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
@@ -71,7 +77,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-white/80 hover:text-white text-sm font-medium transition-colors"
+                className="text-white/80 hover:text-white text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-lg px-2 py-1"
               >
                 {link.label}
               </a>
@@ -89,8 +95,9 @@ export default function Navigation({ whatsapp }: NavigationProps) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden w-11 h-11 flex items-center justify-center text-white"
+            className="md:hidden w-11 h-11 flex items-center justify-center text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-lg"
             aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -107,9 +114,10 @@ export default function Navigation({ whatsapp }: NavigationProps) {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 md:hidden"
           >
-            <div
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            <button
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-default"
               onClick={() => setIsMobileMenuOpen(false)}
+              aria-label="Cerrar menú"
             />
             <motion.div
               initial={{ x: '100%' }}
@@ -125,7 +133,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-white/80 hover:text-white text-lg font-medium py-2 transition-colors"
+                    className="text-white/80 hover:text-white text-lg font-medium py-2 transition-colors focus-visible:outline-none focus-visible:bg-white/10 rounded-lg px-2"
                   >
                     {link.label}
                   </a>
@@ -134,7 +142,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
                   href={`https://wa.me/${whatsapp}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 px-4 py-3 bg-[#25D366] hover:bg-[#20BA5A] text-white font-semibold rounded-lg text-center transition-colors"
+                  className="mt-4 px-4 py-3 bg-[#25D366] hover:bg-[#20BA5A] text-white font-semibold rounded-lg text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                 >
                   WhatsApp
                 </a>

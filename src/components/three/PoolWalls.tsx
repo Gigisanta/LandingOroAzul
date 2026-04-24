@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import * as THREE from 'three'
 
 interface PoolWallsProps {
@@ -35,6 +35,14 @@ export default function PoolWalls({ width = 20, length = 30, depth = 3 }: PoolWa
   const wallThickness = 0.3
   const halfWidth = width / 2
   const halfLength = length / 2
+
+  // Dispose Three.js resources on unmount
+  useEffect(() => {
+    return () => {
+      wallMaterial.dispose()
+      floorMaterial.dispose()
+    }
+  }, [])
 
   return (
     <group position={[0, -depth / 2, 0]}>

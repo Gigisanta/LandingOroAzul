@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 interface Testimonial {
@@ -15,21 +16,33 @@ interface TestimonialsProps {
   testimonials: Testimonial[]
 }
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
+const DISPLAY_DURATION = 5000
+const TRANSITION_DURATION = 0.6
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
+const carouselVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 300 : -300,
+    opacity: 0,
+    scale: 0.9,
+  }),
+  center: {
+    x: 0,
     opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+    scale: 1,
+    transition: {
+      duration: TRANSITION_DURATION,
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+    },
   },
+  exit: (direction: number) => ({
+    x: direction > 0 ? -300 : 300,
+    opacity: 0,
+    scale: 0.9,
+    transition: {
+      duration: 0.4,
+      ease: [0.4, 0, 1, 1] as [number, number, number, number],
+    },
+  }),
 }
 
 function StarRating({ rating }: { rating: number }) {
@@ -38,7 +51,7 @@ function StarRating({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <svg
           key={star}
-          className={`w-4 h-4 ${star <= rating ? 'text-[#00A8E8]' : 'text-gray-300'}`}
+          className={`w-4 h-4 ${star <= rating ? 'text-[#00A8E8]' : 'text-gray-600'}`}
           fill="currentColor"
           viewBox="0 0 20 20"
         >
@@ -49,95 +62,168 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
-function TestimonialCard({
-  testimonial,
-  index,
-}: {
-  testimonial: Testimonial
-  index: number
-}) {
-  const reducedMotion = useReducedMotion()
-
+function TestimonialCard({ testimonial, direction }: { testimonial: Testimonial; direction: number }) {
   return (
     <motion.div
-      variants={reducedMotion ? {} : fadeInUp}
-      custom={index}
-      className="bg-white rounded-2xl p-6 shadow-sm border border-[#005691]/10"
+      custom={direction}
+      variants={carouselVariants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      className="w-full max-w-2xl mx-auto"
     >
-      <div className="flex items-center gap-4 mb-4">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#005691] to-[#00A8E8] flex items-center justify-center text-white font-bold text-lg">
-          {testimonial.name.charAt(0).toUpperCase()}
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 relative overflow-hidden">
+        {/* Decorative quote mark */}
+        <div className="absolute top-4 left-6 text-8xl text-white/5 font-serif leading-none select-none">
+          &ldquo;
         </div>
-        <div>
-          <h4 className="font-semibold" style={{ color: '#005691' }}>
-            {testimonial.name}
-          </h4>
-          <StarRating rating={testimonial.rating} />
+
+        <div className="flex items-center gap-4 mb-6 relative z-10">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#005691] to-[#00A8E8] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-[#005691]/30">
+            {testimonial.name.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <h4 className="font-semibold text-white text-lg">{testimonial.name}</h4>
+            <StarRating rating={testimonial.rating} />
+          </div>
         </div>
-      </div>
-      <p className="text-gray-600 italic">"{testimonial.text}"</p>
-      {testimonial.plan && (
-        <div className="mt-4 pt-4 border-t border-gray-100">
+
+        <p className="text-white/90 text-lg leading-relaxed italic relative z-10 mb-4">
+          &ldquo;{testimonial.text}&rdquo;
+        </p>
+        {testimonial.plan && (
           <span
-            className="inline-block px-3 py-1 text-xs font-medium rounded-full text-white"
+            className="inline-block px-4 py-1.5 text-sm font-medium rounded-full text-white relative z-10"
             style={{ backgroundColor: '#00A8E8' }}
           >
             {testimonial.plan}
           </span>
-        </div>
-      )}
+        )}
+      </div>
     </motion.div>
   )
 }
 
 export default function Testimonials({ testimonials }: TestimonialsProps) {
   const reducedMotion = useReducedMotion()
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const [direction, setDirection] = useState(1)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const goTo = useCallback(
+    (index: number) => {
+      setCurrentIndex((prev) => {
+        setDirection(index > prev ? 1 : -1)
+        return index
+      })
+    },
+    []
+  )
+
+  const next = useCallback(() => {
+    setDirection(1)
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length)
+  }, [testimonials.length])
+
+  const prev = useCallback(() => {
+    setDirection(-1)
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+  }, [testimonials.length])
+
+  useEffect(() => {
+    if (reducedMotion || isPaused || testimonials.length <= 1) return
+
+    intervalRef.current = setInterval(() => {
+      next()
+    }, DISPLAY_DURATION)
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [reducedMotion, isPaused, testimonials.length, next])
 
   return (
     <section
       id="testimonios"
-      className="py-24 px-4 bg-gradient-to-b from-[#F0F8FF] to-white"
+      className="py-16 px-4 relative z-10"
+      style={{ background: 'rgba(10, 22, 40, 0.95)', backdropFilter: 'blur(8px)' }}
     >
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
+      <div className="max-w-4xl mx-auto">
         <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
-          viewport={{ once: true, margin: '-100px' }}
+          initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-12"
         >
-          <motion.h2
-            variants={reducedMotion ? {} : fadeInUp}
-            className="text-4xl md:text-5xl font-bold mb-4"
-            style={{ color: '#005691' }}
-          >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
             Lo Que Dicen Nuestros Clientes
-          </motion.h2>
-          <motion.p
-            variants={fadeInUp}
-            className="text-lg text-gray-600 max-w-2xl mx-auto"
-          >
+          </h2>
+          <p className="text-lg text-white/70">
             Experiencias reales de familias que confían en Oro Azul.
-          </motion.p>
+          </p>
         </motion.div>
 
-        {/* Testimonials Grid */}
-        <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
-          viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {testimonials.map((testimonial, index) => (
-            <TestimonialCard
-              key={testimonial.id}
-              testimonial={testimonial}
-              index={index}
+        {/* Navigation arrows */}
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <button
+            onClick={prev}
+            className="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all duration-200 hover:scale-110 active:scale-95 min-w-[44px] min-h-[44px]"
+            aria-label="Testimonio anterior"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <div
+            className="relative"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            role="region"
+            aria-label="Testimonios de clientes"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <div className="overflow-hidden">
+              <AnimatePresence mode="wait" custom={direction}>
+                <TestimonialCard
+                  key={testimonials[currentIndex].id}
+                  testimonial={testimonials[currentIndex]}
+                  direction={direction}
+                />
+              </AnimatePresence>
+            </div>
+          </div>
+
+          <button
+            onClick={next}
+            className="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all duration-200 hover:scale-110 active:scale-95 min-w-[44px] min-h-[44px]"
+            aria-label="Siguiente testimonio"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Navigation dots */}
+        <div className="flex justify-center gap-3 mt-8">
+          {testimonials.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goTo(index)}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                index === currentIndex ? 'w-8' : 'w-2.5'
+              } ${
+                index === currentIndex
+                  ? 'bg-[#00A8E8]'
+                  : 'bg-white/30 hover:bg-white/50'
+              }`}
+              aria-label={`Ir al testimonio ${index + 1}`}
             />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

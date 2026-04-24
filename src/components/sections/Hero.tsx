@@ -29,6 +29,8 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
 
   return (
     <section className="relative min-h-[100dvh] flex flex-col items-center justify-center px-4 pt-20">
+      {/* Dark gradient overlay for better text contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0A1628]/95 via-[#0A1628]/80 to-[#0A1628]/95 pointer-events-none" />
       {/* Content */}
       <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center text-center">
         {/* Title */}
@@ -40,13 +42,13 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
         >
           <motion.h1
             variants={reducedMotion ? {} : fadeInUp}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-2 tracking-tight"
+            className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-2 tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)]"
           >
             Aprendé a nadar
           </motion.h1>
           <motion.h2
             variants={reducedMotion ? {} : fadeInUp}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight"
+            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)]"
             style={{ color: '#00A8E8' }}
           >
             toda tu vida
@@ -59,7 +61,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           initial={reducedMotion ? undefined : 'hidden'}
           animate="visible"
           transition={reducedMotion ? { delay: 0 } : { delay: 0.4 }}
-          className="text-lg md:text-xl text-white/80 max-w-2xl mb-10"
+          className="text-lg md:text-xl text-white/80 max-w-2xl mb-10 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
         >
           Clases de natación para todas las edades, rehabilitación acuática y actividades
           recreativas en un ambiente seguro y profesional.
@@ -75,14 +77,14 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           <motion.a
             variants={reducedMotion ? {} : fadeInUp}
             href="#horarios"
-            className="px-8 py-3 min-h-[44px] bg-[#005691] hover:bg-[#004a7a] text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center"
+            className="px-8 py-3 min-h-[44px] bg-[#005691] hover:bg-[#004a7a] text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
           >
             Ver horarios
           </motion.a>
           <motion.a
             variants={reducedMotion ? {} : fadeInUp}
             href="#precios"
-            className="px-8 py-3 min-h-[44px] border-2 border-white/50 hover:border-white text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center"
+            className="px-8 py-3 min-h-[44px] border-2 border-white/50 hover:border-white text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
           >
             Ver precios
           </motion.a>
@@ -106,7 +108,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
               className="text-center"
             >
               <div
-                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-1"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-1 drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]"
                 style={{ color: '#00A8E8' }}
               >
                 {stat.value}
@@ -139,6 +141,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"

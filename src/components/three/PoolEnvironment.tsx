@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import * as THREE from 'three'
 
 interface PoolEnvironmentProps {
@@ -19,6 +19,26 @@ export default function PoolEnvironment({ reducedMotion }: PoolEnvironmentProps)
         color: '#f0f8fa',
         roughness: 0.1,
         metalness: 0.2,
+      }),
+    []
+  )
+
+  const floorTileMaterialLight = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: '#c8e0e8',
+        roughness: 0.15,
+        metalness: 0.15,
+      }),
+    []
+  )
+
+  const floorTileMaterialDark = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: '#b8d8e0',
+        roughness: 0.15,
+        metalness: 0.15,
       }),
     []
   )
@@ -70,6 +90,19 @@ export default function PoolEnvironment({ reducedMotion }: PoolEnvironmentProps)
   const halfWidth = poolWidth / 2
   const halfLength = poolLength / 2
 
+  // Dispose all Three.js resources on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      tileMaterial.dispose()
+      floorTileMaterialLight.dispose()
+      floorTileMaterialDark.dispose()
+      cyanLineMaterial.dispose()
+      floorMaterial.dispose()
+      rimMaterial.dispose()
+      laneLineMaterial.dispose()
+    }
+  }, [])
+
   return (
     <group>
       {/* Pool floor */}
@@ -77,7 +110,7 @@ export default function PoolEnvironment({ reducedMotion }: PoolEnvironmentProps)
         <boxGeometry args={[poolWidth - wallThickness * 2, 0.25, poolLength - wallThickness * 2]} />
       </mesh>
 
-      {/* Elegant floor tile pattern */}
+      {/* Elegant floor tile pattern - using memoized materials */}
       {Array.from({ length: 8 }).map((_, i) =>
         Array.from({ length: 12 }).map((_, j) => (
           <mesh
@@ -87,13 +120,9 @@ export default function PoolEnvironment({ reducedMotion }: PoolEnvironmentProps)
               -poolDepth + 0.26,
               -halfLength + 2 + j * 2.5
             ]}
+            material={(i + j) % 2 === 0 ? floorTileMaterialLight : floorTileMaterialDark}
           >
             <boxGeometry args={[2.6, 0.012, 2.2]} />
-            <meshStandardMaterial
-              color={(i + j) % 2 === 0 ? '#c8e0e8' : '#b8d8e0'}
-              roughness={0.15}
-              metalness={0.15}
-            />
           </mesh>
         ))
       )}

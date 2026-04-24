@@ -1,94 +1,79 @@
 'use client'
 
-import { Suspense } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { ScrollControls, useScroll } from '@react-three/drei'
-import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing'
-import { BlendFunction } from 'postprocessing'
+import { Canvas } from '@react-three/fiber'
 import * as THREE from 'three'
-import Lights from './Lights'
-import Pool from './Pool'
-import Water from './Water'
-import Caustics from './Caustics'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
-
-function CameraController() {
-  const scroll = useScroll()
-  const reducedMotion = useReducedMotion()
-
-  useFrame(() => {
-    if (reducedMotion) return
-
-    const p = scroll.offset
-    // Camera movement based on scroll
-    // Camera starts above and slightly back, moves forward and down
-  })
-
-  return null
-}
+import MinimalWater from './MinimalWater'
+import UnderwaterLights from './UnderwaterLights'
 
 interface SceneProps {
   children?: React.ReactNode
 }
 
-function SceneContent({ children }: SceneProps) {
-  const reducedMotion = useReducedMotion()
-
+function AnimatedPool() {
   return (
-    <>
-      <color attach="background" args={['#0A1628']} />
-      <fog attach="fog" args={['#0A1628', 15, 40]} />
-
-      <Lights />
-
-      <group position={[0, 0, 0]}>
-        <Pool width={12} length={25} depth={2} />
-        <Water width={12} length={25} />
-        <Caustics width={12} length={25} depth={2} />
-      </group>
-
-      {!reducedMotion && (
-        <EffectComposer>
-          <Bloom
-            intensity={0.5}
-            luminanceThreshold={0.6}
-            luminanceSmoothing={0.9}
-          />
-          <ChromaticAberration
-            blendFunction={BlendFunction.NORMAL}
-            offset={new THREE.Vector2(0.0005, 0.0005)}
-          />
-        </EffectComposer>
-      )}
-
-      <CameraController />
-
-      {children}
-    </>
+    <group>
+      <MinimalWater />
+      <UnderwaterLights />
+    </group>
   )
 }
 
 export default function Scene({ children }: SceneProps) {
   return (
-    <div className="fixed inset-0 -z-10">
+    <div className="absolute inset-0 -z-10">
       <Canvas
-        shadows
-        frameloop="always"
-        camera={{ position: [0, 8, 15], fov: 50 }}
+        camera={{ position: [0, 12, 22], fov: 58 }}
+        dpr={[1, Math.min(window.devicePixelRatio, 1.5)]}
         gl={{
           antialias: true,
-          powerPreference: 'high-performance',
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.2,
+          alpha: true,
+          powerPreference: 'high-performance'
         }}
-        dpr={[1, 2]}
+        style={{
+          background: 'linear-gradient(180deg, #00A5B5 0%, #00CED1 30%, #00E0DA 60%, #7FDBDB 100%)'
+        }}
       >
-        <Suspense fallback={null}>
-          <ScrollControls pages={3} damping={0.2}>
-            <SceneContent>{children}</SceneContent>
-          </ScrollControls>
-        </Suspense>
+        <fog attach="fog" args={['#00CED1', 100, 280]} />
+
+        <ambientLight intensity={1.5} color="#ffffff" />
+
+        <directionalLight
+          position={[40, 55, 25]}
+          intensity={2.8}
+          color="#FFF8E0"
+        />
+
+        <directionalLight
+          position={[-25, 35, 20]}
+          intensity={0.8}
+          color="#E0F0FF"
+        />
+
+        <directionalLight
+          position={[0, 25, -35]}
+          intensity={0.45}
+          color="#F0F8FF"
+        />
+
+        <pointLight
+          position={[20, 10, 15]}
+          intensity={1.5}
+          color="#FFE4B5"
+          distance={60}
+          decay={2}
+        />
+
+        <pointLight
+          position={[-15, 5, 5]}
+          intensity={0.6}
+          color="#B8E8FF"
+          distance={40}
+          decay={2}
+        />
+
+        <AnimatedPool />
       </Canvas>
+      {children}
     </div>
   )
 }
