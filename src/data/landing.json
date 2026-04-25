@@ -206,28 +206,28 @@
       "id": "1",
       "title": "Pileta Climatizada",
       "altText": "Pileta principal climatizada a 28°C",
-      "imageUrl": "/images/pool-main.jpg",
+      "imageUrl": "https://images.unsplash.com/photo-1575429198097-0415ec305d1b?w=800&h=600&fit=crop",
       "category": "facility"
     },
     {
       "id": "2",
       "title": "Clases Infantiles",
       "altText": "Niños aprendiendo a nadar",
-      "imageUrl": "/images/children-class.jpg",
+      "imageUrl": "https://images.unsplash.com/photo-1546555814-3c9e6c466e3e?w=800&h=600&fit=crop",
       "category": "classes"
     },
     {
       "id": "3",
       "title": "AquaGym",
       "altText": "Clase de fitness acuático",
-      "imageUrl": "/images/aquagym.jpg",
+      "imageUrl": "https://images.unsplash.com/photo-1519315901367-f34ff9154487?w=800&h=600&fit=crop",
       "category": "classes"
     },
     {
       "id": "4",
       "title": "Vestuarios",
       "altText": "Vestuarios modernos y limpios",
-      "imageUrl": "/images/locker-rooms.jpg",
+      "imageUrl": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&h=600&fit=crop",
       "category": "facility"
     }
   ]

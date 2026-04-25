@@ -1,7 +1,7 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
-import * as THREE from 'three'
 import MinimalWater from './MinimalWater'
 import UnderwaterLights from './UnderwaterLights'
 
@@ -18,22 +18,37 @@ function AnimatedPool() {
   )
 }
 
+function isMobileDevice() {
+  if (typeof window === 'undefined') return false
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
+
 export default function Scene({ children }: SceneProps) {
+  const [dpr, setDpr] = useState(1)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mobile = isMobileDevice()
+    setIsMobile(mobile)
+    // Mobile: cap at 1, desktop: cap at 1.5
+    setDpr(mobile ? 1 : Math.min(window.devicePixelRatio, 1.5))
+  }, [])
+
   return (
-    <div className="absolute inset-0 -z-10">
+    <div className="fixed inset-0 -z-10" style={{ width: '100vw', height: '100vh' }}>
       <Canvas
-        camera={{ position: [0, 12, 22], fov: 58 }}
-        dpr={[1, Math.min(window.devicePixelRatio, 1.5)]}
+        camera={{ position: [0, 14, 24], fov: isMobile ? 65 : 55 }}
+        dpr={[1, dpr]}
         gl={{
-          antialias: true,
+          antialias: !isMobile,
           alpha: true,
-          powerPreference: 'high-performance'
+          powerPreference: isMobile ? 'low-power' : 'high-performance',
         }}
         style={{
-          background: 'linear-gradient(180deg, #00A5B5 0%, #00CED1 30%, #00E0DA 60%, #7FDBDB 100%)'
+          background: 'linear-gradient(180deg, #006080 0%, #00A5B5 25%, #00CED1 50%, #40E0D0 75%, #7FDBDB 100%)'
         }}
       >
-        <fog attach="fog" args={['#00CED1', 100, 280]} />
+        <fog attach="fog" args={['#0088A0', 80, 250]} />
 
         <ambientLight intensity={1.5} color="#ffffff" />
 

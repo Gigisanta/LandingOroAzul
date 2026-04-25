@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -79,6 +79,21 @@ const fluidWaterFragmentShader = /* glsl */ `
   varying vec3 vWorldPosition;
   varying vec3 vNormal;
 
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+  }
+
+  float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    float a = hash(i);
+    float b = hash(i + vec2(1.0, 0.0));
+    float c = hash(i + vec2(0.0, 1.0));
+    float d = hash(i + vec2(1.0, 1.0));
+    return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+  }
+
   void main() {
     vec3 viewDir = normalize(cameraPosition - vWorldPosition);
     vec3 normal = normalize(vNormal);
@@ -94,7 +109,7 @@ const fluidWaterFragmentShader = /* glsl */ `
     vec3 halfDir = normalize(sunDir + viewDir);
     float spec = pow(max(dot(normal, halfDir), 0.0), 128.0);
 
-    // Sun disk reflection - sharp sparkle (reduced from 500 for performance)
+    // Sun disk reflection - sharp sparkle
     vec3 reflectDir = reflect(-sunDir, normal);
     float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 200.0);
 
@@ -112,17 +127,25 @@ const fluidWaterFragmentShader = /* glsl */ `
     // Specular glow
     color += uSunColor * spec * 2.0;
 
-    // Sun sparkle
-    color += vec3(1.0, 0.98, 0.95) * sunReflect * 4.0;
+    // Sun sparkle - enhanced with noise for more natural shimmer
+    float sparkleNoise = noise(vUv * 80.0 + uTime * 2.0) * 0.5 + 0.5;
+    float sunSparkle = sunReflect * sparkleNoise;
+    color += vec3(1.0, 0.98, 0.95) * sunSparkle * 3.0;
 
-    // Subtle caustic shimmer - poolcore style (reduced frequency for performance)
+    // Enhanced caustic shimmer - poolcore style
     float shimmer1 = sin(vUv.x * 40.0 + uTime * 1.5) * sin(vUv.y * 40.0 + uTime * 1.2);
     float shimmer2 = sin(vUv.x * 30.0 - uTime * 1.0) * sin(vUv.y * 40.0 + uTime * 1.3);
-    float shimmer = (shimmer1 + shimmer2) * 0.5 * 0.03;
-    color += vec3(0.2, 0.4, 0.5) * shimmer;
+    float shimmer3 = sin((vUv.x + vUv.y) * 25.0 + uTime * 0.8);
+    float shimmer = (shimmer1 + shimmer2 + shimmer3 * 0.5) * 0.5 * 0.04;
+    color += vec3(0.25, 0.45, 0.55) * shimmer;
+
+    // Secondary noise-based caustics for depth
+    float caustic = noise(vUv * 15.0 + uTime * 0.3);
+    caustic = pow(caustic, 2.0) * 0.08;
+    color += vec3(0.2, 0.4, 0.5) * caustic;
 
     // Soft foam at peaks (subtle)
-    float foam = smoothstep(0.08, 0.15, vWorldPosition.y) * 0.1;
+    float foam = smoothstep(0.08, 0.15, vWorldPosition.y) * 0.15;
     color = mix(color, vec3(1.0), foam);
 
     float alpha = 0.92;
@@ -150,6 +173,15 @@ export default function MinimalWater() {
       material.uniforms.uTime.value = clock.getElapsedTime()
     }
   })
+
+  useEffect(() => {
+    return () => {
+      if (meshRef.current) {
+        meshRef.current.geometry.dispose()
+        ;(meshRef.current.material as THREE.ShaderMaterial).dispose()
+      }
+    }
+  }, [])
 
   return (
     <mesh

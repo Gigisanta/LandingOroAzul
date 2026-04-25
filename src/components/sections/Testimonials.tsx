@@ -16,44 +16,48 @@ interface TestimonialsProps {
   testimonials: Testimonial[]
 }
 
-const DISPLAY_DURATION = 5000
-const TRANSITION_DURATION = 0.6
+const DISPLAY_DURATION = 6000
+const TRANSITION_DURATION = 0.7
 
 const carouselVariants = {
   enter: (direction: number) => ({
-    x: direction > 0 ? 300 : -300,
+    x: direction > 0 ? 400 : -400,
     opacity: 0,
-    scale: 0.9,
+    scale: 0.85,
+    rotateY: direction > 0 ? 15 : -15,
   }),
   center: {
     x: 0,
     opacity: 1,
     scale: 1,
+    rotateY: 0,
     transition: {
       duration: TRANSITION_DURATION,
-      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
     },
   },
   exit: (direction: number) => ({
-    x: direction > 0 ? -300 : 300,
+    x: direction > 0 ? -400 : 400,
     opacity: 0,
-    scale: 0.9,
+    scale: 0.85,
+    rotateY: direction > 0 ? -15 : 15,
     transition: {
-      duration: 0.4,
-      ease: [0.4, 0, 1, 1] as [number, number, number, number],
+      duration: 0.5,
+      ease: [0.55, 0, 1, 0.45] as [number, number, number, number],
     },
   }),
 }
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <div className="flex gap-0.5">
+    <div className="flex gap-0.5" aria-label={`${rating} de 5 estrellas`}>
       {[1, 2, 3, 4, 5].map((star) => (
         <svg
           key={star}
           className={`w-4 h-4 ${star <= rating ? 'text-[var(--color-turquoise)]' : 'text-gray-600'}`}
           fill="currentColor"
           viewBox="0 0 20 20"
+          aria-hidden={star > rating}
         >
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
         </svg>
@@ -62,7 +66,7 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
-function TestimonialCard({ testimonial, direction }: { testimonial: Testimonial; direction: number }) {
+function TestimonialCard({ testimonial, direction, reducedMotion }: { testimonial: Testimonial; direction: number; reducedMotion: boolean }) {
   return (
     <motion.div
       custom={direction}
@@ -71,17 +75,59 @@ function TestimonialCard({ testimonial, direction }: { testimonial: Testimonial;
       animate="center"
       exit="exit"
       className="w-full max-w-2xl mx-auto"
+      style={{ perspective: 1000 }}
     >
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 relative overflow-hidden">
+      <motion.div
+        initial={{ scale: 1, rotateX: 0 }}
+        whileHover={{ scale: 1.02, rotateX: 2 }}
+        transition={{ duration: 0.4 }}
+        className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-8 border border-white/40 relative overflow-hidden shadow-2xl shadow-black/40"
+        style={{ transformStyle: 'preserve-3d' }}
+      >
+        {/* Gradient overlay */}
+        <div
+          className="absolute inset-0 opacity-30 pointer-events-none"
+          style={{
+            background: 'linear-gradient(135deg, var(--color-primary) 0%, transparent 50%, var(--color-turquoise) 100%)',
+          }}
+        />
+
+        {/* Animated border glow */}
+        {!reducedMotion && (
+          <motion.div
+            className="absolute inset-0 rounded-2xl opacity-0"
+            animate={{
+              opacity: [0, 0.3, 0],
+              scale: [1, 1.02, 1],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              repeatDelay: 2,
+            }}
+            style={{
+              background: 'linear-gradient(135deg, var(--color-turquoise), var(--color-primary))',
+              filter: 'blur(8px)',
+            }}
+          />
+        )}
+
         {/* Decorative quote mark */}
-        <div className="absolute top-4 left-6 text-8xl text-white/5 font-serif leading-none select-none">
+        <div className="absolute top-2 left-4 text-9xl text-white/[0.03] font-serif leading-none select-none">
           &ldquo;
         </div>
 
         <div className="flex items-center gap-4 mb-6 relative z-10">
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-turquoise)] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-[var(--color-primary)]/30">
+          <motion.div
+            className="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-turquoise)] flex items-center justify-center text-white font-bold text-xl shadow-lg"
+            style={{
+              boxShadow: '0 0 20px var(--color-turquoise), 0 4px 12px rgba(0,0,0,0.3)',
+            }}
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ duration: 0.3 }}
+          >
             {testimonial.name.charAt(0).toUpperCase()}
-          </div>
+          </motion.div>
           <div>
             <h4 className="font-semibold text-white text-lg">{testimonial.name}</h4>
             <StarRating rating={testimonial.rating} />
@@ -92,14 +138,15 @@ function TestimonialCard({ testimonial, direction }: { testimonial: Testimonial;
           &ldquo;{testimonial.text}&rdquo;
         </p>
         {testimonial.plan && (
-          <span
-            className="inline-block px-4 py-1.5 text-sm font-medium rounded-full text-white relative z-10"
-            style={{ backgroundColor: 'var(--color-turquoise)' }}
+          <motion.span
+            className="inline-block px-4 py-1.5 text-sm font-semibold rounded-full text-white relative z-10 shadow-md"
+            style={{ backgroundColor: 'var(--color-turquoise-dark)' }}
+            whileHover={{ scale: 1.05, boxShadow: '0 0 20px var(--color-turquoise-dark)' }}
           >
             {testimonial.plan}
-          </span>
+          </motion.span>
         )}
-      </div>
+      </motion.div>
     </motion.div>
   )
 }
@@ -147,7 +194,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
     <section
       id="testimonios"
       className="py-16 px-4 relative z-10"
-      style={{ background: 'rgba(10, 22, 40, 0.95)', backdropFilter: 'blur(8px)' }}
+      style={{ background: 'rgba(10, 22, 40, 0.92)', backdropFilter: 'blur(12px)' }}
     >
       <div className="max-w-4xl mx-auto">
         <motion.div
@@ -166,15 +213,17 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
 
         {/* Navigation arrows */}
         <div className="flex items-center justify-center gap-4 mb-8">
-          <button
+          <motion.button
             onClick={prev}
-            className="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all duration-200 hover:scale-110 active:scale-95 min-w-[44px] min-h-[44px]"
+            whileHover={{ scale: 1.15, backgroundColor: 'rgba(255,255,255,0.2)' }}
+            whileTap={{ scale: 0.9 }}
+            className="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white min-w-[44px] min-h-[44px]"
             aria-label="Testimonio anterior"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-          </button>
+          </motion.button>
 
           <div
             className="relative"
@@ -191,35 +240,39 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
                   key={testimonials[currentIndex].id}
                   testimonial={testimonials[currentIndex]}
                   direction={direction}
+                  reducedMotion={reducedMotion}
                 />
               </AnimatePresence>
             </div>
           </div>
 
-          <button
+          <motion.button
             onClick={next}
-            className="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all duration-200 hover:scale-110 active:scale-95 min-w-[44px] min-h-[44px]"
+            whileHover={{ scale: 1.15, backgroundColor: 'rgba(255,255,255,0.2)' }}
+            whileTap={{ scale: 0.9 }}
+            className="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white min-w-[44px] min-h-[44px]"
             aria-label="Siguiente testimonio"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-          </button>
+          </motion.button>
         </div>
 
         {/* Navigation dots */}
         <div className="flex justify-center gap-3 mt-8">
           {testimonials.map((_, index) => (
-            <button
+            <motion.button
               key={index}
               onClick={() => goTo(index)}
-              className={`h-2.5 rounded-full transition-all duration-300 ${
-                index === currentIndex ? 'w-8' : 'w-2.5'
-              } ${
-                index === currentIndex
-                  ? 'bg-[var(--color-turquoise)]'
-                  : 'bg-white/30 hover:bg-white/50'
-              }`}
+              animate={{
+                width: index === currentIndex ? 32 : 10,
+                backgroundColor: index === currentIndex
+                  ? 'var(--color-turquoise)'
+                  : 'rgba(255,255,255,0.3)',
+              }}
+              whileHover={{ scale: 1.2 }}
+              className="h-2.5 rounded-full"
               aria-label={`Ir al testimonio ${index + 1}`}
             />
           ))}

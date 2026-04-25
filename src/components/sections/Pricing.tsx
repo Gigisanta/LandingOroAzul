@@ -16,11 +16,11 @@ interface PricingPlan {
 }
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 50 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   },
 }
 
@@ -28,7 +28,16 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+  },
+}
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   },
 }
 
@@ -44,84 +53,107 @@ function formatPrice(price: number): string {
 interface PricingCardProps {
   plan: PricingPlan
   index: number
+  reducedMotion: boolean
 }
 
-function PricingCard({ plan, index }: PricingCardProps) {
+function PricingCard({ plan, index, reducedMotion }: PricingCardProps) {
   const isPopular = plan.isDefault
 
   return (
     <motion.div
       variants={fadeInUp}
       custom={index}
+      whileHover={reducedMotion ? {} : { y: -8, transition: { duration: 0.3 } }}
       className={`relative ${isPopular ? 'scale-[1.02]' : ''}`}
     >
       <div
         className={`h-full flex flex-col rounded-2xl p-6 transition-all duration-300 ${
           isPopular
-            ? 'bg-[var(--color-turquoise)]/20 backdrop-blur-md border border-[var(--color-turquoise)]/50 shadow-lg shadow-[var(--color-turquoise)]/10'
-            : 'bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/20'
+            ? 'bg-[var(--color-turquoise)]/25 backdrop-blur-xl border border-[var(--color-turquoise)]/50 shadow-2xl shadow-black/30'
+            : 'bg-[var(--color-dark)]/85 backdrop-blur-xl hover:bg-[var(--color-dark)]/90 border border-white/40 shadow-2xl shadow-black/40'
         }`}
       >
         {isPopular && (
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+          <motion.div
+            initial={reducedMotion ? undefined : { scale: 0 }}
+            animate={reducedMotion ? undefined : { scale: 1 }}
+            transition={{ delay: 0.3, type: 'spring', stiffness: 300 }}
+            className="absolute -top-3 left-1/2 -translate-x-1/2"
+          >
             <span
               className="px-4 py-1 text-xs font-semibold text-white rounded-full"
               style={{ backgroundColor: 'var(--color-primary)' }}
             >
               Más Popular
             </span>
-          </div>
+          </motion.div>
         )}
 
         <div className="text-center pb-4 border-b border-white/10">
-          <h3 className="text-xl font-bold mb-2 text-white">
+          <motion.h3
+            className="text-xl font-bold mb-2 text-white"
+            whileHover={reducedMotion ? {} : { scale: 1.05 }}
+          >
             {plan.name}
-          </h3>
+          </motion.h3>
           {plan.description && (
-            <p className="text-sm text-white/50">{plan.description}</p>
+            <p className="text-sm text-white/90">{plan.description}</p>
           )}
         </div>
 
         <div className="flex-1 py-4">
           <div className="text-center mb-4">
-            <span className="text-4xl font-bold text-white">
+            <motion.span
+              className="text-4xl font-bold text-white"
+              whileHover={reducedMotion ? {} : { scale: 1.1 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
               {formatPrice(Number(plan.price))}
-            </span>
-            <span className="text-white/50 text-sm">/mes</span>
+            </motion.span>
+            <span className="text-white/90 text-sm">/mes</span>
           </div>
 
           <div className="text-center mb-4">
-            <span
+            <motion.span
               className="inline-block px-3 py-1 text-xs font-medium rounded-full text-white"
-              style={{ backgroundColor: 'var(--color-turquoise)' }}
+              style={{ backgroundColor: 'var(--color-turquoise-dark)' }}
+              whileHover={reducedMotion ? {} : { scale: 1.1 }}
             >
               {plan.classes} clases/mes
-            </span>
+            </motion.span>
           </div>
 
           <ul className="space-y-2">
-            <li className="flex items-center gap-2 text-sm">
-              <Check className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-turquoise)' }} />
-              <span className="text-white/70">Pileta climatizada 28°C</span>
-            </li>
-            <li className="flex items-center gap-2 text-sm">
-              <Check className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-turquoise)' }} />
-              <span className="text-white/70">Grupo reducido</span>
-            </li>
-            <li className="flex items-center gap-2 text-sm">
-              <Check className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-turquoise)' }} />
-              <span className="text-white/70">Acceso a pileta libre</span>
-            </li>
+            {plan.features.map((feature, idx) => (
+              <motion.li
+                key={idx}
+                className="flex items-center gap-2 text-sm"
+                initial={reducedMotion ? undefined : { opacity: 0, x: -10 }}
+                whileInView={reducedMotion ? undefined : { opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.05 }}
+              >
+                <motion.div
+                  whileHover={reducedMotion ? {} : { scale: 1.2, rotate: 10 }}
+                >
+                  <Check className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-turquoise)' }} />
+                </motion.div>
+                <span className="text-white">{feature}</span>
+              </motion.li>
+            ))}
           </ul>
         </div>
 
-        <div className="pt-4 border-t border-white/10">
+        <motion.div
+          className="pt-4 border-t border-white/10"
+          whileHover={reducedMotion ? {} : { scale: 1.02 }}
+        >
           <a
             href={`https://wa.me/5491100000000?text=Hola!%20Quiero%20info%20sobre%20${encodeURIComponent(plan.name)}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Consultar por ${plan.name} vía WhatsApp`}
-            className={`w-full py-3 px-4 rounded-lg font-semibold text-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+            className={`w-full py-3 px-4 rounded-lg font-semibold text-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 min-h-[44px] flex items-center justify-center ${
               isPopular
                 ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white focus-visible:ring-[var(--color-primary)]'
                 : 'bg-[var(--color-turquoise)] hover:bg-[var(--color-turquoise-dark)] text-white focus-visible:ring-[var(--color-turquoise)]'
@@ -129,7 +161,7 @@ function PricingCard({ plan, index }: PricingCardProps) {
           >
             Consultar por WhatsApp
           </a>
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   )
@@ -143,7 +175,7 @@ export default function Pricing({ plans }: PricingProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="precios" className="py-20 px-4 relative z-10" style={{ background: 'rgba(10, 22, 40, 0.95)', backdropFilter: 'blur(8px)' }}>
+    <section id="precios" className="py-20 px-4 relative z-10" style={{ background: 'rgba(10, 22, 40, 0.92)', backdropFilter: 'blur(12px)' }}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -177,34 +209,36 @@ export default function Pricing({ plans }: PricingProps) {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {plans.map((plan, index) => (
-            <PricingCard key={plan.id} plan={plan} index={index} />
+            <PricingCard key={plan.id} plan={plan} index={index} reducedMotion={reducedMotion} />
           ))}
         </motion.div>
 
         {/* Additional Info */}
         <motion.div
-          initial={reducedMotion ? undefined : { opacity: 0 }}
-          whileInView={reducedMotion ? undefined : { opacity: 1 }}
+          variants={scaleIn}
+          initial={reducedMotion ? undefined : 'hidden'}
+          whileInView={reducedMotion ? undefined : 'visible'}
           viewport={{ once: true }}
           transition={reducedMotion ? {} : { delay: 0.4 }}
           className="mt-12 text-center"
         >
-          <div
-            className="inline-block px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-md"
+          <motion.div
+            className="inline-block px-6 py-4 rounded-2xl bg-[var(--color-dark)]/70 backdrop-blur-xl border border-white/30 shadow-2xl shadow-black/30"
+            whileHover={reducedMotion ? {} : { scale: 1.05 } }
           >
-            <p className="text-sm text-white/70">
+            <p className="text-sm text-white/90">
               <span className="font-semibold text-[var(--color-turquoise)]">
                 Inscripción:
               </span>{' '}
               2 cuotas de $25.000
             </p>
-            <p className="text-sm text-white/70 mt-1">
+            <p className="text-sm text-white/90 mt-1">
               <span className="font-semibold text-[var(--color-turquoise)]">
                 Métodos de pago:
               </span>{' '}
               Efectivo, Transferencia, Mercado Pago
             </p>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

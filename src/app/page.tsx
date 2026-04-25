@@ -14,8 +14,8 @@ import landingData from '@/data/landing.json'
 const Scene = dynamic(() => import('@/components/three/Scene'), {
   ssr: false,
   loading: () => (
-    <div className="fixed inset-0 -z-10 bg-[#0A1628] flex items-center justify-center">
-      <div className="w-16 h-16 border-4 border-[#00A8E8] border-t-transparent rounded-full animate-spin" />
+    <div className="fixed inset-0 -z-10 flex items-center justify-center" style={{ backgroundColor: 'var(--color-dark)' }}>
+      <div className="w-16 h-16 border-4 rounded-full animate-spin" style={{ borderColor: 'var(--color-turquoise)', borderTopColor: 'transparent' }} />
     </div>
   ),
 })
