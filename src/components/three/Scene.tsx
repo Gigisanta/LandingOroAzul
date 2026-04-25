@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
+import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import MinimalWater from './MinimalWater'
 import UnderwaterLights from './UnderwaterLights'
 
@@ -48,7 +49,7 @@ export default function Scene({ children }: SceneProps) {
           background: 'linear-gradient(180deg, #006080 0%, #00A5B5 25%, #00CED1 50%, #40E0D0 75%, #7FDBDB 100%)'
         }}
       >
-        <fog attach="fog" args={['#0088A0', 80, 250]} />
+        <fog attach="fog" args={['#0088A0', 80, 100]} />
 
         <ambientLight intensity={1.5} color="#ffffff" />
 
@@ -56,6 +57,13 @@ export default function Scene({ children }: SceneProps) {
           position={[40, 55, 25]}
           intensity={2.8}
           color="#FFF8E0"
+          castShadow
+          shadow-mapSize={[2048, 2048]}
+          shadow-camera-far={150}
+          shadow-camera-left={-50}
+          shadow-camera-right={50}
+          shadow-camera-top={50}
+          shadow-camera-bottom={-50}
         />
 
         <directionalLight
@@ -87,6 +95,15 @@ export default function Scene({ children }: SceneProps) {
         />
 
         <AnimatedPool />
+
+        <EffectComposer>
+          <Bloom
+            intensity={0.4}
+            luminanceThreshold={0.8}
+            luminanceSmoothing={0.9}
+            mipmapBlur
+          />
+        </EffectComposer>
       </Canvas>
       {children}
     </div>

@@ -39,11 +39,16 @@ export default function Navigation({ whatsapp }: NavigationProps) {
       setIsScrolled(currentY > 50)
       setIsHidden(isScrollingDown && currentY > 120)
       lastScrollYRef.current = currentY
+
+      // Close mobile menu on scroll
+      if (isMobileMenuOpen && currentY > 50) {
+        setIsMobileMenuOpen(false)
+      }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isMobileMenuOpen])
 
   // Close mobile menu on route change/hash change
   useEffect(() => {
@@ -63,10 +68,10 @@ export default function Navigation({ whatsapp }: NavigationProps) {
           isScrolled ? 'py-1' : 'py-3'
         }`}
         style={{
-          backgroundColor: isScrolled ? 'rgba(10, 22, 40, 0.85)' : 'rgba(10, 22, 40, 0.3)',
-          backdropFilter: isScrolled ? 'blur(16px)' : 'blur(8px)',
-          WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'blur(8px)',
-          boxShadow: isScrolled ? '0 4px 30px rgba(0, 0, 0, 0.4)' : 'none',
+          backgroundColor: isScrolled ? 'rgba(10, 22, 40, 0.9)' : 'rgba(10, 22, 40, 0.6)',
+          backdropFilter: isScrolled ? 'blur(16px)' : 'blur(12px)',
+          WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'blur(12px)',
+          boxShadow: isScrolled ? '0 4px 30px rgba(0, 0, 0, 0.4)' : '0 1px 0 rgba(255, 255, 255, 0.08)',
         }}
       >
         <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
@@ -101,8 +106,8 @@ export default function Navigation({ whatsapp }: NavigationProps) {
               <motion.a
                 key={link.href}
                 href={link.href}
-                className="text-white/80 hover:text-white text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-lg px-2 py-1"
-                whileHover={{ scale: 1.1, y: -2 }}
+                className="text-white hover:text-white/80 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-lg px-2 py-1 relative after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-0 after:h-0.5 after:bg-[var(--color-turquoise)] after:transition-all hover:after:w-full"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 {link.label}
@@ -112,9 +117,9 @@ export default function Navigation({ whatsapp }: NavigationProps) {
               href={`https://wa.me/${whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, y: -2 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4 py-2 bg-white hover:bg-gray-100 text-[var(--color-whatsapp)] border-2 border-[var(--color-whatsapp)] text-sm font-semibold rounded-lg transition-colors"
+              className="px-4 py-2 bg-[var(--color-whatsapp)] hover:bg-[var(--color-whatsapp-dark)] text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
             >
               WhatsApp
             </motion.a>

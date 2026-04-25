@@ -94,9 +94,49 @@ const fluidWaterFragmentShader = /* glsl */ `
     return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
   }
 
+  // FBM - Fractal Brownian Motion for natural detail
+  float fbm(vec2 p, int octaves) {
+    float value = 0.0;
+    float amplitude = 0.5;
+    float frequency = 1.0;
+    for (int i = 0; i < 6; i++) {
+      if (i >= octaves) break;
+      value += amplitude * noise(p * frequency);
+      frequency *= 2.0;
+      amplitude *= 0.5;
+    }
+    return value;
+  }
+
+  // Voronoi-based caustics for realistic light patterns
+  float voronoi(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    float minDist = 1.0;
+    for (int y = -1; y <= 1; y++) {
+      for (int x = -1; x <= 1; x++) {
+        vec2 neighbor = vec2(float(x), float(y));
+        vec2 point = hash(i + neighbor) * vec2(0.5) + 0.25;
+        vec2 diff = neighbor + point - f;
+        float dist = length(diff);
+        minDist = min(minDist, dist);
+      }
+    }
+    return minDist;
+  }
+
   void main() {
     vec3 viewDir = normalize(cameraPosition - vWorldPosition);
     vec3 normal = normalize(vNormal);
+
+    // Add micro-detail to normal with FBM
+    float fbmNormal = fbm(vUv * 12.0 + uTime * 0.15, 4);
+    vec3 fbmNormalOffset = vec3(
+      fbm(vUv * 12.0 + uTime * 0.15 + vec2(0.1, 0.0), 4) - 0.5,
+      0.0,
+      fbm(vUv * 12.0 + uTime * 0.15 + vec2(0.0, 0.1), 4) - 0.5
+    ) * 0.15;
+    normal = normalize(normal + fbmNormalOffset);
 
     // Sun direction
     vec3 sunDir = normalize(vec3(40.0, 55.0, 25.0));
@@ -105,13 +145,14 @@ const fluidWaterFragmentShader = /* glsl */ `
     float fresnel = pow(1.0 - max(dot(viewDir, normal), 0.0), 4.0);
     fresnel = mix(0.02, 1.0, fresnel);
 
-    // Specular highlight - smooth
+    // Specular highlight - GGX approximation for smoother falloff
     vec3 halfDir = normalize(sunDir + viewDir);
-    float spec = pow(max(dot(normal, halfDir), 0.0), 128.0);
+    float NdotH = max(dot(normal, halfDir), 0.0);
+    float spec = pow(NdotH, 256.0);
 
     // Sun disk reflection - sharp sparkle
     vec3 reflectDir = reflect(-sunDir, normal);
-    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 200.0);
+    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
 
     // Base water color - poolcore clean aqua
     vec3 color = uWaterColor;
@@ -120,33 +161,38 @@ const fluidWaterFragmentShader = /* glsl */ `
     float depth = smoothstep(-0.5, 0.5, vWorldPosition.y);
     color = mix(uDeepColor, color, depth);
 
+    // Subsurface scattering approximation - light through water
+    float sss = pow(max(dot(viewDir, -sunDir), 0.0), 3.0) * 0.3;
+    color += vec3(0.0, 0.4, 0.5) * sss;
+
     // Fresnel reflection - sky color
     vec3 skyColor = vec3(0.7, 0.9, 1.0);
-    color = mix(color, skyColor, fresnel * 0.4);
+    color = mix(color, skyColor, fresnel * 0.45);
 
     // Specular glow
-    color += uSunColor * spec * 2.0;
+    color += uSunColor * spec * 2.5;
 
     // Sun sparkle - enhanced with noise for more natural shimmer
-    float sparkleNoise = noise(vUv * 80.0 + uTime * 2.0) * 0.5 + 0.5;
+    float sparkleNoise = noise(vUv * 120.0 + uTime * 3.0) * 0.5 + 0.5;
     float sunSparkle = sunReflect * sparkleNoise;
-    color += vec3(1.0, 0.98, 0.95) * sunSparkle * 3.0;
+    color += vec3(1.0, 0.98, 0.95) * sunSparkle * 4.0;
 
-    // Enhanced caustic shimmer - poolcore style
-    float shimmer1 = sin(vUv.x * 40.0 + uTime * 1.5) * sin(vUv.y * 40.0 + uTime * 1.2);
-    float shimmer2 = sin(vUv.x * 30.0 - uTime * 1.0) * sin(vUv.y * 40.0 + uTime * 1.3);
-    float shimmer3 = sin((vUv.x + vUv.y) * 25.0 + uTime * 0.8);
-    float shimmer = (shimmer1 + shimmer2 + shimmer3 * 0.5) * 0.5 * 0.04;
-    color += vec3(0.25, 0.45, 0.55) * shimmer;
+    // Voronoi-based caustics for realistic light patterns
+    float caustic1 = voronoi(vUv * 8.0 + uTime * 0.4);
+    float caustic2 = voronoi(vUv * 6.0 - uTime * 0.3 + vec2(caustic1 * 2.0));
+    float causticPattern = pow(1.0 - caustic1, 3.0) * pow(1.0 - caustic2, 2.0);
+    color += vec3(0.3, 0.5, 0.6) * causticPattern * 0.15;
 
-    // Secondary noise-based caustics for depth
-    float caustic = noise(vUv * 15.0 + uTime * 0.3);
-    caustic = pow(caustic, 2.0) * 0.08;
-    color += vec3(0.2, 0.4, 0.5) * caustic;
+    // FBM-based caustics for organic variation
+    float fbmCaustic = fbm(vUv * 10.0 + uTime * 0.5, 5);
+    fbmCaustic = pow(fbmCaustic, 1.5) * 0.1;
+    color += vec3(0.2, 0.4, 0.5) * fbmCaustic;
 
     // Soft foam at peaks (subtle)
-    float foam = smoothstep(0.08, 0.15, vWorldPosition.y) * 0.15;
-    color = mix(color, vec3(1.0), foam);
+    float foam = smoothstep(0.06, 0.12, vWorldPosition.y) * 0.2;
+    float foamNoise = noise(vUv * 40.0 + uTime * 0.8);
+    foam *= foamNoise;
+    color = mix(color, vec3(1.0, 1.0, 0.98), foam);
 
     float alpha = 0.92;
 
@@ -189,7 +235,7 @@ export default function MinimalWater() {
       position={[0, 0, 0]}
       rotation={[-Math.PI / 2, 0, 0]}
     >
-      <planeGeometry args={[400, 400, 32, 32]} />
+      <planeGeometry args={[400, 400, 128, 128]} />
       <shaderMaterial
         vertexShader={fluidWaterVertexShader}
         fragmentShader={fluidWaterFragmentShader}
