@@ -10,11 +10,11 @@ interface SceneProps {
   children?: React.ReactNode
 }
 
-function AnimatedPool() {
+function AnimatedPool({ isMobile }: { isMobile: boolean }) {
   return (
     <group>
-      <MinimalWater />
-      <UnderwaterLights />
+      <MinimalWater isMobile={isMobile} />
+      {!isMobile && <UnderwaterLights />}
     </group>
   )
 }
@@ -51,59 +51,65 @@ export default function Scene({ children }: SceneProps) {
       >
         <fog attach="fog" args={['#0088A0', 80, 100]} />
 
-        <ambientLight intensity={1.5} color="#ffffff" />
+        <ambientLight intensity={isMobile ? 1.0 : 1.5} color="#ffffff" />
 
         <directionalLight
           position={[40, 55, 25]}
-          intensity={2.8}
+          intensity={isMobile ? 1.8 : 2.8}
           color="#FFF8E0"
-          castShadow
-          shadow-mapSize={[2048, 2048]}
+          castShadow={!isMobile}
+          shadow-mapSize={[isMobile ? 512 : 1024, isMobile ? 512 : 1024]}
           shadow-camera-far={150}
-          shadow-camera-left={-50}
-          shadow-camera-right={50}
-          shadow-camera-top={50}
-          shadow-camera-bottom={-50}
+          shadow-camera-left={isMobile ? -30 : -50}
+          shadow-camera-right={isMobile ? 30 : 50}
+          shadow-camera-top={isMobile ? 30 : 50}
+          shadow-camera-bottom={isMobile ? -30 : -50}
         />
 
-        <directionalLight
-          position={[-25, 35, 20]}
-          intensity={0.8}
-          color="#E0F0FF"
-        />
+        {!isMobile && (
+          <>
+            <directionalLight
+              position={[-25, 35, 20]}
+              intensity={0.8}
+              color="#E0F0FF"
+            />
 
-        <directionalLight
-          position={[0, 25, -35]}
-          intensity={0.45}
-          color="#F0F8FF"
-        />
+            <directionalLight
+              position={[0, 25, -35]}
+              intensity={0.45}
+              color="#F0F8FF"
+            />
 
-        <pointLight
-          position={[20, 10, 15]}
-          intensity={1.5}
-          color="#FFE4B5"
-          distance={60}
-          decay={2}
-        />
+            <pointLight
+              position={[20, 10, 15]}
+              intensity={1.5}
+              color="#FFE4B5"
+              distance={60}
+              decay={2}
+            />
 
-        <pointLight
-          position={[-15, 5, 5]}
-          intensity={0.6}
-          color="#B8E8FF"
-          distance={40}
-          decay={2}
-        />
+            <pointLight
+              position={[-15, 5, 5]}
+              intensity={0.6}
+              color="#B8E8FF"
+              distance={40}
+              decay={2}
+            />
+          </>
+        )}
 
-        <AnimatedPool />
+        <AnimatedPool isMobile={isMobile} />
 
-        <EffectComposer>
-          <Bloom
-            intensity={0.4}
-            luminanceThreshold={0.8}
-            luminanceSmoothing={0.9}
-            mipmapBlur
-          />
-        </EffectComposer>
+        {!isMobile && (
+          <EffectComposer>
+            <Bloom
+              intensity={0.4}
+              luminanceThreshold={0.8}
+              luminanceSmoothing={0.9}
+              mipmapBlur
+            />
+          </EffectComposer>
+        )}
       </Canvas>
       {children}
     </div>

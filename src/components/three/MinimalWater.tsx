@@ -200,7 +200,113 @@ const fluidWaterFragmentShader = /* glsl */ `
   }
 `
 
-export default function MinimalWater() {
+interface MinimalWaterProps {
+  isMobile?: boolean
+}
+
+const mobileFluidWaterFragmentShader = /* glsl */ `
+  precision mediump float;
+
+  uniform float uTime;
+  uniform vec3 uWaterColor;
+  uniform vec3 uDeepColor;
+  uniform vec3 uSunColor;
+  varying vec2 vUv;
+  varying vec3 vWorldPosition;
+  varying vec3 vNormal;
+
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+  }
+
+  float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    float a = hash(i);
+    float b = hash(i + vec2(1.0, 0.0));
+    float c = hash(i + vec2(0.0, 1.0));
+    float d = hash(i + vec2(1.0, 1.0));
+    return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+  }
+
+  void main() {
+    vec3 viewDir = normalize(cameraPosition - vWorldPosition);
+    vec3 normal = normalize(vNormal);
+
+    vec3 sunDir = normalize(vec3(40.0, 55.0, 25.0));
+
+    float fresnel = pow(1.0 - max(dot(viewDir, normal), 0.0), 3.0);
+    fresnel = mix(0.02, 1.0, fresnel);
+
+    vec3 halfDir = normalize(sunDir + viewDir);
+    float NdotH = max(dot(normal, halfDir), 0.0);
+    float spec = pow(NdotH, 128.0);
+
+    vec3 reflectDir = reflect(-sunDir, normal);
+    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 128.0);
+
+    vec3 color = uWaterColor;
+    float depth = smoothstep(-0.5, 0.5, vWorldPosition.y);
+    color = mix(uDeepColor, color, depth);
+
+    float sss = pow(max(dot(viewDir, -sunDir), 0.0), 3.0) * 0.3;
+    color += vec3(0.0, 0.4, 0.5) * sss;
+
+    vec3 skyColor = vec3(0.7, 0.9, 1.0);
+    color = mix(color, skyColor, fresnel * 0.35);
+
+    color += uSunColor * spec * 2.0;
+
+    float sparkle = noise(vUv * 80.0 + uTime * 2.0) * sunReflect;
+    color += vec3(1.0, 0.98, 0.95) * sparkle * 2.0;
+
+    float caustic = pow(1.0 - noise(vUv * 6.0 + uTime * 0.3), 2.0) * 0.12;
+    color += vec3(0.3, 0.5, 0.6) * caustic;
+
+    float foam = smoothstep(0.08, 0.14, vWorldPosition.y) * 0.15;
+    color = mix(color, vec3(1.0, 1.0, 0.98), foam);
+
+    gl_FragColor = vec4(color, 0.92);
+  }
+`
+
+const mobileFluidWaterVertexShader = /* glsl */ `
+  uniform float uTime;
+  varying vec2 vUv;
+  varying vec3 vWorldPosition;
+  varying vec3 vNormal;
+
+  vec3 gerstnerWave(vec2 pos, float steepness, float wavelength, vec2 direction, float time) {
+    float k = 2.0 * 3.14159 / wavelength;
+    float c = sqrt(9.8 / k);
+    vec2 d = normalize(direction);
+    float a = steepness / k;
+    float f = k * (dot(d, pos) - c * time);
+    return vec3(d.x * a * cos(f), a * sin(f), d.y * a * cos(f));
+  }
+
+  void main() {
+    vUv = uv;
+    vec3 pos = position;
+
+    vec3 wave1 = gerstnerWave(pos.xz, 0.08, 25.0, vec2(1.0, 0.3), uTime * 0.4);
+    vec3 wave2 = gerstnerWave(pos.xz, 0.05, 15.0, vec2(-0.5, 1.0), uTime * 0.35);
+    vec3 wave3 = gerstnerWave(pos.xz, 0.03, 8.0, vec2(0.7, -0.7), uTime * 0.5);
+
+    vec3 totalWave = wave1 + wave2 + wave3;
+    pos.x += totalWave.x;
+    pos.y += totalWave.y;
+    pos.z += totalWave.z;
+
+    vNormal = vec3(0.0, 1.0, 0.0);
+    vWorldPosition = (modelMatrix * vec4(pos, 1.0)).xyz;
+
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+  }
+`
+
+export default function MinimalWater({ isMobile = false }: MinimalWaterProps) {
   const meshRef = useRef<THREE.Mesh>(null)
 
   const uniforms = useMemo(
@@ -229,16 +335,20 @@ export default function MinimalWater() {
     }
   }, [])
 
+  const segments = isMobile ? 48 : 128
+  const vertexShader = isMobile ? mobileFluidWaterVertexShader : fluidWaterVertexShader
+  const fragmentShader = isMobile ? mobileFluidWaterFragmentShader : fluidWaterFragmentShader
+
   return (
     <mesh
       ref={meshRef}
       position={[0, 0, 0]}
       rotation={[-Math.PI / 2, 0, 0]}
     >
-      <planeGeometry args={[400, 400, 128, 128]} />
+      <planeGeometry args={[400, 400, segments, segments]} />
       <shaderMaterial
-        vertexShader={fluidWaterVertexShader}
-        fragmentShader={fluidWaterFragmentShader}
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
         uniforms={uniforms}
         transparent
         side={THREE.DoubleSide}

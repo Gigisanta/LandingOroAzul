@@ -21,26 +21,23 @@ const TRANSITION_DURATION = 0.7
 
 const carouselVariants = {
   enter: (direction: number) => ({
-    x: direction > 0 ? 400 : -400,
+    x: direction > 0 ? '100%' : '-100%',
     opacity: 0,
-    scale: 0.85,
-    rotateY: direction > 0 ? 15 : -15,
+    scale: 0.9,
   }),
   center: {
     x: 0,
     opacity: 1,
     scale: 1,
-    rotateY: 0,
     transition: {
       duration: TRANSITION_DURATION,
       ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
     },
   },
   exit: (direction: number) => ({
-    x: direction > 0 ? -400 : 400,
+    x: direction > 0 ? '-100%' : '100%',
     opacity: 0,
-    scale: 0.85,
-    rotateY: direction > 0 ? -15 : 15,
+    scale: 0.9,
     transition: {
       duration: 0.5,
       ease: [0.55, 0, 1, 0.45] as [number, number, number, number],
@@ -92,25 +89,14 @@ function TestimonialCard({ testimonial, direction, reducedMotion }: { testimonia
           }}
         />
 
-        {/* Animated border glow */}
-        {!reducedMotion && (
-          <motion.div
-            className="absolute inset-0 rounded-2xl opacity-0"
-            animate={{
-              opacity: [0, 0.3, 0],
-              scale: [1, 1.02, 1],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              repeatDelay: 2,
-            }}
-            style={{
-              background: 'linear-gradient(135deg, var(--color-turquoise), var(--color-primary))',
-              filter: 'blur(8px)',
-            }}
-          />
-        )}
+        {/* Static border glow */}
+        <div
+          className="absolute inset-0 rounded-2xl opacity-20 pointer-events-none"
+          style={{
+            background: 'linear-gradient(135deg, var(--color-turquoise), var(--color-primary))',
+            filter: 'blur(8px)',
+          }}
+        />
 
         {/* Decorative quote mark */}
         <div className="absolute top-2 left-4 text-9xl text-white/[0.03] font-serif leading-none select-none">
