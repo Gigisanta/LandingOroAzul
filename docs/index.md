@@ -20,11 +20,9 @@ Welcome to the Oro Azul landing page documentation.
 ### 3D Visualization
 - **docs/3d-scene-architecture.md** - Technical deep dive into:
   - Scene component hierarchy
-  - Water shader architecture
-  - Caustics shader techniques
-  - Pool environment construction
-  - Underwater lighting setup
+  - MinimalWater.tsx with Gerstner waves shader
   - Performance considerations
+  - ErrorBoundary for 3D error handling
 
 ## Tech Stack Summary
 
@@ -40,10 +38,9 @@ Welcome to the Oro Azul landing page documentation.
 ## Key Features
 
 1. **3D Swimming Pool Background**
-   - Custom water surface shader with wave animation
-   - Caustics effect using FBM noise
-   - Underwater lighting
-   - Pool environment with lane lines, starting blocks, ladders
+   - Custom water surface shader with Gerstner waves animation
+   - MinimalScene.tsx with streamlined 3D composition
+   - ErrorBoundary wrapper for graceful 3D failure handling
 
 2. **Responsive Landing Page**
    - Hero section with statistics
@@ -83,7 +80,7 @@ src/
 ├── app/
 │   ├── layout.tsx        # Root layout
 │   ├── page.tsx         # Landing page
-│   └── globals.css
+│   └── globals.css      # Global styles with CSS tokens
 ├── components/
 │   ├── sections/        # UI sections
 │   │   ├── Navigation.tsx
@@ -95,16 +92,21 @@ src/
 │   │   ├── Contact.tsx
 │   │   └── Footer.tsx
 │   └── three/           # 3D components
-│       ├── Scene.tsx
-│       ├── Water.tsx
-│       ├── Caustics.tsx
-│       ├── PoolEnvironment.tsx
-│       └── UnderwaterLights.tsx
+│       ├── MinimalScene.tsx
+│       └── MinimalWater.tsx  # Gerstner waves shader
 ├── data/
 │   └── landing.json     # Static content
 └── hooks/
     └── useReducedMotion.ts
 ```
+
+## CSS Design Tokens
+
+Design tokens (colors, typography, spacing) are defined as CSS custom properties in `src/app/globals.css`. All components consume these tokens instead of hardcoded values.
+
+## Error Boundaries
+
+The 3D scene is wrapped in an ErrorBoundary component to gracefully handle WebGL/rendering errors without crashing the entire application.
 
 ## Related Documentation
 

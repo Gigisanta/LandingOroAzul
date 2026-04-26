@@ -60,7 +60,7 @@ export default function Footer({ business }: FooterProps) {
             className="text-center md:text-left"
           >
             <h3 className="text-2xl font-bold text-white mb-2">{business.name}</h3>
-            <p className="text-white/80 text-sm">
+            <p className="text-white/80 text-base">
               Aprendé a nadar toda tu vida
             </p>
           </motion.div>
@@ -87,7 +87,7 @@ export default function Footer({ business }: FooterProps) {
                 href={link.href}
                 variants={reducedMotion ? {} : fadeInUp}
                 whileHover={reducedMotion ? {} : { scale: 1.1, color: 'var(--color-turquoise)' }}
-                className="text-white/80 hover:text-white text-sm transition-colors min-h-11 min-w-11 flex items-center px-2"
+                className="text-white/80 hover:text-white text-base transition-colors min-h-11 min-w-11 flex items-center px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)] rounded"
               >
                 {link.label}
               </motion.a>
@@ -141,7 +141,7 @@ export default function Footer({ business }: FooterProps) {
           transition={{ delay: 0.3 }}
           className="mt-8 pt-8 border-t border-white/10 text-center"
         >
-          <p className="text-white/70 text-sm">
+          <p className="text-white/70 text-base">
             © {currentYear} {business.name} Natatorio. Todos los derechos reservados.
           </p>
         </motion.div>

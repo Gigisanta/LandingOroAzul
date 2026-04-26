@@ -170,12 +170,12 @@ const fluidWaterFragmentShader = /* glsl */ `
     color = mix(color, skyColor, fresnel * 0.45);
 
     // Specular glow
-    color += uSunColor * spec * 2.5;
+    color += uSunColor * spec * 1.2;
 
     // Sun sparkle - enhanced with noise for more natural shimmer
     float sparkleNoise = noise(vUv * 120.0 + uTime * 3.0) * 0.5 + 0.5;
     float sunSparkle = sunReflect * sparkleNoise;
-    color += vec3(1.0, 0.98, 0.95) * sunSparkle * 4.0;
+    color += vec3(1.0, 0.98, 0.95) * sunSparkle * 1.5;
 
     // Voronoi-based caustics for realistic light patterns
     float caustic1 = voronoi(vUv * 8.0 + uTime * 0.4);
@@ -202,6 +202,7 @@ const fluidWaterFragmentShader = /* glsl */ `
 
 interface MinimalWaterProps {
   isMobile?: boolean
+  reducedMotion?: boolean
 }
 
 const mobileFluidWaterFragmentShader = /* glsl */ `
@@ -256,10 +257,10 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
     vec3 skyColor = vec3(0.7, 0.9, 1.0);
     color = mix(color, skyColor, fresnel * 0.35);
 
-    color += uSunColor * spec * 2.0;
+    color += uSunColor * spec * 1.0;
 
     float sparkle = noise(vUv * 80.0 + uTime * 2.0) * sunReflect;
-    color += vec3(1.0, 0.98, 0.95) * sparkle * 2.0;
+    color += vec3(1.0, 0.98, 0.95) * sparkle * 1.0;
 
     float caustic = pow(1.0 - noise(vUv * 6.0 + uTime * 0.3), 2.0) * 0.12;
     color += vec3(0.3, 0.5, 0.6) * caustic;
@@ -306,7 +307,7 @@ const mobileFluidWaterVertexShader = /* glsl */ `
   }
 `
 
-export default function MinimalWater({ isMobile = false }: MinimalWaterProps) {
+export default function MinimalWater({ isMobile = false, reducedMotion = false }: MinimalWaterProps) {
   const meshRef = useRef<THREE.Mesh>(null)
 
   const uniforms = useMemo(
@@ -322,7 +323,7 @@ export default function MinimalWater({ isMobile = false }: MinimalWaterProps) {
   useFrame(({ clock }) => {
     if (meshRef.current) {
       const material = meshRef.current.material as THREE.ShaderMaterial
-      material.uniforms.uTime.value = clock.getElapsedTime()
+      material.uniforms.uTime.value = reducedMotion ? 0 : clock.getElapsedTime()
     }
   })
 
@@ -330,12 +331,17 @@ export default function MinimalWater({ isMobile = false }: MinimalWaterProps) {
     return () => {
       if (meshRef.current) {
         meshRef.current.geometry.dispose()
-        ;(meshRef.current.material as THREE.ShaderMaterial).dispose()
+        const material = meshRef.current.material as THREE.ShaderMaterial
+        material.dispose()
+        // Dispose THREE.Color instances to prevent memory leaks
+        material.uniforms.uWaterColor.value.dispose()
+        material.uniforms.uDeepColor.value.dispose()
+        material.uniforms.uSunColor.value.dispose()
       }
     }
   }, [])
 
-  const segments = isMobile ? 48 : 128
+  const segments = isMobile ? 32 : 128
   const vertexShader = isMobile ? mobileFluidWaterVertexShader : fluidWaterVertexShader
   const fragmentShader = isMobile ? mobileFluidWaterFragmentShader : fluidWaterFragmentShader
 

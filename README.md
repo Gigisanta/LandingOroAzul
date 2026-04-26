@@ -1,6 +1,6 @@
 # Oro Azul - Swimming School Landing Page
 
-A Next.js landing page for **Oro Azul**, a swimming school (natatorio) in Buenos Aires, Argentina. The site features an immersive 3D swimming pool visualization with custom GLSL shaders for realistic water effects, caustics, and underwater lighting.
+A Next.js landing page for **Oro Azul**, a swimming school (natatorio) in Buenos Aires, Argentina. The site features an immersive 3D swimming pool visualization with custom GLSL shaders for realistic water effects using Gerstner waves, protected by an ErrorBoundary for production resilience.
 
 ## Overview
 
@@ -9,9 +9,9 @@ Oro Azul offers swimming classes for all ages, aquatic rehabilitation, and recre
 ### Key Features
 
 - **3D Swimming Pool Visualization**: Realistic swimming pool rendered in WebGL
-- **Custom Water Shader**: Animated wave effects using multiple overlapping sine waves
-- **Caustics Effect**: Light patterns on the pool floor using Fractal Brownian Motion (FBM)
-- **Underwater Lighting**: Point lights creating depth and atmosphere
+- **Custom Water Shader**: Animated wave effects using Gerstner waves
+- **ErrorBoundary Protection**: Graceful fallback for 3D rendering failures
+- **CSS Design Tokens**: Centralized color and typography variables
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
 - **Reduced Motion Support**: Respects user accessibility preferences
 - **Multi-section Layout**: Hero, Schedule, Pricing, Gallery, Testimonials, Contact
@@ -27,7 +27,9 @@ Oro Azul offers swimming classes for all ages, aquatic rehabilitation, and recre
 | [React Three Fiber](https://docs.pmnd.rs/react-three-fiber/) | React renderer for Three.js |
 | [Three.js](https://threejs.org/) | 3D graphics library |
 | [Framer Motion](https://www.framer.com/motion/) | Animation library |
-| [GLSL Shaders](https://www.khronos.org/opengl/wiki/Core_Language_(GLSL)) | Custom water and caustics effects |
+| [next/font/google](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) | Plus Jakarta Sans font |
+| [CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) | Design tokens |
+| [GLSL Shaders](https://www.khronos.org/opengl/wiki/Core_Language_(GLSL)) | Custom water effects with Gerstner waves |
 
 ## Project Structure
 
@@ -43,19 +45,13 @@ src/
 │   │   ├── Hero.tsx        # Hero with 3D background
 │   │   ├── Schedule.tsx    # Class schedule by activity
 │   │   ├── Pricing.tsx     # Pricing plans
-│   │   ├── Gallery.tsx     # Image gallery
+│   │   ├── Gallery.tsx     # Image gallery with motion.a
 │   │   ├── Testimonials.tsx # Customer testimonials
 │   │   ├── Contact.tsx     # Contact form
 │   │   └── Footer.tsx      # Site footer
 │   └── three/              # 3D scene components
-│       ├── Scene.tsx       # Main 3D canvas and lighting
-│       ├── Water.tsx       # Animated water surface shader
-│       ├── Caustics.tsx    # Light caustics on pool floor
-│       ├── PoolEnvironment.tsx # Pool structure, tiles, lane lines
-│       ├── Pool.tsx        # Pool mesh (legacy)
-│       ├── PoolWalls.tsx   # Pool walls (legacy)
-│       ├── Lights.tsx      # Scene lights (legacy)
-│       └── UnderwaterLights.tsx # Underwater lighting
+│       ├── Scene.tsx       # Main 3D canvas with ErrorBoundary
+│       └── MinimalWater.tsx # Water surface with Gerstner waves
 ├── data/
 │   └── landing.json       # Static content data
 └── hooks/
@@ -64,7 +60,7 @@ src/
 
 ## 3D Scene Architecture
 
-The 3D scene is built with React Three Fiber and consists of several layered components:
+The 3D scene is built with React Three Fiber and protected by an ErrorBoundary for graceful failure handling.
 
 ### Scene Component (`Scene.tsx`)
 
@@ -73,13 +69,15 @@ The main canvas wrapper that sets up the R3F Canvas with:
 - High-performance WebGL context
 - Sky gradient background
 - Ambient and directional lighting
+- ErrorBoundary wrapping for production resilience
 
-### Water Shader (`Water.tsx`)
+### MinimalWater Shader (`MinimalWater.tsx`)
 
-Custom GLSL shader creating realistic water surface with:
+Custom GLSL shader creating realistic water surface with Gerstner waves:
 
 **Vertex Shader Features:**
-- 5 overlapping sine waves for realistic motion
+- Gerstner wave algorithm for realistic ocean-like motion
+- Multiple wave frequencies and amplitudes
 - Dynamic normal calculation for reflections
 - Time-based animation
 
@@ -88,37 +86,7 @@ Custom GLSL shader creating realistic water surface with:
 - Specular highlights using Blinn-Phong lighting
 - Fresnel effect for view-dependent reflections
 - Sun reflection simulation
-- Surface shimmer effect
 - Transparency with edge opacity
-
-### Caustics Effect (`Caustics.tsx`)
-
-Light caustics projected onto the pool floor using:
-
-**Fragment Shader Techniques:**
-- Fractal Brownian Motion (FBM) noise
-- Multiple animated noise layers
-- Additive blending for light accumulation
-- Intensity pulsing animation
-- Pool edge fadeout
-
-### Pool Environment (`PoolEnvironment.tsx`)
-
-Complete pool structure including:
-- **Pool Floor**: Light blue tiles with lane markers
-- **Walls**: 4 walls with blue tile accent lines
-- **Deck**: Surrounding deck area
-- **Starting Blocks**: 2 blocks at one end
-- **Ladders**: 2 stainless steel pool ladders
-- **Lane Lines**: 5 underwater lane dividers
-
-### Underwater Lights (`UnderwaterLights.tsx`)
-
-Creates underwater atmosphere with:
-- 15 point lights arranged in grid pattern
-- Cyan/blue color scheme (`#00DDFF`, `#00AAFF`)
-- Main central glow light
-- Side accent lights
 
 ## Water Shader Reference
 
@@ -131,14 +99,6 @@ Creates underwater atmosphere with:
 | `uDeepColor` | vec3 | Deep water color |
 | `uHighlightColor` | vec3 | Specular highlight color |
 | `uSkyColor` | vec3 | Sky reflection color |
-
-### Caustics Shader Uniforms
-
-| Uniform | Type | Description |
-|---------|------|-------------|
-| `uTime` | float | Animation time |
-| `uIntensity` | float | Caustic brightness (default: 2.2) |
-| `uColor` | vec3 | Caustic light color |
 
 ### Pool Dimensions
 
@@ -203,14 +163,7 @@ Pre-built water materials often lack the specific look needed for a natatorio. C
 - Tunable optical properties (refraction, reflection)
 - Performance optimization for mobile
 - Consistent visual style across devices
-
-### Caustics Approach
-
-The caustics use FBM noise rather than ray-tracing because:
-- FBM is much faster for real-time rendering
-- Still produces natural-looking light patterns
-- Works well with the stylized aesthetic
-- No expensive compute shaders needed
+- Gerstner wave algorithm for realistic ocean-like motion
 
 ### Reduced Motion
 
@@ -218,6 +171,36 @@ The `useReducedMotion` hook detects system preferences and disables:
 - Wave animation
 - Scroll indicator animation
 - Framer Motion stagger effects
+
+## CSS Design Tokens
+
+The project uses CSS custom properties defined in `globals.css` for consistent theming:
+
+```css
+:root {
+  /* Colors */
+  --color-primary: oklch(...);
+  --color-secondary: oklch(...);
+  --color-accent: oklch(...);
+  --color-surface: oklch(...);
+  --color-text: oklch(...);
+
+  /* Typography */
+  --font-family: 'Plus Jakarta Sans', sans-serif;
+  --text-base: clamp(...);
+  --text-hero: clamp(...);
+
+  /* Spacing */
+  --space-section: clamp(...);
+
+  /* Animation */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --ease-out-expo: cubic-bezier(...);
+}
+```
+
+Typography is loaded via `next/font/google` with Plus Jakarta Sans for optimal performance.
 
 ## Swimming Pool Web Design Best Practices
 
@@ -230,10 +213,10 @@ Based on industry research:
 3. **3D Visualization**: Modern pool websites use 3D rendering to showcase pool designs with accurate lighting, materials, and water effects.
 
 4. **Key Elements**:
-   - Realistic water shaders with proper refraction
-   - Caustic light patterns on pool floors
-   - Lane markers and starting blocks for authenticity
-   - Underwater lighting for atmosphere
+   - Realistic water shaders with Gerstner waves
+   - Proper refraction and reflection
+   - Lane markers for authenticity
+   - Graceful degradation for older browsers
 
 5. **Reference Sites**:
    - Orange Pools (wave animations)

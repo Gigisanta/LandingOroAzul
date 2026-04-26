@@ -4,21 +4,83 @@
 
 :root {
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --color-primary: #005691;
-  --color-primary-dark: #004a7a;
-  --color-turquoise: #00A8E8;
-  --color-turquoise-dark: #0090c0;
+
+  /* Primary brand colors - refined blue palette */
+  --color-primary: #0077B6;
+  --color-primary-dark: #005A8C;
+  --color-primary-light: #0096C7;
+
+  /* Accent - warm turquoise with better saturation */
+  --color-turquoise: #00B4D8;
+  --color-turquoise-dark: #0096B8;
+  --color-turquoise-light: #48CAE4;
+
+  /* Background - deep navy */
   --color-dark: #0A1628;
+  --color-dark-light: #112240;
+  --color-dark-overlay: rgba(10, 22, 40, 0.92);
+
+  /* WhatsApp */
   --color-whatsapp: #25D366;
   --color-whatsapp-dark: #20BA5A;
 
-  /* Semantic tokens */
-  --color-text-primary: #ffffff;
-  --color-text-secondary: rgba(255, 255, 255, 0.85);
-  --color-text-muted: rgba(255, 255, 255, 0.6);
-  --color-border: rgba(255, 255, 255, 0.15);
+  /* Text - semantic hierarchy */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: rgba(255, 255, 255, 0.88);
+  --color-text-muted: rgba(255, 255, 255, 0.65);
+  --color-text-subtle: rgba(255, 255, 255, 0.5);
+
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border-light: rgba(255, 255, 255, 0.2);
   --color-border-focus: var(--color-turquoise);
-  --color-bg-overlay: rgba(10, 22, 40, 0.85);
+
+  /* Background overlays */
+  --color-bg-overlay: rgba(10, 22, 40, 0.88);
+  --color-bg-overlay-90: rgba(10, 22, 40, 0.9);
+  --color-bg-overlay-60: rgba(10, 22, 40, 0.6);
+  --color-dark-overlay: rgba(10, 22, 40, 0.92);
+  --color-bg-card: rgba(17, 34, 64, 0.85);
+  --color-bg-card-hover: rgba(22, 44, 78, 0.9);
+
+  /* Reusable rgba tokens for components */
+  --color-turquoise-5: rgba(0, 180, 216, 0.05);
+  --color-turquoise-10: rgba(0, 180, 216, 0.1);
+  --color-turquoise-15: rgba(0, 180, 216, 0.15);
+  --color-turquoise-20: rgba(0, 180, 216, 0.2);
+  --color-turquoise-25: rgba(0, 180, 216, 0.25);
+  --color-turquoise-30: rgba(0, 180, 216, 0.3);
+  --color-turquoise-40: rgba(0, 180, 216, 0.4);
+  --color-turquoise-50: rgba(0, 180, 216, 0.5);
+
+  /* Water colors for 3D shader */
+  --color-water-shallow: #4FC3F7;
+  --color-water-deep: #0288D1;
+  --color-water-sun: #FFF8E0;
+
+  /* Surface colors */
+  --color-surface-10: rgba(255, 255, 255, 0.1);
+  --color-surface-15: rgba(255, 255, 255, 0.15);
+  --color-surface-20: rgba(255, 255, 255, 0.2);
+  --color-surface-25: rgba(255, 255, 255, 0.25);
+  --color-surface-30: rgba(255, 255, 255, 0.3);
+
+  /* Spacing tokens */
+  --space-section-sm: 4rem;
+  --space-section-md: 6rem;
+  --space-section-lg: 8rem;
+
+  /* Radius tokens */
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+
+  /* Shadow tokens */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(0, 180, 216, 0.3);
 }
 
 * {
@@ -28,8 +90,14 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-padding-top: 64px;
   -webkit-overflow-scrolling: touch;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {

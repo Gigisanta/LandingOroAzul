@@ -4,7 +4,7 @@ This document provides detailed technical documentation for the 3D swimming pool
 
 ## Overview
 
-The 3D scene creates an immersive swimming pool environment as a fixed background to the landing page. It uses React Three Fiber as the React renderer for Three.js, with custom GLSL shaders for water simulation.
+The 3D scene creates an immersive swimming pool environment as a fixed background to the landing page. It uses React Three Fiber as the React renderer for Three.js, with custom GLSL shaders for water simulation. The water surface incorporates realistic Gerstner wave physics, Voronoi-based caustics, and physically-inspired lighting.
 
 ## Architecture Layers
 
@@ -14,13 +14,13 @@ The 3D scene creates an immersive swimming pool environment as a fixed backgroun
 │  ┌───────────────────────────────────────┐ │
 │  │           Sky Gradient                │ │
 │  │  ┌─────────────────────────────────┐ │ │
-│  │  │      Pool Environment           │ │ │
-│  │  │  ┌───────────────────────────┐ │ │ │
-│  │  │  │    Caustics Plane         │ │ │ │
-│  │  │  │  ┌─────────────────────┐  │ │ │ │
-│  │  │  │  │   Water Surface     │  │ │ │ │
-│  │  │  │  └─────────────────────┘  │ │ │ │
-│  │  │  └───────────────────────────┘ │ │ │
+│  │  │       MinimalWater              │ │ │
+│  │  │  (Water + Caustics unified)    │ │ │
+│  │  │  ┌───────────────────────────┐  │ │ │
+│  │  │  │  Gerstner Waves          │  │ │ │
+│  │  │  │  Voronoi Caustics        │  │ │ │
+│  │  │  │  Fresnel + Specular      │  │ │ │
+│  │  │  └───────────────────────────┘  │ │ │
 │  │  └─────────────────────────────────┘ │ │
 │  │         Underwater Lights            │ │
 │  └───────────────────────────────────────┘ │
@@ -32,7 +32,7 @@ The 3D scene creates an immersive swimming pool environment as a fixed backgroun
 
 ### Scene.tsx
 
-**Purpose**: Main 3D canvas orchestrator
+**Purpose**: Main 3D canvas orchestrator with ErrorBoundary wrapper
 
 **Props**:
 ```typescript
@@ -42,159 +42,126 @@ interface SceneProps {
 ```
 
 **Configuration**:
-- Camera: `position: [0, 25, 30], fov: 45`
+- Camera: `position: [0, 14, 24], fov: 55` (desktop) / `fov: 65` (mobile)
 - WebGL Context:
-  - `antialias: true`
-  - `alpha: false`
-  - `powerPreference: 'high-performance'`
-- Background: Linear gradient from `#87CEEB` (sky) to `#1a5a7a` (deep)
+  - `antialias: true` (desktop only)
+  - `alpha: true`
+  - `powerPreference: 'high-performance'` (desktop) / `'low-power'` (mobile)
+- Background: Linear gradient from `#006080` (deep) through `#00A5B5`, `#00CED1`, `#40E0D0` to `#7FDBDB` (shallow)
+- Fog: `color: '#0088A0'`, near: `80`, far: `100`
 
 **Lighting Setup**:
-- Ambient light: `intensity: 0.8`, white
-- Directional light (sun): `position: [15, 50, 20]`, `intensity: 1.5`, warm white `#fff5e0`
+- Ambient light: `intensity: 1.5`, white (desktop) / `1.0` (mobile)
+- Primary directional light (sun): `position: [40, 55, 25]`, `intensity: 2.8`, warm white `#FFF8E0`, castShadow enabled (desktop)
+- Additional directional lights (desktop only):
+  - `position: [-25, 35, 20]`, `intensity: 0.8`, cool white `#E0F0FF`
+  - `position: [0, 25, -35]`, `intensity: 0.45`, `#F0F8FF`
+- Point lights for accent (desktop only):
+  - `position: [20, 10, 15]`, `intensity: 1.5`, `#FFE4B5`, distance `60`
+  - `position: [-15, 5, 5]`, `intensity: 0.6`, `#B8E8FF`, distance `40`
 
-**Child Order** (z-index):
-1. `PoolEnvironment` - Pool structure (furthest back)
-2. `UnderwaterLights` - Underwater illumination
-3. `Caustics` - Light patterns on floor
-4. `Water` - Animated water surface (front)
+**Post-Processing** (desktop only):
+- EffectComposer with Bloom:
+  - `intensity: 0.4`
+  - `luminanceThreshold: 0.8`
+  - `luminanceSmoothing: 0.9`
+  - `mipmapBlur: true`
 
-### Water.tsx
+**Child Components**:
+1. `MinimalWater` - Animated water surface with integrated caustics
+2. `UnderwaterLights` - Underwater illumination (desktop only)
 
-**Purpose**: Animated water surface with custom GLSL shader
+### MinimalWater.tsx
+
+**Purpose**: Unified water surface with integrated Gerstner wave simulation, Voronoi caustics, and advanced lighting
 
 **Shader Architecture**:
 
 ```
-Water Vertex Shader:
-├── Input: planeGeometry (64x64 segments)
-├── Output: vUv, vPosition, vNormal
-├── Animation: 5 overlapping sine waves
-└── Calculates normals for lighting
+MinimalWater Vertex Shader (Gerstner Waves):
+├── Input: planeGeometry (128x128 desktop, 48x48 mobile)
+├── Gerstner Wave Function:
+│   ├── k = 2π / wavelength
+│   ├── c = sqrt(9.8 / k)  // wave speed
+│   ├── a = steepness / k  // amplitude
+│   └── f = k(dot(d, pos) - c·time)
+├── 4 Layered Gerstner Waves (desktop):
+│   ├── Wave 1: steepness 0.08, wavelength 25.0, direction (1.0, 0.3)
+│   ├── Wave 2: steepness 0.05, wavelength 15.0, direction (-0.5, 1.0)
+│   ├── Wave 3: steepness 0.03, wavelength 8.0, direction (0.7, -0.7)
+│   └── Wave 4: steepness 0.02, wavelength 4.0, direction (-0.3, -0.9)
+├── 3 Layered Gerstner Waves (mobile)
+└── Output: vUv, vWorldPosition, vNormal
 
-Water Fragment Shader:
-├── Input: uTime, uColor, uDeepColor, uHighlightColor, uSkyColor
+MinimalWater Fragment Shader:
+├── Input: uTime, uWaterColor, uDeepColor, uSunColor
 ├── Processing:
-│   ├── Depth gradient (deep → shallow)
-│   ├── Specular highlights (Blinn-Phong)
-│   ├── Fresnel reflection
-│   ├── Sun reflection (high exponent)
-│   ├── Surface shimmer
-│   └── Edge opacity fade
-└── Output: vec4 with alpha
+│   ├── FBM micro-detail normals (4 octaves)
+│   ├── Fresnel reflection (pow 4.0, range 0.02-1.0)
+│   ├── GGX specular highlight (exponent 256)
+│   ├── Sun disk reflection (exponent 256)
+│   ├── Voronoi-based caustics (2 layers)
+│   ├── FBM caustics (5 octaves)
+│   ├── Subsurface scattering approximation
+│   ├── Sun sparkle (noise-modulated)
+│   └── Foam at wave peaks
+└── Output: vec4 with alpha 0.92
 ```
 
-**Wave Formulas**:
+**Gerstner Wave Formulas**:
 ```glsl
-float wave1 = sin(position.x * 0.3 + uTime * 0.5) * 0.12;
-float wave2 = sin(position.z * 0.25 + uTime * 0.4) * 0.1;
-float wave3 = sin((position.x + position.z) * 0.2 + uTime * 0.35) * 0.08;
-float wave4 = sin(position.x * 0.5 + position.z * 0.4 + uTime * 0.6) * 0.05;
-float wave5 = cos(position.x * 0.4 - position.z * 0.3 + uTime * 0.45) * 0.06;
+vec3 gerstnerWave(vec2 pos, float steepness, float wavelength, vec2 direction, float time) {
+  float k = 2.0 * 3.14159 / wavelength;
+  float c = sqrt(9.8 / k);
+  vec2 d = normalize(direction);
+  float a = steepness / k;
+  float f = k * (dot(d, pos) - c * time);
+
+  return vec3(
+    d.x * a * cos(f),
+    a * sin(f),
+    d.y * a * cos(f)
+  );
+}
+```
+
+**Voronoi Caustics**:
+```glsl
+float voronoi(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  float minDist = 1.0;
+  for (int y = -1; y <= 1; y++) {
+    for (int x = -1; x <= 1; x++) {
+      vec2 neighbor = vec2(float(x), float(y));
+      vec2 point = hash(i + neighbor) * 0.5 + 0.25;
+      vec2 diff = neighbor + point - f;
+      minDist = min(minDist, length(diff));
+    }
+  }
+  return minDist;
+}
 ```
 
 **Color Palette**:
-- Surface: `#00B4D8`
-- Deep: `#0077B6`
-- Highlights: `#90E0EF`
-- Sky reflection: `#CAF0F8`
+- Surface water: `#4FC3F7`
+- Deep water: `#0288D1`
+- Sun color: `#FFF8E0`
+- Sky reflection: `rgb(0.7, 0.9, 1.0)`
 
-**Performance**: Uses `useFrame` to update time uniform, 64x64 geometry for smooth waves.
+**Performance**:
+- Desktop: 128x128 geometry (16,384 vertices), 4 Gerstner waves
+- Mobile: 48x48 geometry (2,304 vertices), 3 Gerstner waves
+- Fragment shader: Voronoi + FBM caustics, GGX specular, noise sparkle
+- Uses `useFrame` to update time uniform
 
-### Caustics.tsx
-
-**Purpose**: Realistic light caustics on pool floor
-
-**Shader Architecture**:
-
-```
-Caustics Fragment Shader:
-├── Input: uTime, uIntensity, uColor
-├── Processing:
-│   ├── FBM noise (4 octaves)
-│   ├── 3 animated noise layers
-│   ├── Caustic multiplication
-│   ├── Bright spot enhancement
-│   ├── Intensity pulse
-│   └── Pool edge fadeout
-└── Blending: AdditiveBlending
-```
-
-**Noise Functions**:
-```glsl
-float hash(vec2 p) {
-  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
-
-float noise(vec2 p) {
-  // Smooth interpolation
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  f = f * f * (3.0 - 2.0 * f);
-  // ... hash lookups and interpolation
-}
-
-float fbm(vec2 p) {
-  float value = 0.0;
-  float amplitude = 0.5;
-  for (int i = 0; i < 4; i++) {
-    value += amplitude * noise(p * frequency);
-    amplitude *= 0.5;
-    frequency *= 2.0;
-  }
-  return value;
+**Props**:
+```typescript
+interface MinimalWaterProps {
+  isMobile?: boolean    // Reduces geometry segments and wave count
+  reducedMotion?: boolean  // Disables wave animation
 }
 ```
-
-**Animation Layers**:
-```glsl
-vec2 p1 = uv + vec2(t * 0.5, t * 0.3);
-vec2 p2 = uv * 1.3 - vec2(t * 0.4, t * 0.5);
-vec2 p3 = uv * 0.8 + vec2(t * 0.6, -t * 0.4);
-```
-
-**Uniforms**:
-- `uIntensity`: 2.2 (adjusts caustic brightness)
-- `uColor`: `#aaddff` (light blue)
-
-**Blending**: `AdditiveBlending` creates natural light accumulation effect.
-
-### PoolEnvironment.tsx
-
-**Purpose**: Complete pool structure with tiles, lane lines, ladders, starting blocks
-
-**Dimensions**:
-| Element | Value |
-|---------|-------|
-| Pool Width | 22 units |
-| Pool Length | 34 units |
-| Pool Depth | 3 units |
-| Wall Thickness | 0.4 units |
-| Deck Width | 3 units |
-| Lane Count | 6 |
-
-**Materials**:
-
-| Material | Color | Roughness | Metalness |
-|----------|-------|-----------|-----------|
-| Tile (walls) | `#e8f4f8` | 0.2 | 0.1 |
-| Tile Lines | `#00A8E8` | 0.3 | 0.1 |
-| Floor | `#d0e8f0` | 0.4 | 0.1 |
-| Deck | `#f0f0f0` | 0.5 | 0.0 |
-| Lane Lines | `#0077b6` | 0.3 | 0.2 |
-
-**Structure Elements**:
-1. **Pool Floor**: Box geometry with tiles
-2. **Lane Lines**: 5 lines on pool floor
-3. **Walls**: 4 walls with tile accent lines
-4. **Deck**: 4 deck sections surrounding pool
-5. **Starting Blocks**: 2 blocks at deep end
-6. **Ladders**: 2 ladders (left and right sides)
-
-**Pool Wall Tile Lines**:
-- 8 horizontal lines per wall
-- Creates realistic tile pattern effect
-- Uses `tileLineMaterial`
 
 ### UnderwaterLights.tsx
 
@@ -243,27 +210,31 @@ vec2 p3 = uv * 0.8 + vec2(t * 0.6, -t * 0.4);
 
 ## Shader Performance Considerations
 
-### Water Shader
-- 64×64 plane geometry (4096 vertices)
-- 5 wave calculations per vertex
-- Normal calculation adds 3 cosine terms per vertex
-- Fragment: specular, fresnel, shimmer calculations
+### Water Shader (MinimalWater)
+- Desktop: 128x128 plane geometry (16,384 vertices)
+- 4 Gerstner wave calculations per vertex (3 on mobile)
+- Normal calculation from wave derivatives
+- Fragment: Voronoi caustics (2 layers) + FBM caustics (5 octaves)
+- GGX specular with 256 exponent
+- Noise-modulated sun sparkle
 
-### Caustics Shader
-- 4-octave FBM per fragment
-- 3 animated noise layers
-- Additive blending (no depth write)
+### Mobile Optimization
+- Reduced geometry: 48x48 (vs 128x128)
+- Fewer waves: 3 (vs 4)
+- Simpler caustics: single noise layer (vs Voronoi + FBM)
+- Lower specular exponent: 128 (vs 256)
+- No post-processing Bloom
 
 ### Optimization Strategies
-1. **Geometry resolution**: Balance between visual quality and vertex count
-2. **Shader complexity**: Use efficient noise functions
-3. **Blending**: AdditiveBlending avoids depth sorting issues
-4. **Uniform updates**: Only update time, not static values
+1. **Geometry resolution**: Mobile uses 48x48 vs 128x128 desktop
+2. **Wave complexity**: Mobile uses 3 waves vs 4 desktop waves
+3. **Caustic complexity**: Mobile uses single noise vs Voronoi + FBM
+4. **Post-processing**: Bloom only on desktop
 
 ## Accessibility
 
 The `useReducedMotion` hook disables:
-- Water wave animation (shader uniform updates)
+- Water wave animation (shader uniform `uTime` stops updating)
 - All framer-motion animations on the page
 
 This respects `prefers-reduced-motion` media query.
@@ -272,9 +243,9 @@ This respects `prefers-reduced-motion` media query.
 
 ```typescript
 {
-  antialias: true,           // Smooth edges
-  alpha: false,              // Opaque background (gradient set on Canvas)
-  powerPreference: 'high-performance'  // Prefer discrete GPU
+  antialias: !isMobile,           // Smooth edges (desktop only)
+  alpha: true,                    // Transparent Canvas background
+  powerPreference: isMobile ? 'low-power' : 'high-performance'
 }
 ```
 
@@ -282,10 +253,10 @@ This respects `prefers-reduced-motion` media query.
 
 ```typescript
 camera: {
-  position: [0, 25, 30],  // Above and behind pool
-  fov: 45,                 // Wide enough to see pool
+  position: [0, 14, 24],  // Above and angled toward pool
+  fov: isMobile ? 65 : 55,  // Wider on mobile for better framing
   near: 0.1,               // Default
-  far: 1000                // Far enough for sky gradient
+  far: 1000                // Far enough for fog gradient
 }
 ```
 
@@ -297,7 +268,7 @@ The Scene component is loaded dynamically:
 const Scene = dynamic(() => import('@/components/three/Scene'), {
   ssr: false,  // WebGL only works client-side
   loading: () => (
-    <div className="fixed inset-0 -z-10 bg-[#0A1628]">
+    <div className="fixed inset-0 -z-10 bg-[#006080]">
       <Spinner />
     </div>
   )

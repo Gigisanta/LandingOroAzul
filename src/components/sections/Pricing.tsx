@@ -64,7 +64,10 @@ function PricingCard({ plan, index, reducedMotion }: PricingCardProps) {
       variants={fadeInUp}
       custom={index}
       whileHover={reducedMotion ? {} : { y: -8, transition: { duration: 0.3 } }}
-      className={`relative ${isPopular ? 'scale-[1.02]' : ''}`}
+      tabIndex={0}
+      role="article"
+      aria-label={`Plan ${plan.name}: ${plan.classes} clases por mes a ${plan.price} pesos`}
+      className={`relative ${isPopular ? 'scale-[1.02] overflow-hidden' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)] rounded-2xl`}
     >
       <div
         className={`h-full flex flex-col rounded-2xl p-6 transition-all duration-300 ${
@@ -97,7 +100,7 @@ function PricingCard({ plan, index, reducedMotion }: PricingCardProps) {
             {plan.name}
           </motion.h3>
           {plan.description && (
-            <p className="text-sm text-white/90">{plan.description}</p>
+            <p className="text-base text-white/90">{plan.description}</p>
           )}
         </div>
 
@@ -108,9 +111,9 @@ function PricingCard({ plan, index, reducedMotion }: PricingCardProps) {
               whileHover={reducedMotion ? {} : { scale: 1.1 }}
               transition={{ type: 'spring', stiffness: 300 }}
             >
-              {formatPrice(Number(plan.price))}
+              {formatPrice(plan.price)}
             </motion.span>
-            <span className="text-white/90 text-sm">/mes</span>
+            <span className="text-white/90 text-base">/mes</span>
           </div>
 
           <div className="text-center mb-4">
@@ -127,7 +130,7 @@ function PricingCard({ plan, index, reducedMotion }: PricingCardProps) {
             {plan.features.map((feature, idx) => (
               <motion.li
                 key={idx}
-                className="flex items-center gap-2 text-sm"
+                className="flex items-center gap-2 text-base"
                 initial={reducedMotion ? undefined : { opacity: 0, x: -10 }}
                 whileInView={reducedMotion ? undefined : { opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -175,7 +178,7 @@ export default function Pricing({ plans }: PricingProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="precios" className="py-20 px-4 relative z-10" style={{ background: 'rgba(10, 22, 40, 0.92)', backdropFilter: 'blur(12px)' }}>
+    <section id="precios" className="py-20 px-4 relative z-10" style={{ background: 'var(--color-dark-overlay)', backdropFilter: 'blur(12px)' }}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -206,7 +209,7 @@ export default function Pricing({ plans }: PricingProps) {
           initial={reducedMotion ? undefined : 'hidden'}
           whileInView={reducedMotion ? undefined : 'visible'}
           viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8"
         >
           {plans.map((plan, index) => (
             <PricingCard key={plan.id} plan={plan} index={index} reducedMotion={reducedMotion} />
@@ -226,13 +229,13 @@ export default function Pricing({ plans }: PricingProps) {
             className="inline-block px-6 py-4 rounded-2xl bg-[var(--color-dark)]/70 backdrop-blur-xl border border-white/30 shadow-2xl shadow-black/30"
             whileHover={reducedMotion ? {} : { scale: 1.05 } }
           >
-            <p className="text-sm text-white/90">
+            <p className="text-base text-white/90">
               <span className="font-semibold text-[var(--color-turquoise)]">
                 Inscripción:
               </span>{' '}
               2 cuotas de $25.000
             </p>
-            <p className="text-sm text-white/90 mt-1">
+            <p className="text-base text-white/90 mt-1">
               <span className="font-semibold text-[var(--color-turquoise)]">
                 Métodos de pago:
               </span>{' '}

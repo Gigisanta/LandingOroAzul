@@ -138,12 +138,12 @@ export default function Schedule({ activities }: ScheduleProps) {
               whileHover={reducedMotion ? {} : { scale: 1.05 }}
               whileTap={reducedMotion ? {} : { scale: 0.95 }}
               className={`
-                px-5 py-3 rounded-xl font-medium text-sm transition-all duration-200
+                px-5 py-3 rounded-xl font-medium text-base transition-all duration-200
                 flex items-center gap-2 min-h-[44px] min-w-[44px]
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2
                 ${
                   selectedActivity.id === activity.id
-                    ? 'bg-[var(--color-turquoise)] text-white shadow-lg shadow-[var(--color-turquoise)]/20'
+                    ? 'bg-[var(--color-turquoise)] text-[var(--color-dark)] shadow-lg shadow-[var(--color-turquoise)]/20'
                     : 'bg-white/10 text-white/80 border border-white/20 hover:bg-white/20 hover:border-white/40 hover:text-white'
                 }
               `}
@@ -180,7 +180,7 @@ export default function Schedule({ activities }: ScheduleProps) {
                     {selectedActivity.icon}
                   </motion.span>
                   <div>
-                    <h3 className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>
+                    <h3 className="text-2xl font-bold text-white">
                       {selectedActivity.name}
                     </h3>
                     <p className="text-white/90">{selectedActivity.ages}</p>
@@ -217,7 +217,7 @@ export default function Schedule({ activities }: ScheduleProps) {
                 <h3 className="text-xl font-bold mb-2 text-white">
                   Horarios de {selectedActivity.name}
                 </h3>
-                <p className="text-white/90 text-sm mb-4">Días y horarios disponibles</p>
+                <p className="text-white/90 text-base mb-4">Días y horarios disponibles</p>
 
                 <div className="space-y-2">
                   {selectedActivity.schedule.map((item, index) => (

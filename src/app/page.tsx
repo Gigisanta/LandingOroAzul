@@ -9,6 +9,7 @@ import Gallery from '@/components/sections/Gallery'
 import Testimonials from '@/components/sections/Testimonials'
 import Contact from '@/components/sections/Contact'
 import Footer from '@/components/sections/Footer'
+import ErrorBoundary from '@/components/three/ErrorBoundary'
 import landingData from '@/data/landing.json'
 
 const Scene = dynamic(() => import('@/components/three/Scene'), {
@@ -22,9 +23,11 @@ const Scene = dynamic(() => import('@/components/three/Scene'), {
 
 export default function LandingPage() {
   return (
-    <main className="relative">
+    <main id="main-content" className="relative">
       {/* 3D Background */}
-      <Scene />
+      <ErrorBoundary>
+        <Scene />
+      </ErrorBoundary>
 
       {/* Navigation */}
       <Navigation whatsapp={landingData.business.whatsapp} />

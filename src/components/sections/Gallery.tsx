@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
@@ -113,10 +114,10 @@ export default function Gallery({ images }: GalleryProps) {
               variants={reducedMotion ? {} : fadeInUp}
               whileHover={reducedMotion ? {} : { scale: 1.05, y: -2 }}
               whileTap={reducedMotion ? {} : { scale: 0.95 }}
-              className={`px-5 py-3 rounded-full font-medium text-sm transition-all duration-200 min-h-[44px] flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 ${
+              className={`px-5 py-3 rounded-full font-medium text-base transition-all duration-200 min-h-[44px] flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 ${
                 activeCategory === cat.id
-                  ? 'bg-[var(--color-turquoise)] text-white shadow-lg shadow-[var(--color-turquoise)]/20'
-                  : 'bg-white/10 text-white/80 border border-white/20 hover:bg-white/20 hover:border-white/40 hover:text-white'
+                  ? 'bg-[var(--color-turquoise)] text-[var(--color-dark)] shadow-lg shadow-[var(--color-turquoise)]/20'
+                  : 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-white/40 hover:text-white'
               }`}
             >
               {cat.label}
@@ -132,25 +133,29 @@ export default function Gallery({ images }: GalleryProps) {
             initial={reducedMotion ? undefined : 'hidden'}
             whileInView={reducedMotion ? undefined : 'visible'}
             viewport={{ once: true, margin: '-50px' }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
           >
             {filteredImages.map((image, index) => (
-              <motion.div
+              <motion.a
                 key={image.id}
+                href={image.imageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 variants={reducedMotion ? {} : fadeInScale}
                 whileHover={reducedMotion ? {} : 'hover'}
                 initial={reducedMotion ? undefined : 'rest'}
                 animate="rest"
-                className={`relative overflow-hidden rounded-xl group ${
+                aria-label={image.altText || image.title || 'Ver imagen de galería'}
+                className={`relative overflow-hidden rounded-xl group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)] aspect-square ${
                   index === 0 || index === 5 ? 'md:col-span-2 md:row-span-2' : ''
                 }`}
               >
-                <motion.img
+                <Image
                   src={image.imageUrl}
                   alt={image.altText || image.title || 'Galería Oro Azul'}
-                  className="w-full h-full object-cover aspect-square"
-                  variants={reducedMotion ? {} : imageHoverVariants}
-                  loading="lazy"
+                  fill
+                  className="object-cover aspect-square"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 />
 
                 {/* Gradient overlay */}
@@ -168,21 +173,21 @@ export default function Gallery({ images }: GalleryProps) {
                 >
                   {image.title && (
                     <div className="translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                      <p className="text-white font-medium text-sm drop-shadow-lg">{image.title}</p>
+                      <p className="text-white font-medium text-base drop-shadow-lg">{image.title}</p>
                     </div>
                   )}
                 </motion.div>
 
                 {/* Border glow on hover */}
                 <motion.div
-                  className="absolute inset-0 rounded-xl border-2 border-transparent"
+                  className="absolute inset-0 rounded-xl border-2 border-transparent pointer-events-none"
                   whileHover={reducedMotion ? {} : {
-                    borderColor: 'rgba(0, 168, 232, 0.5)',
-                    boxShadow: '0 0 20px rgba(0, 168, 232, 0.3)',
+                    borderColor: 'var(--color-turquoise-50)',
+                    boxShadow: '0 0 20px var(--color-turquoise-30)',
                   }}
                   transition={{ duration: 0.3 }}
                 />
-              </motion.div>
+              </motion.a>
             ))}
           </motion.div>
         </AnimatePresence>

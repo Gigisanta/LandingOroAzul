@@ -5,15 +5,16 @@ import { Canvas } from '@react-three/fiber'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import MinimalWater from './MinimalWater'
 import UnderwaterLights from './UnderwaterLights'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 interface SceneProps {
   children?: React.ReactNode
 }
 
-function AnimatedPool({ isMobile }: { isMobile: boolean }) {
+function AnimatedPool({ isMobile, reducedMotion }: { isMobile: boolean; reducedMotion: boolean }) {
   return (
     <group>
-      <MinimalWater isMobile={isMobile} />
+      <MinimalWater isMobile={isMobile} reducedMotion={reducedMotion} />
       {!isMobile && <UnderwaterLights />}
     </group>
   )
@@ -27,6 +28,7 @@ function isMobileDevice() {
 export default function Scene({ children }: SceneProps) {
   const [dpr, setDpr] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
+  const reducedMotion = useReducedMotion()
 
   useEffect(() => {
     const mobile = isMobileDevice()
@@ -98,7 +100,7 @@ export default function Scene({ children }: SceneProps) {
           </>
         )}
 
-        <AnimatedPool isMobile={isMobile} />
+        <AnimatedPool isMobile={isMobile} reducedMotion={reducedMotion} />
 
         {!isMobile && (
           <EffectComposer>
