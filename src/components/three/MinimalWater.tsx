@@ -206,7 +206,7 @@ interface MinimalWaterProps {
 }
 
 const mobileFluidWaterFragmentShader = /* glsl */ `
-  precision mediump float;
+  precision highp float;
 
   uniform float uTime;
   uniform vec3 uWaterColor;
@@ -231,41 +231,63 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
     return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
   }
 
+  float fbm(vec2 p, int octaves) {
+    float value = 0.0;
+    float amplitude = 0.5;
+    float frequency = 1.0;
+    for (int i = 0; i < 5; i++) {
+      if (i >= octaves) break;
+      value += amplitude * noise(p * frequency);
+      frequency *= 2.0;
+      amplitude *= 0.5;
+    }
+    return value;
+  }
+
   void main() {
     vec3 viewDir = normalize(cameraPosition - vWorldPosition);
     vec3 normal = normalize(vNormal);
 
     vec3 sunDir = normalize(vec3(40.0, 55.0, 25.0));
 
-    float fresnel = pow(1.0 - max(dot(viewDir, normal), 0.0), 3.0);
+    float fresnel = pow(1.0 - max(dot(viewDir, normal), 0.0), 4.0);
     fresnel = mix(0.02, 1.0, fresnel);
 
     vec3 halfDir = normalize(sunDir + viewDir);
     float NdotH = max(dot(normal, halfDir), 0.0);
-    float spec = pow(NdotH, 128.0);
+    float spec = pow(NdotH, 180.0);
 
     vec3 reflectDir = reflect(-sunDir, normal);
-    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 128.0);
+    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 180.0);
 
     vec3 color = uWaterColor;
     float depth = smoothstep(-0.5, 0.5, vWorldPosition.y);
     color = mix(uDeepColor, color, depth);
 
-    float sss = pow(max(dot(viewDir, -sunDir), 0.0), 3.0) * 0.3;
-    color += vec3(0.0, 0.4, 0.5) * sss;
+    float sss = pow(max(dot(viewDir, -sunDir), 0.0), 3.0) * 0.35;
+    color += vec3(0.0, 0.45, 0.55) * sss;
 
     vec3 skyColor = vec3(0.7, 0.9, 1.0);
-    color = mix(color, skyColor, fresnel * 0.35);
+    color = mix(color, skyColor, fresnel * 0.4);
 
-    color += uSunColor * spec * 1.0;
+    color += uSunColor * spec * 1.4;
 
-    float sparkle = noise(vUv * 80.0 + uTime * 2.0) * sunReflect;
-    color += vec3(1.0, 0.98, 0.95) * sparkle * 1.0;
+    float sparkleNoise = noise(vUv * 100.0 + uTime * 2.5) * 0.5 + 0.5;
+    float sparkle = sunReflect * sparkleNoise;
+    color += vec3(1.0, 0.98, 0.95) * sparkle * 1.4;
 
-    float caustic = pow(1.0 - noise(vUv * 6.0 + uTime * 0.3), 2.0) * 0.12;
-    color += vec3(0.3, 0.5, 0.6) * caustic;
+    float caustic1 = pow(1.0 - noise(vUv * 8.0 + uTime * 0.4), 2.5);
+    float caustic2 = pow(1.0 - noise(vUv * 12.0 - uTime * 0.3 + vec2(caustic1 * 2.0)), 2.0);
+    float causticPattern = caustic1 * caustic2;
+    color += vec3(0.25, 0.5, 0.6) * causticPattern * 0.18;
 
-    float foam = smoothstep(0.08, 0.14, vWorldPosition.y) * 0.15;
+    float fbmCaustic = fbm(vUv * 10.0 + uTime * 0.5, 4);
+    fbmCaustic = pow(fbmCaustic, 1.5) * 0.08;
+    color += vec3(0.2, 0.4, 0.5) * fbmCaustic;
+
+    float foam = smoothstep(0.06, 0.12, vWorldPosition.y) * 0.2;
+    float foamNoise = noise(vUv * 40.0 + uTime * 0.8);
+    foam *= foamNoise;
     color = mix(color, vec3(1.0, 1.0, 0.98), foam);
 
     gl_FragColor = vec4(color, 0.92);
@@ -287,6 +309,19 @@ const mobileFluidWaterVertexShader = /* glsl */ `
     return vec3(d.x * a * cos(f), a * sin(f), d.y * a * cos(f));
   }
 
+  vec3 gerstnerNormal(vec2 pos, float steepness, float wavelength, vec2 direction, float time) {
+    float k = 2.0 * 3.14159 / wavelength;
+    float c = sqrt(9.8 / k);
+    vec2 d = normalize(direction);
+    float a = steepness / k;
+    float f = k * (dot(d, pos) - c * time);
+    return vec3(
+      -(d.x * k * a * sin(f)),
+      1.0 - k * a * cos(f),
+      -(d.y * k * a * sin(f))
+    );
+  }
+
   void main() {
     vUv = uv;
     vec3 pos = position;
@@ -300,7 +335,11 @@ const mobileFluidWaterVertexShader = /* glsl */ `
     pos.y += totalWave.y;
     pos.z += totalWave.z;
 
-    vNormal = vec3(0.0, 1.0, 0.0);
+    vec3 n1 = gerstnerNormal(position.xz, 0.08, 25.0, vec2(1.0, 0.3), uTime * 0.4);
+    vec3 n2 = gerstnerNormal(position.xz, 0.05, 15.0, vec2(-0.5, 1.0), uTime * 0.35);
+    vec3 n3 = gerstnerNormal(position.xz, 0.03, 8.0, vec2(0.7, -0.7), uTime * 0.5);
+    vNormal = normalize(n1 + n2 + n3);
+
     vWorldPosition = (modelMatrix * vec4(pos, 1.0)).xyz;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
@@ -341,7 +380,7 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false }
     }
   }, [])
 
-  const segments = isMobile ? 32 : 128
+  const segments = isMobile ? 64 : 128
   const vertexShader = isMobile ? mobileFluidWaterVertexShader : fluidWaterVertexShader
   const fragmentShader = isMobile ? mobileFluidWaterFragmentShader : fluidWaterFragmentShader
 
