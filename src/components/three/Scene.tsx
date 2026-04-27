@@ -48,7 +48,7 @@ export default function Scene({ children }: SceneProps) {
           powerPreference: isMobile ? 'default' : 'high-performance',
         }}
         style={{
-          background: 'linear-gradient(180deg, #FFF8E7 0%, #FFF8E7 35%, #E8D5B7 50%, #00A5B5 70%, #00CED1 82%, #40E0D0 92%, #7FDBDB 100%)'
+          background: 'linear-gradient(180deg, #FFF8E7 0%, #FFF8E7 25%, #F5E6D3 40%, #00B4C8 55%, #00CED1 70%, #40E0D0 85%, #7FDBDB 100%)'
         }}
       >
 

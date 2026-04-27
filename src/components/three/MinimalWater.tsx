@@ -157,8 +157,8 @@ const fluidWaterFragmentShader = /* glsl */ `
     // Base water color - poolcore clean aqua
     vec3 color = uWaterColor;
 
-    // Add depth variation
-    float depth = smoothstep(-0.5, 0.5, vWorldPosition.y);
+    // Add depth variation - favor surface color
+    float depth = smoothstep(-0.3, 0.8, vWorldPosition.y);
     color = mix(uDeepColor, color, depth);
 
     // Subsurface scattering approximation - warm pool light
@@ -231,29 +231,23 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
     return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
   }
 
-  float fbm(vec2 p, int octaves) {
-    float value = 0.0;
-    float amplitude = 0.5;
-    float frequency = 1.0;
-    for (int i = 0; i < 3; i++) {
-      if (i >= octaves) break;
-      value += amplitude * noise(p * frequency);
-      frequency *= 2.0;
-      amplitude *= 0.5;
-    }
-    return value;
+  // 2-octave FBM without dynamic loop (iOS safe)
+  float fbm2(vec2 p) {
+    float v = noise(p) * 0.5;
+    v += noise(p * 2.0) * 0.25;
+    return v;
   }
 
   void main() {
     vec3 viewDir = normalize(cameraPosition - vWorldPosition);
     vec3 normal = normalize(vNormal);
 
-    // Simplified FBM micro-detail
-    float fbmNormal = fbm(vUv * 8.0 + uTime * 0.12, 2);
+    // Simplified micro-detail
+    float fbmN = fbm2(vUv * 8.0 + uTime * 0.12);
     vec3 fbmNormalOffset = vec3(
-      fbm(vUv * 8.0 + uTime * 0.12 + vec2(0.1, 0.0), 2) - 0.5,
+      fbm2(vUv * 8.0 + uTime * 0.12 + vec2(0.1, 0.0)) - 0.5,
       0.0,
-      fbm(vUv * 8.0 + uTime * 0.12 + vec2(0.0, 0.1), 2) - 0.5
+      fbm2(vUv * 8.0 + uTime * 0.12 + vec2(0.0, 0.1)) - 0.5
     ) * 0.08;
     normal = normalize(normal + fbmNormalOffset);
 
@@ -264,36 +258,34 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
 
     vec3 halfDir = normalize(sunDir + viewDir);
     float NdotH = max(dot(normal, halfDir), 0.0);
-    float spec = pow(NdotH, 150.0);
+    float spec = pow(NdotH, 120.0);
 
     vec3 reflectDir = reflect(-sunDir, normal);
-    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 150.0);
+    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 120.0);
 
     vec3 color = uWaterColor;
-    float depth = smoothstep(-0.5, 0.5, vWorldPosition.y);
+    float depth = smoothstep(-0.2, 0.6, vWorldPosition.y);
     color = mix(uDeepColor, color, depth);
 
     float sss = pow(max(dot(viewDir, -sunDir), 0.0), 3.0) * 0.35;
-    color += vec3(0.1, 0.5, 0.55) * sss;
+    color += vec3(0.15, 0.55, 0.6) * sss;
 
     vec3 skyColor = mix(vec3(0.91, 0.85, 0.78), vec3(0.72, 0.84, 0.87), fresnel * 0.6 + 0.2);
-    color = mix(color, skyColor, fresnel * 0.4);
+    color = mix(color, skyColor, fresnel * 0.35);
 
-    color += uSunColor * spec * 1.4;
+    color += uSunColor * spec * 1.2;
 
-    float sparkleNoise = noise(vUv * 80.0 + uTime * 2.0) * 0.5 + 0.5;
+    float sparkleNoise = noise(vUv * 60.0 + uTime * 2.0) * 0.5 + 0.5;
     float sparkle = sunReflect * sparkleNoise;
-    color += vec3(1.0, 0.98, 0.95) * sparkle * 1.4;
+    color += vec3(1.0, 0.98, 0.95) * sparkle * 1.2;
 
-    // Simplified FBM-only caustics
-    float caustic1 = fbm(vUv * 12.0 + uTime * 0.5, 3);
-    float caustic2 = fbm(vUv * 8.0 - uTime * 0.3, 3);
-    float causticPattern = pow(caustic1, 1.8) * pow(caustic2, 1.5) * 0.2;
-    color += vec3(0.35, 0.55, 0.65) * causticPattern;
+    // Simplified caustic
+    float caustic = fbm2(vUv * 10.0 + uTime * 0.4);
+    caustic = pow(caustic, 2.0) * 0.15;
+    color += vec3(0.3, 0.55, 0.65) * caustic;
 
-    float foam = smoothstep(0.06, 0.12, vWorldPosition.y) * 0.2;
-    float foamNoise = noise(vUv * 40.0 + uTime * 0.8);
-    foam *= foamNoise;
+    float foam = smoothstep(0.05, 0.1, vWorldPosition.y) * 0.15;
+    foam *= noise(vUv * 30.0 + uTime * 0.6);
     color = mix(color, vec3(1.0, 1.0, 0.98), foam);
 
     gl_FragColor = vec4(color, 0.92);
@@ -361,7 +353,7 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false }
     () => ({
       uTime: { value: 0 },
       uWaterColor: { value: new THREE.Color('#5DD9E8') },
-      uDeepColor: { value: new THREE.Color('#0A8A9E') },
+      uDeepColor: { value: new THREE.Color('#1A9EAA') },
       uSunColor: { value: new THREE.Color('#FFF8E0') },
     }),
     []
