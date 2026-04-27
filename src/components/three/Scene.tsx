@@ -44,7 +44,7 @@ export default function Scene({ children }: SceneProps) {
         dpr={[1, dpr]}
         gl={{
           antialias: true,
-          alpha: false,
+          alpha: true,
           powerPreference: isMobile ? 'default' : 'high-performance',
         }}
         style={{
