@@ -28,13 +28,14 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section className="relative min-h-[100dvh] flex flex-col items-center justify-center px-4 pt-20">
+    <section id="inicio" className="relative min-h-[100dvh] flex flex-col items-center justify-center px-4 pt-20" aria-labelledby="hero-heading">
       {/* Dark gradient overlay for better text contrast */}
       <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-dark)]/98 via-[var(--color-dark)]/90 to-[var(--color-dark)]/98 pointer-events-none" />
       {/* Content */}
       <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center text-center">
         {/* Title */}
         <motion.h1
+          id="hero-heading"
           variants={reducedMotion ? {} : fadeInUp}
           initial={reducedMotion ? undefined : 'hidden'}
           animate="visible"
@@ -57,6 +58,16 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           recreativas en un ambiente seguro y profesional.
         </motion.p>
 
+        {/* Urgency Badge */}
+        <motion.div
+          variants={reducedMotion ? {} : fadeInUp}
+          initial={reducedMotion ? undefined : 'hidden'}
+          animate="visible"
+          className="mb-6 px-4 py-2 bg-[var(--color-turquoise)]/20 border border-[var(--color-turquoise)]/40 rounded-full"
+        >
+          <span className="text-[var(--color-turquoise)] font-semibold text-sm">Inscripciones abiertas - Cupos limitados</span>
+        </motion.div>
+
         {/* CTAs */}
         <motion.div
           variants={reducedMotion ? {} : staggerContainer}
@@ -67,7 +78,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           <motion.a
             variants={reducedMotion ? {} : fadeInUp}
             href="#horarios"
-            className="px-8 py-3 min-h-[44px] bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+            className="px-8 py-3 min-h-[44px] bg-[var(--color-turquoise)] hover:bg-[var(--color-turquoise-dark)] text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
             style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
           >
             Ver horarios
@@ -77,12 +88,14 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
             href="#precios"
             className="px-8 py-3 min-h-[44px] border-2 border-white/50 hover:border-white text-white font-semibold rounded-lg transition-colors duration-200 text-center flex items-center justify-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-dark)]"
           >
-            Ver precios
+            Reservar clase gratis
           </motion.a>
         </motion.div>
 
         {/* Stats */}
         <motion.div
+          role="region"
+          aria-label="Estadísticas del club"
           variants={reducedMotion ? {} : staggerContainer}
           initial={reducedMotion ? undefined : 'hidden'}
           animate="visible"
@@ -91,7 +104,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           {[
             { value: '500+', label: 'Alumnos' },
             { value: '15+', label: 'Años' },
-            { value: '28°C', label: 'Agua' },
+            { value: '28°C', label: 'Agua climatizada' },
           ].map((stat, index) => (
             <motion.div
               key={index}

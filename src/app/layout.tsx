@@ -20,6 +20,7 @@ export const metadata: Metadata = {
       'Aprendé a nadar toda tu vida. Clases de natación para todas las edades.',
     type: 'website',
     locale: 'es_AR',
+    images: ['/og-image.png'],
   },
   twitter: {
     card: 'summary_large_image',
@@ -40,7 +41,8 @@ export default function RootLayout({
   return (
     <html lang="es" className={plusJakartaSans.variable}>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+        <link rel="canonical" href="https://oroazul.com" />
       </head>
       <body className="font-sans antialiased">
         {/* Skip to main content - accessibility */}

@@ -3,8 +3,10 @@
 import dynamic from 'next/dynamic'
 import Navigation from '@/components/sections/Navigation'
 import Hero from '@/components/sections/Hero'
+import Benefits from '@/components/sections/Benefits'
 import Schedule from '@/components/sections/Schedule'
 import Pricing from '@/components/sections/Pricing'
+import FAQ from '@/components/sections/FAQ'
 import Gallery from '@/components/sections/Gallery'
 import Testimonials from '@/components/sections/Testimonials'
 import Contact from '@/components/sections/Contact'
@@ -35,6 +37,9 @@ export default function LandingPage() {
       {/* Hero Section */}
       <Hero businessName={landingData.business.name} />
 
+      {/* Benefits Section */}
+      <Benefits />
+
       {/* Schedule Section */}
       <Schedule activities={landingData.activities} />
 
@@ -46,6 +51,9 @@ export default function LandingPage() {
 
       {/* Testimonials Section */}
       <Testimonials testimonials={landingData.testimonials} />
+
+      {/* FAQ Section */}
+      <FAQ />
 
       {/* Contact Section */}
       <Contact business={landingData.business} />

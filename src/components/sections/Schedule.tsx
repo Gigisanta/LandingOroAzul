@@ -90,7 +90,7 @@ export default function Schedule({ activities }: ScheduleProps) {
   }
 
   return (
-    <section id="horarios" className="py-24 px-4 bg-gradient-to-b from-[var(--color-dark)]/95 to-[var(--color-dark)]/95 backdrop-blur-sm overflow-hidden">
+    <section id="horarios" aria-labelledby="horarios-heading" className="py-24 px-4 bg-gradient-to-b from-[var(--color-dark)]/95 to-[var(--color-dark)]/95 backdrop-blur-sm overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <motion.div
@@ -101,6 +101,7 @@ export default function Schedule({ activities }: ScheduleProps) {
           className="text-center mb-12"
         >
           <motion.h2
+            id="horarios-heading"
             variants={reducedMotion ? {} : fadeInUp}
             className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >
@@ -241,6 +242,22 @@ export default function Schedule({ activities }: ScheduleProps) {
             </div>
           </motion.div>
         </AnimatePresence>
+
+        {/* CTA */}
+        <motion.div
+          variants={reducedMotion ? {} : fadeInUp}
+          initial={reducedMotion ? undefined : 'hidden'}
+          whileInView={reducedMotion ? undefined : 'visible'}
+          viewport={{ once: true }}
+          className="mt-12 text-center"
+        >
+          <a
+            href="#precios"
+            className="inline-block px-8 py-3 min-h-[44px] bg-[var(--color-turquoise)] hover:bg-[var(--color-turquoise-dark)] text-white font-semibold rounded-lg transition-colors duration-200 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+          >
+            Ver precios y planes
+          </a>
+        </motion.div>
       </div>
     </section>
   )

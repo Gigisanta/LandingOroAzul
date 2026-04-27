@@ -72,7 +72,7 @@ export default function Gallery({ images }: GalleryProps) {
       : images.filter((img) => img.category === activeCategory)
 
   return (
-    <section id="galeria" className="py-24 px-4 bg-[var(--color-dark)]/90 backdrop-blur-xl overflow-hidden">
+    <section id="galeria" aria-labelledby="galeria-heading" className="py-24 px-4 bg-[var(--color-dark)]/90 backdrop-blur-xl overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -83,6 +83,7 @@ export default function Gallery({ images }: GalleryProps) {
           className="text-center mb-12"
         >
           <motion.h2
+            id="galeria-heading"
             variants={reducedMotion ? {} : fadeInUp}
             className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >

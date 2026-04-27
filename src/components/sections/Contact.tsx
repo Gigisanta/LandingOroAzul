@@ -66,7 +66,7 @@ export default function Contact({ business }: ContactProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="contacto" className="py-24 px-4 bg-[var(--color-dark)]/95 backdrop-blur-xl overflow-hidden">
+    <section id="contacto" aria-labelledby="contacto-heading" className="py-24 px-4 bg-[var(--color-dark)]/95 backdrop-blur-xl overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -77,6 +77,7 @@ export default function Contact({ business }: ContactProps) {
           className="text-center mb-12"
         >
           <motion.h2
+            id="contacto-heading"
             variants={reducedMotion ? {} : fadeInUp}
             className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >

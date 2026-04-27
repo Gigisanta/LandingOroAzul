@@ -38,7 +38,14 @@ export default function Scene({ children }: SceneProps) {
   }, [])
 
   return (
-    <div className="fixed inset-0 -z-10" style={{ width: '100vw', height: '100vh' }}>
+    <div
+      className="fixed inset-0 -z-10"
+      style={{
+        width: '100vw',
+        height: '100vh',
+        background: 'linear-gradient(180deg, #FFF8E7 0%, #FFF8E7 25%, #F5E6D3 40%, #00B4C8 55%, #00CED1 70%, #40E0D0 85%, #7FDBDB 100%)'
+      }}
+    >
       <Canvas
         camera={{ position: [0, 14, 24], fov: isMobile ? 65 : 55 }}
         dpr={[1, dpr]}
@@ -47,9 +54,7 @@ export default function Scene({ children }: SceneProps) {
           alpha: true,
           powerPreference: isMobile ? 'default' : 'high-performance',
         }}
-        style={{
-          background: 'linear-gradient(180deg, #FFF8E7 0%, #FFF8E7 25%, #F5E6D3 40%, #00B4C8 55%, #00CED1 70%, #40E0D0 85%, #7FDBDB 100%)'
-        }}
+        style={{ background: 'transparent' }}
       >
 
         <ambientLight intensity={isMobile ? 1.0 : 1.5} color="#ffffff" />
@@ -59,7 +64,7 @@ export default function Scene({ children }: SceneProps) {
           intensity={isMobile ? 1.8 : 2.8}
           color="#FFF8E0"
           castShadow={!isMobile}
-          shadow-mapSize={[isMobile ? 512 : 1024, isMobile ? 512 : 1024]}
+          shadow-mapSize={[512, 512]}
           shadow-camera-far={150}
           shadow-camera-left={isMobile ? -30 : -50}
           shadow-camera-right={isMobile ? 30 : 50}

@@ -21,6 +21,23 @@ const TRANSITION_DURATION = 0.7
 
 const EASE_SMOOTH: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+  },
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+  },
+}
+
 const carouselVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? '100%' : '-100%',
@@ -65,22 +82,17 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
-function TestimonialCard({ testimonial, direction, reducedMotion }: { testimonial: Testimonial; direction: number; reducedMotion: boolean }) {
+function TestimonialCard({ testimonial, reducedMotion }: { testimonial: Testimonial; reducedMotion: boolean }) {
   return (
     <motion.div
-      custom={direction}
-      variants={carouselVariants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      className="w-full max-w-2xl mx-auto"
+      className="w-full h-full"
       style={{ perspective: 1000 }}
     >
       <motion.div
         initial={{ scale: 1, rotateX: 0 }}
         whileHover={reducedMotion ? {} : { scale: 1.02, rotateX: 2 }}
         transition={{ duration: 0.4 }}
-        className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-8 border border-white/40 relative overflow-hidden shadow-2xl shadow-black/40"
+        className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-6 border border-white/40 relative overflow-hidden shadow-2xl shadow-black/40 h-full"
         style={{ transformStyle: 'preserve-3d' }}
       >
         {/* Gradient overlay */}
@@ -105,9 +117,9 @@ function TestimonialCard({ testimonial, direction, reducedMotion }: { testimonia
           &ldquo;
         </div>
 
-        <div className="flex items-center gap-4 mb-6 relative z-10">
+        <div className="flex items-center gap-3 mb-4 relative z-10">
           <motion.div
-            className="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-turquoise)] flex items-center justify-center text-white font-bold text-xl shadow-lg"
+            className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-turquoise)] flex items-center justify-center text-white font-bold text-lg shadow-lg"
             style={{
               boxShadow: '0 0 20px var(--color-turquoise), 0 4px 12px rgba(0,0,0,0.3)',
             }}
@@ -117,17 +129,17 @@ function TestimonialCard({ testimonial, direction, reducedMotion }: { testimonia
             {testimonial.name.charAt(0).toUpperCase()}
           </motion.div>
           <div>
-            <h4 className="font-semibold text-white text-lg">{testimonial.name}</h4>
+            <h4 className="font-semibold text-white text-base">{testimonial.name}</h4>
             <StarRating rating={testimonial.rating} />
           </div>
         </div>
 
-        <p className="text-white/90 text-lg leading-relaxed italic relative z-10 mb-4">
+        <p className="text-white/90 text-base leading-relaxed italic relative z-10 mb-3">
           &ldquo;{testimonial.text}&rdquo;
         </p>
         {testimonial.plan && (
           <motion.span
-            className="inline-block px-4 py-1.5 text-base font-semibold rounded-full text-white relative z-10 shadow-md"
+            className="inline-block px-3 py-1 text-sm font-semibold rounded-full text-white relative z-10 shadow-md"
             style={{ backgroundColor: 'var(--color-turquoise-dark)' }}
             whileHover={reducedMotion ? {} : { scale: 1.05, boxShadow: '0 0 20px var(--color-turquoise-dark)' }}
           >
@@ -139,8 +151,7 @@ function TestimonialCard({ testimonial, direction, reducedMotion }: { testimonia
   )
 }
 
-export default function Testimonials({ testimonials }: TestimonialsProps) {
-  const reducedMotion = useReducedMotion()
+function TestimonialCarousel({ testimonials, reducedMotion }: { testimonials: Testimonial[]; reducedMotion: boolean }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [direction, setDirection] = useState(1)
@@ -179,19 +190,129 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
   }, [reducedMotion, isPaused, testimonials.length, next])
 
   return (
+    <div className="md:hidden">
+      {/* Navigation arrows */}
+      <div className="flex items-center justify-center gap-4 mb-8">
+        <motion.button
+          onClick={prev}
+          whileHover={reducedMotion ? {} : { scale: 1.15, backgroundColor: 'var(--color-surface-20)' }}
+          whileTap={reducedMotion ? {} : { scale: 0.9 }}
+          className="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white min-w-[44px] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)]"
+          aria-label="Testimonio anterior"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </motion.button>
+
+        <div
+          className="relative"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          role="region"
+          aria-label="Testimonios de clientes"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <div className="overflow-hidden max-w-2xl mx-auto">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={testimonials[currentIndex].id}
+                custom={direction}
+                variants={carouselVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+              >
+                <TestimonialCard
+                  testimonial={testimonials[currentIndex]}
+                  reducedMotion={reducedMotion}
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        <motion.button
+          onClick={next}
+          whileHover={reducedMotion ? {} : { scale: 1.15, backgroundColor: 'var(--color-surface-20)' }}
+          whileTap={reducedMotion ? {} : { scale: 0.9 }}
+          className="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white min-w-[44px] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)]"
+          aria-label="Siguiente testimonio"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </motion.button>
+      </div>
+
+      {/* Navigation dots */}
+      <div className="flex justify-center gap-3 mt-8 min-w-[44px] min-h-[44px] items-center">
+        {testimonials.map((_, index) => (
+          <motion.button
+            key={index}
+            onClick={() => goTo(index)}
+            animate={{
+              width: index === currentIndex ? 32 : 10,
+              backgroundColor: index === currentIndex
+                ? 'var(--color-turquoise)'
+                : 'var(--color-surface-25)',
+            }}
+            whileHover={{ scale: 1.2 }}
+            className="h-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)]"
+            aria-label={`Ir al testimonio ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function TestimonialGrid({ testimonials, reducedMotion }: { testimonials: Testimonial[]; reducedMotion: boolean }) {
+  const visibleTestimonials = testimonials.slice(0, 3)
+
+  return (
+    <div className="hidden md:block">
+      <motion.div
+        variants={reducedMotion ? {} : staggerContainer}
+        initial={reducedMotion ? undefined : 'hidden'}
+        animate={reducedMotion ? undefined : 'visible'}
+        className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        {visibleTestimonials.map((testimonial, index) => (
+          <motion.div
+            key={testimonial.id}
+            variants={fadeInUp}
+          >
+            <TestimonialCard
+              testimonial={testimonial}
+              reducedMotion={reducedMotion}
+            />
+          </motion.div>
+        ))}
+      </motion.div>
+    </div>
+  )
+}
+
+export default function Testimonials({ testimonials }: TestimonialsProps) {
+  const reducedMotion = useReducedMotion()
+
+  return (
     <section
       id="testimonios"
+      aria-labelledby="testimonios-heading"
       className="py-24 px-4 relative z-10"
       style={{ background: 'var(--color-dark-overlay)', backdropFilter: 'blur(12px)' }}
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <motion.div
           initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+          <h2 id="testimonios-heading" className="text-4xl md:text-5xl font-bold mb-4 text-white">
             Lo Que Dicen Nuestros Clientes
           </h2>
           <p className="text-lg text-white/70">
@@ -199,72 +320,26 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
           </p>
         </motion.div>
 
-        {/* Navigation arrows */}
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <motion.button
-            onClick={prev}
-            whileHover={reducedMotion ? {} : { scale: 1.15, backgroundColor: 'var(--color-surface-20)' }}
-            whileTap={reducedMotion ? {} : { scale: 0.9 }}
-            className="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white min-w-[44px] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)]"
-            aria-label="Testimonio anterior"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </motion.button>
+        {/* Desktop: Grid view */}
+        <TestimonialGrid testimonials={testimonials} reducedMotion={reducedMotion} />
 
-          <div
-            className="relative"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-            role="region"
-            aria-label="Testimonios de clientes"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <div className="overflow-hidden">
-              <AnimatePresence mode="wait" custom={direction}>
-                <TestimonialCard
-                  key={testimonials[currentIndex].id}
-                  testimonial={testimonials[currentIndex]}
-                  direction={direction}
-                  reducedMotion={reducedMotion}
-                />
-              </AnimatePresence>
-            </div>
-          </div>
+        {/* Mobile: Carousel */}
+        <TestimonialCarousel testimonials={testimonials} reducedMotion={reducedMotion} />
 
-          <motion.button
-            onClick={next}
-            whileHover={reducedMotion ? {} : { scale: 1.15, backgroundColor: 'var(--color-surface-20)' }}
-            whileTap={reducedMotion ? {} : { scale: 0.9 }}
-            className="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white min-w-[44px] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)]"
-            aria-label="Siguiente testimonio"
+        {/* CTA */}
+        <motion.div
+          initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+          className="mt-12 text-center"
+        >
+          <a
+            href="#precios"
+            className="inline-block px-8 py-3 min-h-[44px] bg-[var(--color-turquoise)] hover:bg-[var(--color-turquoise-dark)] text-white font-semibold rounded-lg transition-colors duration-200 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </motion.button>
-        </div>
-
-        {/* Navigation dots */}
-        <div className="flex justify-center gap-3 mt-8 min-w-[44px] min-h-[44px] items-center">
-          {testimonials.map((_, index) => (
-            <motion.button
-              key={index}
-              onClick={() => goTo(index)}
-              animate={{
-                width: index === currentIndex ? 32 : 10,
-                backgroundColor: index === currentIndex
-                  ? 'var(--color-turquoise)'
-                  : 'var(--color-surface-25)',
-              }}
-              whileHover={{ scale: 1.2 }}
-              className="h-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)]"
-              aria-label={`Ir al testimonio ${index + 1}`}
-            />
-          ))}
-        </div>
+            Ver precios y empezar hoy
+          </a>
+        </motion.div>
       </div>
     </section>
   )

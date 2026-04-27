@@ -178,7 +178,7 @@ export default function Pricing({ plans }: PricingProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="precios" className="py-20 px-4 relative z-10" style={{ background: 'var(--color-dark-overlay)', backdropFilter: 'blur(12px)' }}>
+    <section id="precios" aria-labelledby="precios-heading" className="py-20 px-4 relative z-10" style={{ background: 'var(--color-dark-overlay)', backdropFilter: 'blur(12px)' }}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -189,6 +189,7 @@ export default function Pricing({ plans }: PricingProps) {
           className="text-center mb-12"
         >
           <motion.h2
+            id="precios-heading"
             variants={reducedMotion ? {} : fadeInUp}
             className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >
@@ -242,6 +243,26 @@ export default function Pricing({ plans }: PricingProps) {
               Efectivo, Transferencia, Mercado Pago
             </p>
           </motion.div>
+        </motion.div>
+
+        {/* Urgent CTA */}
+        <motion.div
+          variants={scaleIn}
+          initial={reducedMotion ? undefined : 'hidden'}
+          whileInView={reducedMotion ? undefined : 'visible'}
+          viewport={{ once: true }}
+          transition={reducedMotion ? {} : { delay: 0.5 }}
+          className="mt-8 text-center"
+        >
+          <a
+            href="https://wa.me/5491100000000?text=Hola!%20Quiero%20reservar%20una%20clase%20gratis"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-8 py-3 min-h-[44px] bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold rounded-lg transition-colors duration-200 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+          >
+            Reservar clase gratis
+          </a>
+          <p className="mt-3 text-white/70 text-sm">Cupos limitados - Inscripciones abiertas</p>
         </motion.div>
       </div>
     </section>

@@ -2,7 +2,8 @@
 
 import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
+import type { Mesh, ShaderMaterial } from 'three'
+import { Color } from 'three'
 
 const fluidWaterVertexShader = /* glsl */ `
   uniform float uTime;
@@ -99,7 +100,7 @@ const fluidWaterFragmentShader = /* glsl */ `
     float value = 0.0;
     float amplitude = 0.5;
     float frequency = 1.0;
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 4; i++) {
       if (i >= octaves) break;
       value += amplitude * noise(p * frequency);
       frequency *= 2.0;
@@ -179,8 +180,7 @@ const fluidWaterFragmentShader = /* glsl */ `
 
     // Voronoi-based caustics for realistic light patterns
     float caustic1 = voronoi(vUv * 8.0 + uTime * 0.4);
-    float caustic2 = voronoi(vUv * 6.0 - uTime * 0.3 + vec2(caustic1 * 2.0));
-    float causticPattern = pow(1.0 - caustic1, 3.0) * pow(1.0 - caustic2, 2.0);
+    float causticPattern = pow(1.0 - caustic1, 3.0);
     color += vec3(0.4, 0.6, 0.7) * causticPattern * 0.15;
 
     // FBM-based caustics for organic variation
@@ -327,19 +327,15 @@ const mobileFluidWaterVertexShader = /* glsl */ `
 
     vec3 wave1 = gerstnerWave(pos.xz, 0.08, 25.0, vec2(1.0, 0.3), uTime * 0.4);
     vec3 wave2 = gerstnerWave(pos.xz, 0.05, 15.0, vec2(-0.5, 1.0), uTime * 0.35);
-    vec3 wave3 = gerstnerWave(pos.xz, 0.03, 8.0, vec2(0.7, -0.7), uTime * 0.5);
-    vec3 wave4 = gerstnerWave(pos.xz, 0.02, 4.0, vec2(-0.3, -0.9), uTime * 0.6);
 
-    vec3 totalWave = wave1 + wave2 + wave3 + wave4;
+    vec3 totalWave = wave1 + wave2;
     pos.x += totalWave.x;
     pos.y += totalWave.y;
     pos.z += totalWave.z;
 
     vec3 n1 = gerstnerNormal(position.xz, 0.08, 25.0, vec2(1.0, 0.3), uTime * 0.4);
     vec3 n2 = gerstnerNormal(position.xz, 0.05, 15.0, vec2(-0.5, 1.0), uTime * 0.35);
-    vec3 n3 = gerstnerNormal(position.xz, 0.03, 8.0, vec2(0.7, -0.7), uTime * 0.5);
-    vec3 n4 = gerstnerNormal(position.xz, 0.02, 4.0, vec2(-0.3, -0.9), uTime * 0.6);
-    vNormal = normalize(n1 + n2 + n3 + n4);
+    vNormal = normalize(n1 + n2);
 
     vWorldPosition = (modelMatrix * vec4(pos, 1.0)).xyz;
 
@@ -348,30 +344,29 @@ const mobileFluidWaterVertexShader = /* glsl */ `
 `
 
 export default function MinimalWater({ isMobile = false, reducedMotion = false }: MinimalWaterProps) {
-  const meshRef = useRef<THREE.Mesh>(null)
+  const meshRef = useRef<Mesh | null>(null)
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uWaterColor: { value: new THREE.Color('#5DD9E8') },
-      uDeepColor: { value: new THREE.Color('#1A9EAA') },
-      uSunColor: { value: new THREE.Color('#FFF8E0') },
+      uWaterColor: { value: new Color('#5DD9E8') },
+      uDeepColor: { value: new Color('#1A9EAA') },
+      uSunColor: { value: new Color('#FFF8E0') },
     }),
     []
   )
 
   useFrame(({ clock }) => {
-    if (meshRef.current) {
-      const material = meshRef.current.material as THREE.ShaderMaterial
-      material.uniforms.uTime.value = reducedMotion ? 0 : clock.getElapsedTime()
-    }
+    if (reducedMotion || !meshRef.current) return
+    const material = meshRef.current.material as ShaderMaterial
+    material.uniforms.uTime.value = clock.getElapsedTime()
   })
 
   useEffect(() => {
     return () => {
       if (meshRef.current) {
         meshRef.current.geometry.dispose()
-        const material = meshRef.current.material as THREE.ShaderMaterial
+        const material = meshRef.current.material as ShaderMaterial
         material.dispose()
         // Dispose THREE.Color instances to prevent memory leaks
         material.uniforms.uWaterColor.value.dispose()
@@ -381,7 +376,7 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false }
     }
   }, [])
 
-  const segments = isMobile ? 96 : 192
+  const segments = isMobile ? 48 : 96
   const vertexShader = mobileFluidWaterVertexShader
   const fragmentShader = mobileFluidWaterFragmentShader
 
@@ -397,7 +392,7 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false }
         fragmentShader={fragmentShader}
         uniforms={uniforms}
         transparent
-        side={THREE.DoubleSide}
+        side={2}
       />
     </mesh>
   )
