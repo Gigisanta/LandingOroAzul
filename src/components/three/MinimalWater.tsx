@@ -206,7 +206,7 @@ interface MinimalWaterProps {
 }
 
 const mobileFluidWaterFragmentShader = /* glsl */ `
-  precision highp float;
+  precision mediump float;
 
   uniform float uTime;
   uniform vec3 uWaterColor;
@@ -293,6 +293,7 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
 `
 
 const mobileFluidWaterVertexShader = /* glsl */ `
+  precision mediump float;
   uniform float uTime;
   varying vec2 vUv;
   varying vec3 vWorldPosition;
