@@ -381,9 +381,9 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false }
     }
   }, [])
 
-  const segments = isMobile ? 96 : 128
-  const vertexShader = isMobile ? mobileFluidWaterVertexShader : fluidWaterVertexShader
-  const fragmentShader = isMobile ? mobileFluidWaterFragmentShader : fluidWaterFragmentShader
+  const segments = isMobile ? 96 : 192
+  const vertexShader = mobileFluidWaterVertexShader
+  const fragmentShader = mobileFluidWaterFragmentShader
 
   return (
     <mesh

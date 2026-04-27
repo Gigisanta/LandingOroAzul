@@ -104,9 +104,9 @@ export default function Scene({ children }: SceneProps) {
         {!isMobile && (
           <EffectComposer>
             <Bloom
-              intensity={0.4}
-              luminanceThreshold={0.8}
-              luminanceSmoothing={0.9}
+              intensity={0.15}
+              luminanceThreshold={0.9}
+              luminanceSmoothing={0.7}
               mipmapBlur
             />
           </EffectComposer>
