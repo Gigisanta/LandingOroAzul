@@ -288,6 +288,9 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
     foam *= noise(vUv * 30.0 + uTime * 0.6);
     color = mix(color, vec3(1.0, 1.0, 0.98), foam);
 
+    // TEMP DEBUG: Force turquoise to test shader execution
+    color = vec3(0.36, 0.85, 0.91); // #5DD9E8
+
     gl_FragColor = vec4(color, 0.92);
   }
 `
