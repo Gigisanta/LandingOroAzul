@@ -108,7 +108,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
           isScrolled ? 'py-1' : 'py-3'
         }`}
         style={{
-          backgroundColor: isScrolled ? 'rgba(60, 45, 30, 0.85)' : 'rgba(60, 45, 30, 0.35)',
+          backgroundColor: isScrolled ? 'rgba(50, 40, 35, 0.85)' : 'rgba(50, 40, 35, 0.25)',
           backdropFilter: isScrolled ? 'blur(20px)' : 'blur(16px)',
           WebkitBackdropFilter: isScrolled ? 'blur(20px)' : 'blur(16px)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.08)',

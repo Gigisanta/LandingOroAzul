@@ -161,12 +161,12 @@ const fluidWaterFragmentShader = /* glsl */ `
     float depth = smoothstep(-0.5, 0.5, vWorldPosition.y);
     color = mix(uDeepColor, color, depth);
 
-    // Subsurface scattering approximation - light through water
+    // Subsurface scattering approximation - warm pool light
     float sss = pow(max(dot(viewDir, -sunDir), 0.0), 3.0) * 0.3;
-    color += vec3(0.0, 0.4, 0.5) * sss;
+    color += vec3(0.1, 0.5, 0.55) * sss;
 
-    // Fresnel reflection - sky color
-    vec3 skyColor = vec3(0.7, 0.9, 1.0);
+    // Fresnel reflection - warm sky color (cream to beige gradient)
+    vec3 skyColor = mix(vec3(0.91, 0.85, 0.78), vec3(0.72, 0.84, 0.87), fresnel * 0.6 + 0.2);
     color = mix(color, skyColor, fresnel * 0.45);
 
     // Specular glow
@@ -181,7 +181,7 @@ const fluidWaterFragmentShader = /* glsl */ `
     float caustic1 = voronoi(vUv * 8.0 + uTime * 0.4);
     float caustic2 = voronoi(vUv * 6.0 - uTime * 0.3 + vec2(caustic1 * 2.0));
     float causticPattern = pow(1.0 - caustic1, 3.0) * pow(1.0 - caustic2, 2.0);
-    color += vec3(0.3, 0.5, 0.6) * causticPattern * 0.15;
+    color += vec3(0.4, 0.6, 0.7) * causticPattern * 0.15;
 
     // FBM-based caustics for organic variation
     float fbmCaustic = fbm(vUv * 10.0 + uTime * 0.5, 5);
@@ -235,7 +235,7 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
     float value = 0.0;
     float amplitude = 0.5;
     float frequency = 1.0;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 3; i++) {
       if (i >= octaves) break;
       value += amplitude * noise(p * frequency);
       frequency *= 2.0;
@@ -244,34 +244,17 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
     return value;
   }
 
-  // Voronoi-based caustics
-  float voronoi(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    float minDist = 1.0;
-    for (int y = -1; y <= 1; y++) {
-      for (int x = -1; x <= 1; x++) {
-        vec2 neighbor = vec2(float(x), float(y));
-        vec2 point = hash(i + neighbor) * vec2(0.5) + 0.25;
-        vec2 diff = neighbor + point - f;
-        float dist = length(diff);
-        minDist = min(minDist, dist);
-      }
-    }
-    return minDist;
-  }
-
   void main() {
     vec3 viewDir = normalize(cameraPosition - vWorldPosition);
     vec3 normal = normalize(vNormal);
 
-    // FBM micro-detail normal perturbation
-    float fbmNormal = fbm(vUv * 12.0 + uTime * 0.15, 4);
+    // Simplified FBM micro-detail
+    float fbmNormal = fbm(vUv * 8.0 + uTime * 0.12, 2);
     vec3 fbmNormalOffset = vec3(
-      fbm(vUv * 12.0 + uTime * 0.15 + vec2(0.1, 0.0), 4) - 0.5,
+      fbm(vUv * 8.0 + uTime * 0.12 + vec2(0.1, 0.0), 2) - 0.5,
       0.0,
-      fbm(vUv * 12.0 + uTime * 0.15 + vec2(0.0, 0.1), 4) - 0.5
-    ) * 0.12;
+      fbm(vUv * 8.0 + uTime * 0.12 + vec2(0.0, 0.1), 2) - 0.5
+    ) * 0.08;
     normal = normalize(normal + fbmNormalOffset);
 
     vec3 sunDir = normalize(vec3(40.0, 55.0, 25.0));
@@ -281,35 +264,32 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
 
     vec3 halfDir = normalize(sunDir + viewDir);
     float NdotH = max(dot(normal, halfDir), 0.0);
-    float spec = pow(NdotH, 180.0);
+    float spec = pow(NdotH, 150.0);
 
     vec3 reflectDir = reflect(-sunDir, normal);
-    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 180.0);
+    float sunReflect = pow(max(dot(viewDir, reflectDir), 0.0), 150.0);
 
     vec3 color = uWaterColor;
     float depth = smoothstep(-0.5, 0.5, vWorldPosition.y);
     color = mix(uDeepColor, color, depth);
 
     float sss = pow(max(dot(viewDir, -sunDir), 0.0), 3.0) * 0.35;
-    color += vec3(0.0, 0.45, 0.55) * sss;
+    color += vec3(0.1, 0.5, 0.55) * sss;
 
-    vec3 skyColor = vec3(0.7, 0.9, 1.0);
+    vec3 skyColor = mix(vec3(0.91, 0.85, 0.78), vec3(0.72, 0.84, 0.87), fresnel * 0.6 + 0.2);
     color = mix(color, skyColor, fresnel * 0.4);
 
     color += uSunColor * spec * 1.4;
 
-    float sparkleNoise = noise(vUv * 100.0 + uTime * 2.5) * 0.5 + 0.5;
+    float sparkleNoise = noise(vUv * 80.0 + uTime * 2.0) * 0.5 + 0.5;
     float sparkle = sunReflect * sparkleNoise;
     color += vec3(1.0, 0.98, 0.95) * sparkle * 1.4;
 
-    float caustic1 = voronoi(vUv * 8.0 + uTime * 0.4);
-    float caustic2 = voronoi(vUv * 6.0 - uTime * 0.3 + vec2(caustic1 * 2.0));
-    float causticPattern = pow(1.0 - caustic1, 3.0) * pow(1.0 - caustic2, 2.0);
-    color += vec3(0.3, 0.5, 0.6) * causticPattern * 0.15;
-
-    float fbmCaustic = fbm(vUv * 10.0 + uTime * 0.5, 4);
-    fbmCaustic = pow(fbmCaustic, 1.5) * 0.08;
-    color += vec3(0.2, 0.4, 0.5) * fbmCaustic;
+    // Simplified FBM-only caustics
+    float caustic1 = fbm(vUv * 12.0 + uTime * 0.5, 3);
+    float caustic2 = fbm(vUv * 8.0 - uTime * 0.3, 3);
+    float causticPattern = pow(caustic1, 1.8) * pow(caustic2, 1.5) * 0.2;
+    color += vec3(0.35, 0.55, 0.65) * causticPattern;
 
     float foam = smoothstep(0.06, 0.12, vWorldPosition.y) * 0.2;
     float foamNoise = noise(vUv * 40.0 + uTime * 0.8);
@@ -380,8 +360,8 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false }
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uWaterColor: { value: new THREE.Color('#4FC3F7') },
-      uDeepColor: { value: new THREE.Color('#0088A0') },
+      uWaterColor: { value: new THREE.Color('#5DD9E8') },
+      uDeepColor: { value: new THREE.Color('#0A8A9E') },
       uSunColor: { value: new THREE.Color('#FFF8E0') },
     }),
     []
