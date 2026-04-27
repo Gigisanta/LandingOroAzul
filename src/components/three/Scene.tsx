@@ -64,28 +64,39 @@ export default function Scene({ children }: SceneProps) {
       }}
     >
       <Canvas
-        camera={{ position: [0, 12, 22], fov: isMobile ? 65 : 55 }}
-        dpr={1}
+        camera={{ position: [0, 14, 26], fov: isMobile ? 60 : 50 }}
+        dpr={[1, Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2)]}
         gl={{
-          antialias: false,
+          antialias: true,
           alpha: true,
-          powerPreference: 'low-power',
+          powerPreference: 'high-performance',
         }}
         style={{ background: 'transparent' }}
       >
-        <ambientLight intensity={isMobile ? 0.8 : 1.0} color="#ffffff" />
+        <ambientLight intensity={isMobile ? 0.7 : 0.9} color="#ffffff" />
 
+        {/* Primary sun light */}
         <directionalLight
-          position={[40, 55, 25]}
-          intensity={isMobile ? 1.5 : 2.2}
-          color="#FFF8E0"
+          position={[50, 80, 30]}
+          intensity={isMobile ? 1.8 : 2.5}
+          color="#FFF5E6"
         />
 
+        {/* Secondary fill light */}
         {!isMobile && (
           <directionalLight
-            position={[-25, 35, 20]}
-            intensity={0.5}
-            color="#E0F0FF"
+            position={[-30, 40, 25]}
+            intensity={0.7}
+            color="#E6F0FF"
+          />
+        )}
+
+        {/* Rim light for edge definition */}
+        {!isMobile && (
+          <directionalLight
+            position={[0, 20, -50]}
+            intensity={0.3}
+            color="#B0E0E6"
           />
         )}
 
@@ -94,10 +105,9 @@ export default function Scene({ children }: SceneProps) {
         {!isMobile && !reducedMotion && (
           <EffectComposer>
             <Bloom
-              intensity={0.2}
-              luminanceThreshold={0.8}
+              intensity={0.25}
+              luminanceThreshold={0.85}
               luminanceSmoothing={0.4}
-              mipmapBlur
             />
           </EffectComposer>
         )}
