@@ -44,14 +44,13 @@ export default function Scene({ children }: SceneProps) {
         dpr={[1, dpr]}
         gl={{
           antialias: !isMobile,
-          alpha: true,
+          alpha: false,
           powerPreference: isMobile ? 'low-power' : 'high-performance',
         }}
         style={{
-          background: 'linear-gradient(180deg, #0A1628 0%, #006080 30%, #00A5B5 55%, #00CED1 75%, #40E0D0 90%, #7FDBDB 100%)'
+          background: 'linear-gradient(180deg, #0A1628 0%, #0A1628 40%, #006080 60%, #00A5B5 75%, #00CED1 88%, #40E0D0 95%, #7FDBDB 100%)'
         }}
       >
-        <fog attach="fog" args={['#0088A0', 80, 100]} />
 
         <ambientLight intensity={isMobile ? 1.0 : 1.5} color="#ffffff" />
 
