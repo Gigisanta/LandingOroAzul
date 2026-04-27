@@ -30,7 +30,7 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
   return (
     <section id="inicio" className="relative min-h-[100dvh] flex flex-col items-center justify-center px-4 pt-20" aria-labelledby="hero-heading">
       {/* Dark gradient overlay for better text contrast */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-dark)]/98 via-[var(--color-dark)]/90 to-[var(--color-dark)]/98 pointer-events-none" />
+      <div className="absolute inset-0 bg-[var(--color-dark)]/85 pointer-events-none" />
       {/* Content */}
       <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center text-center">
         {/* Title */}

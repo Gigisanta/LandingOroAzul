@@ -90,7 +90,7 @@ export default function Schedule({ activities }: ScheduleProps) {
   }
 
   return (
-    <section id="horarios" aria-labelledby="horarios-heading" className="py-24 px-4 bg-gradient-to-b from-[var(--color-dark)]/95 to-[var(--color-dark)]/95 backdrop-blur-sm overflow-hidden">
+    <section id="horarios" aria-labelledby="horarios-heading" className="py-24 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <motion.div

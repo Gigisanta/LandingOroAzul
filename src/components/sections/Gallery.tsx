@@ -72,7 +72,7 @@ export default function Gallery({ images }: GalleryProps) {
       : images.filter((img) => img.category === activeCategory)
 
   return (
-    <section id="galeria" aria-labelledby="galeria-heading" className="py-24 px-4 bg-[var(--color-dark)]/90 backdrop-blur-xl overflow-hidden">
+    <section id="galeria" aria-labelledby="galeria-heading" className="py-24 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div

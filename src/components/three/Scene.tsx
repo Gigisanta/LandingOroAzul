@@ -1,20 +1,21 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import MinimalWater from './MinimalWater'
 import UnderwaterLights from './UnderwaterLights'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useWaterVisibility } from '@/hooks/useWaterVisibility'
 
 interface SceneProps {
   children?: React.ReactNode
 }
 
-function AnimatedPool({ isMobile, reducedMotion }: { isMobile: boolean; reducedMotion: boolean }) {
+function AnimatedPool({ isMobile, reducedMotion, docSize, opacity }: { isMobile: boolean; reducedMotion: boolean; docSize: { width: number; height: number }; opacity: number }) {
   return (
     <group>
-      <MinimalWater isMobile={isMobile} reducedMotion={reducedMotion} />
+      <MinimalWater isMobile={isMobile} reducedMotion={reducedMotion} docSize={docSize} opacity={opacity} />
       {!isMobile && <UnderwaterLights />}
     </group>
   )
@@ -28,7 +29,10 @@ function isMobileDevice() {
 export default function Scene({ children }: SceneProps) {
   const [dpr, setDpr] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
+  const [docSize, setDocSize] = useState({ width: 600, height: 600 })
+  const containerRef = useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
+  const { opacity } = useWaterVisibility()
 
   useEffect(() => {
     const mobile = isMobileDevice()
@@ -37,13 +41,29 @@ export default function Scene({ children }: SceneProps) {
     setDpr(mobile ? 1 : Math.min(window.devicePixelRatio, 1.5))
   }, [])
 
+  useEffect(() => {
+    const updateSize = () => {
+      const width = Math.max(window.innerWidth, document.body.scrollWidth) * 1.5
+      const height = Math.max(window.innerHeight, document.body.scrollHeight) * 1.5
+      setDocSize({ width, height })
+      if (containerRef.current) {
+        containerRef.current.style.height = `${document.body.scrollHeight}px`
+      }
+    }
+
+    updateSize()
+    window.addEventListener('resize', updateSize)
+    return () => window.removeEventListener('resize', updateSize)
+  }, [])
+
   return (
     <div
+      ref={containerRef}
       className="fixed inset-0 -z-10"
       style={{
         width: '100vw',
-        height: '100vh',
-        background: 'linear-gradient(180deg, #FFF8E7 0%, #FFF8E7 25%, #F5E6D3 40%, #00B4C8 55%, #00CED1 70%, #40E0D0 85%, #7FDBDB 100%)'
+        minHeight: '100vh',
+        background: 'linear-gradient(180deg, #0D3D4D 0%, #0D3D4D 15%, #0A5C6A 30%, #00B4C8 45%, #00CED1 60%, #40E0D0 75%, #7FDBDB 100%)'
       }}
     >
       <Canvas
@@ -104,7 +124,7 @@ export default function Scene({ children }: SceneProps) {
           </>
         )}
 
-        <AnimatedPool isMobile={isMobile} reducedMotion={reducedMotion} />
+        <AnimatedPool isMobile={isMobile} reducedMotion={reducedMotion} docSize={docSize} opacity={opacity} />
 
         {!isMobile && (
           <EffectComposer>

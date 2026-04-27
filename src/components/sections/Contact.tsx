@@ -66,7 +66,7 @@ export default function Contact({ business }: ContactProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="contacto" aria-labelledby="contacto-heading" className="py-24 px-4 bg-[var(--color-dark)]/95 backdrop-blur-xl overflow-hidden">
+    <section id="contacto" aria-labelledby="contacto-heading" className="py-24 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div

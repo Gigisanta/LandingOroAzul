@@ -178,7 +178,7 @@ export default function Pricing({ plans }: PricingProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="precios" aria-labelledby="precios-heading" className="py-20 px-4 relative z-10" style={{ background: 'var(--color-dark-overlay)', backdropFilter: 'blur(12px)' }}>
+    <section id="precios" aria-labelledby="precios-heading" className="py-20 px-4 relative z-10 bg-[var(--color-dark)]/85">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div

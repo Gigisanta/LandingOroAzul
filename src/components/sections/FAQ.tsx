@@ -70,7 +70,7 @@ export default function FAQ() {
     <section
       id="faq"
       className="py-24 px-4 relative z-10"
-      style={{ background: 'var(--color-dark-overlay)', backdropFilter: 'blur(12px)' }}
+      style={{ background: 'var(--color-dark)/85' }}
     >
       <div className="max-w-3xl mx-auto">
         <motion.div

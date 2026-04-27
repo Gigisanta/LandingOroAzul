@@ -303,7 +303,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
       id="testimonios"
       aria-labelledby="testimonios-heading"
       className="py-24 px-4 relative z-10"
-      style={{ background: 'var(--color-dark-overlay)', backdropFilter: 'blur(12px)' }}
+      style={{ background: 'var(--color-dark)/85' }}
     >
       <div className="max-w-6xl mx-auto">
         <motion.div

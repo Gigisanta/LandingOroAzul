@@ -76,6 +76,7 @@ const fluidWaterFragmentShader = /* glsl */ `
   uniform vec3 uWaterColor;
   uniform vec3 uDeepColor;
   uniform vec3 uSunColor;
+  uniform float uOpacity;
   varying vec2 vUv;
   varying vec3 vWorldPosition;
   varying vec3 vNormal;
@@ -167,8 +168,8 @@ const fluidWaterFragmentShader = /* glsl */ `
     color += vec3(0.1, 0.5, 0.55) * sss;
 
     // Fresnel reflection - warm sky color (cream to beige gradient)
-    vec3 skyColor = mix(vec3(0.91, 0.85, 0.78), vec3(0.72, 0.84, 0.87), fresnel * 0.6 + 0.2);
-    color = mix(color, skyColor, fresnel * 0.45);
+    vec3 skyColor = mix(vec3(0.65, 0.80, 0.85), vec3(0.72, 0.84, 0.87), fresnel * 0.6 + 0.2);
+    color = mix(color, skyColor, fresnel * 0.30);
 
     // Specular glow
     color += uSunColor * spec * 1.2;
@@ -194,7 +195,7 @@ const fluidWaterFragmentShader = /* glsl */ `
     foam *= foamNoise;
     color = mix(color, vec3(1.0, 1.0, 0.98), foam);
 
-    float alpha = 0.92;
+    float alpha = 0.92 * uOpacity;
 
     gl_FragColor = vec4(color, alpha);
   }
@@ -203,6 +204,8 @@ const fluidWaterFragmentShader = /* glsl */ `
 interface MinimalWaterProps {
   isMobile?: boolean
   reducedMotion?: boolean
+  docSize?: { width: number; height: number }
+  opacity?: number
 }
 
 const mobileFluidWaterFragmentShader = /* glsl */ `
@@ -212,6 +215,7 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
   uniform vec3 uWaterColor;
   uniform vec3 uDeepColor;
   uniform vec3 uSunColor;
+  uniform float uOpacity;
   varying vec2 vUv;
   varying vec3 vWorldPosition;
   varying vec3 vNormal;
@@ -270,8 +274,8 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
     float sss = pow(max(dot(viewDir, -sunDir), 0.0), 3.0) * 0.35;
     color += vec3(0.15, 0.55, 0.6) * sss;
 
-    vec3 skyColor = mix(vec3(0.91, 0.85, 0.78), vec3(0.72, 0.84, 0.87), fresnel * 0.6 + 0.2);
-    color = mix(color, skyColor, fresnel * 0.35);
+    vec3 skyColor = mix(vec3(0.65, 0.80, 0.85), vec3(0.72, 0.84, 0.87), fresnel * 0.6 + 0.2);
+    color = mix(color, skyColor, fresnel * 0.25);
 
     color += uSunColor * spec * 1.2;
 
@@ -288,7 +292,7 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
     foam *= noise(vUv * 30.0 + uTime * 0.6);
     color = mix(color, vec3(1.0, 1.0, 0.98), foam);
 
-    gl_FragColor = vec4(color, 0.92);
+    gl_FragColor = vec4(color, 0.92 * uOpacity);
   }
 `
 
@@ -343,8 +347,14 @@ const mobileFluidWaterVertexShader = /* glsl */ `
   }
 `
 
-export default function MinimalWater({ isMobile = false, reducedMotion = false }: MinimalWaterProps) {
+export default function MinimalWater({ isMobile = false, reducedMotion = false, docSize, opacity = 1.0 }: MinimalWaterProps) {
   const meshRef = useRef<Mesh | null>(null)
+  const targetOpacity = useRef(1.0)
+
+  // Update target opacity when prop changes
+  useEffect(() => {
+    targetOpacity.current = opacity
+  }, [opacity])
 
   const uniforms = useMemo(
     () => ({
@@ -352,14 +362,24 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false }
       uWaterColor: { value: new Color('#5DD9E8') },
       uDeepColor: { value: new Color('#1A9EAA') },
       uSunColor: { value: new Color('#FFF8E0') },
+      uOpacity: { value: 1.0 },
     }),
     []
   )
 
   useFrame(({ clock }) => {
-    if (reducedMotion || !meshRef.current) return
+    if (!meshRef.current) return
     const material = meshRef.current.material as ShaderMaterial
     material.uniforms.uTime.value = clock.getElapsedTime()
+
+    // Smoothly interpolate opacity
+    if (!reducedMotion) {
+      const current = material.uniforms.uOpacity.value
+      const target = targetOpacity.current
+      material.uniforms.uOpacity.value = current + (target - current) * 0.05
+    } else {
+      material.uniforms.uOpacity.value = targetOpacity.current
+    }
   })
 
   useEffect(() => {
@@ -380,13 +400,16 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false }
   const vertexShader = mobileFluidWaterVertexShader
   const fragmentShader = mobileFluidWaterFragmentShader
 
+  const planeWidth = docSize?.width ?? 600
+  const planeHeight = docSize?.height ?? 600
+
   return (
     <mesh
       ref={meshRef}
       position={[0, 0, 0]}
       rotation={[-Math.PI / 2, 0, 0]}
     >
-      <planeGeometry args={[400, 400, segments, segments]} />
+      <planeGeometry args={[planeWidth, planeHeight, segments, segments]} />
       <shaderMaterial
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
