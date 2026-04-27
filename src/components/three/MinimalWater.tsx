@@ -244,9 +244,35 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
     return value;
   }
 
+  // Voronoi-based caustics
+  float voronoi(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    float minDist = 1.0;
+    for (int y = -1; y <= 1; y++) {
+      for (int x = -1; x <= 1; x++) {
+        vec2 neighbor = vec2(float(x), float(y));
+        vec2 point = hash(i + neighbor) * vec2(0.5) + 0.25;
+        vec2 diff = neighbor + point - f;
+        float dist = length(diff);
+        minDist = min(minDist, dist);
+      }
+    }
+    return minDist;
+  }
+
   void main() {
     vec3 viewDir = normalize(cameraPosition - vWorldPosition);
     vec3 normal = normalize(vNormal);
+
+    // FBM micro-detail normal perturbation
+    float fbmNormal = fbm(vUv * 12.0 + uTime * 0.15, 4);
+    vec3 fbmNormalOffset = vec3(
+      fbm(vUv * 12.0 + uTime * 0.15 + vec2(0.1, 0.0), 4) - 0.5,
+      0.0,
+      fbm(vUv * 12.0 + uTime * 0.15 + vec2(0.0, 0.1), 4) - 0.5
+    ) * 0.12;
+    normal = normalize(normal + fbmNormalOffset);
 
     vec3 sunDir = normalize(vec3(40.0, 55.0, 25.0));
 
@@ -276,10 +302,10 @@ const mobileFluidWaterFragmentShader = /* glsl */ `
     float sparkle = sunReflect * sparkleNoise;
     color += vec3(1.0, 0.98, 0.95) * sparkle * 1.4;
 
-    float caustic1 = pow(1.0 - noise(vUv * 8.0 + uTime * 0.4), 2.5);
-    float caustic2 = pow(1.0 - noise(vUv * 12.0 - uTime * 0.3 + vec2(caustic1 * 2.0)), 2.0);
-    float causticPattern = caustic1 * caustic2;
-    color += vec3(0.25, 0.5, 0.6) * causticPattern * 0.18;
+    float caustic1 = voronoi(vUv * 8.0 + uTime * 0.4);
+    float caustic2 = voronoi(vUv * 6.0 - uTime * 0.3 + vec2(caustic1 * 2.0));
+    float causticPattern = pow(1.0 - caustic1, 3.0) * pow(1.0 - caustic2, 2.0);
+    color += vec3(0.3, 0.5, 0.6) * causticPattern * 0.15;
 
     float fbmCaustic = fbm(vUv * 10.0 + uTime * 0.5, 4);
     fbmCaustic = pow(fbmCaustic, 1.5) * 0.08;
@@ -329,8 +355,9 @@ const mobileFluidWaterVertexShader = /* glsl */ `
     vec3 wave1 = gerstnerWave(pos.xz, 0.08, 25.0, vec2(1.0, 0.3), uTime * 0.4);
     vec3 wave2 = gerstnerWave(pos.xz, 0.05, 15.0, vec2(-0.5, 1.0), uTime * 0.35);
     vec3 wave3 = gerstnerWave(pos.xz, 0.03, 8.0, vec2(0.7, -0.7), uTime * 0.5);
+    vec3 wave4 = gerstnerWave(pos.xz, 0.02, 4.0, vec2(-0.3, -0.9), uTime * 0.6);
 
-    vec3 totalWave = wave1 + wave2 + wave3;
+    vec3 totalWave = wave1 + wave2 + wave3 + wave4;
     pos.x += totalWave.x;
     pos.y += totalWave.y;
     pos.z += totalWave.z;
@@ -338,7 +365,8 @@ const mobileFluidWaterVertexShader = /* glsl */ `
     vec3 n1 = gerstnerNormal(position.xz, 0.08, 25.0, vec2(1.0, 0.3), uTime * 0.4);
     vec3 n2 = gerstnerNormal(position.xz, 0.05, 15.0, vec2(-0.5, 1.0), uTime * 0.35);
     vec3 n3 = gerstnerNormal(position.xz, 0.03, 8.0, vec2(0.7, -0.7), uTime * 0.5);
-    vNormal = normalize(n1 + n2 + n3);
+    vec3 n4 = gerstnerNormal(position.xz, 0.02, 4.0, vec2(-0.3, -0.9), uTime * 0.6);
+    vNormal = normalize(n1 + n2 + n3 + n4);
 
     vWorldPosition = (modelMatrix * vec4(pos, 1.0)).xyz;
 
@@ -380,7 +408,7 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false }
     }
   }, [])
 
-  const segments = isMobile ? 64 : 128
+  const segments = isMobile ? 96 : 128
   const vertexShader = isMobile ? mobileFluidWaterVertexShader : fluidWaterVertexShader
   const fragmentShader = isMobile ? mobileFluidWaterFragmentShader : fluidWaterFragmentShader
 

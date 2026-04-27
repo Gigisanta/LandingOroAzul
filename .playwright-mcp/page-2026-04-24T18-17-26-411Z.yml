@@ -1,0 +1,352 @@
+- generic [ref=e1]:
+  - main [ref=e2]:
+    - navigation [ref=e5]:
+      - generic [ref=e6]:
+        - link "Oro Azul" [ref=e7] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e9]
+          - generic [ref=e11]: Oro Azul
+        - button "Toggle menu" [active] [ref=e458] [cursor=pointer]:
+          - img [ref=e757]
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - heading "Aprendé a nadar" [level=1] [ref=e22]
+          - heading "toda tu vida" [level=2] [ref=e23]
+        - paragraph [ref=e24]: Clases de natación para todas las edades, rehabilitación acuática y actividades recreativas en un ambiente seguro y profesional.
+        - generic [ref=e25]:
+          - link "Ver horarios" [ref=e26] [cursor=pointer]:
+            - /url: "#horarios"
+          - link "Ver precios" [ref=e27] [cursor=pointer]:
+            - /url: "#precios"
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - generic [ref=e30]: 500+
+            - generic [ref=e31]: Alumnos
+          - generic [ref=e32]:
+            - generic [ref=e33]: 15+
+            - generic [ref=e34]: Años
+          - generic [ref=e35]:
+            - generic [ref=e36]: 28°C
+            - generic [ref=e37]: Agua
+      - img [ref=e40]
+    - generic [ref=e43]:
+      - generic [ref=e44]:
+        - heading "Nuestros Horarios" [level=2] [ref=e45]
+        - paragraph [ref=e46]: Encontrá la clase perfecta para vos. Actividades para todas las edades y niveles.
+      - tablist "Actividades" [ref=e47]:
+        - tab "👶 Bebés" [ref=e48] [cursor=pointer]:
+          - generic [ref=e49]: 👶
+          - generic [ref=e50]: Bebés
+        - tab "🏊 Niños" [selected] [ref=e51] [cursor=pointer]:
+          - generic [ref=e52]: 🏊
+          - generic [ref=e53]: Niños
+        - tab "🧑‍🏫 Adultos" [ref=e54] [cursor=pointer]:
+          - generic [ref=e55]: 🧑‍🏫
+          - generic [ref=e56]: Adultos
+        - tab "💪 AquaGym" [ref=e57] [cursor=pointer]:
+          - generic [ref=e58]: 💪
+          - generic [ref=e59]: AquaGym
+        - tab "🏊‍♀️ Pileta Libre" [ref=e60] [cursor=pointer]:
+          - generic [ref=e61]: 🏊‍♀️
+          - generic [ref=e62]: Pileta Libre
+      - tabpanel "🏊 Niños" [ref=e623]:
+        - generic [ref=e624]:
+          - generic [ref=e625]:
+            - generic [ref=e626]:
+              - generic [ref=e627]: 🏊
+              - generic [ref=e628]:
+                - heading "Niños" [level=3] [ref=e629]
+                - paragraph [ref=e630]: 4 - 12 años
+            - list [ref=e631]:
+              - listitem [ref=e632]:
+                - img [ref=e634]
+                - generic [ref=e636]: Profesor certificado
+              - listitem [ref=e637]:
+                - img [ref=e639]
+                - generic [ref=e641]: Grupos reducidos (máx. 8 niños)
+              - listitem [ref=e642]:
+                - img [ref=e644]
+                - generic [ref=e646]: Pileta climatizada 28°C
+              - listitem [ref=e647]:
+                - img [ref=e649]
+                - generic [ref=e651]: Niveles por habilidad
+              - listitem [ref=e652]:
+                - img [ref=e654]
+                - generic [ref=e656]: Clases divertidas y seguras
+          - generic [ref=e657]:
+            - heading "Horarios de Niños" [level=3] [ref=e658]
+            - paragraph [ref=e659]: Días y horarios disponibles
+            - generic [ref=e660]:
+              - generic [ref=e661]:
+                - generic [ref=e662]: Lunes
+                - generic [ref=e663]: 16:00 - 16:45
+              - generic [ref=e664]:
+                - generic [ref=e665]: Martes
+                - generic [ref=e666]: 16:00 - 16:45
+              - generic [ref=e667]:
+                - generic [ref=e668]: Miércoles
+                - generic [ref=e669]: 16:00 - 16:45
+              - generic [ref=e670]:
+                - generic [ref=e671]: Jueves
+                - generic [ref=e672]: 16:00 - 16:45
+              - generic [ref=e673]:
+                - generic [ref=e674]: Viernes
+                - generic [ref=e675]: 16:00 - 16:45
+              - generic [ref=e676]:
+                - generic [ref=e677]: Sábado
+                - generic [ref=e678]: 09:00 - 09:45
+    - generic [ref=e111]:
+      - generic [ref=e112]:
+        - heading "Nuestros Planes" [level=2] [ref=e113]
+        - paragraph [ref=e114]: Encontrá el plan perfecto para vos. Todas las clases incluyen acceso a nuestras instalaciones.
+      - generic [ref=e115]:
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - heading "Bebés" [level=3] [ref=e119]
+            - paragraph [ref=e120]: Estimulación acuática temprana para bebés de 6 meses a 3 años
+          - generic [ref=e121]:
+            - generic [ref=e122]: $ 25.000/mes
+            - generic [ref=e124]: 8 clases/mes
+            - list [ref=e125]:
+              - listitem [ref=e126]:
+                - img [ref=e128]
+                - generic [ref=e130]: Guía certificado en natación infantil
+              - listitem [ref=e131]:
+                - img [ref=e133]
+                - generic [ref=e135]: Grupos reducidos (máx. 6 bebés)
+              - listitem [ref=e136]:
+                - img [ref=e138]
+                - generic [ref=e140]: Pileta climatizada 28°C
+              - listitem [ref=e141]:
+                - img [ref=e143]
+                - generic [ref=e145]: Acompañamiento parental
+              - listitem [ref=e146]:
+                - img [ref=e148]
+                - generic [ref=e150]: Estimulación acuática temprana
+          - link "Consultar por Bebés vía WhatsApp" [ref=e152] [cursor=pointer]:
+            - /url: https://wa.me/5491100000000?text=Hola!%20Quiero%20info%20sobre%20Beb%C3%A9s
+            - text: Consultar por WhatsApp
+        - generic [ref=e154]:
+          - generic [ref=e155]:
+            - heading "Infantil" [level=3] [ref=e156]
+            - paragraph [ref=e157]: Clases para niños de 4 a 12 años
+          - generic [ref=e158]:
+            - generic [ref=e159]: $ 28.000/mes
+            - generic [ref=e161]: 8 clases/mes
+            - list [ref=e162]:
+              - listitem [ref=e163]:
+                - img [ref=e165]
+                - generic [ref=e167]: Profesor certificado
+              - listitem [ref=e168]:
+                - img [ref=e170]
+                - generic [ref=e172]: Grupos reducidos (máx. 8 niños)
+              - listitem [ref=e173]:
+                - img [ref=e175]
+                - generic [ref=e177]: Pileta climatizada 28°C
+              - listitem [ref=e178]:
+                - img [ref=e180]
+                - generic [ref=e182]: Niveles por habilidad
+              - listitem [ref=e183]:
+                - img [ref=e185]
+                - generic [ref=e187]: Clases divertidas y seguras
+          - link "Consultar por Infantil vía WhatsApp" [ref=e189] [cursor=pointer]:
+            - /url: https://wa.me/5491100000000?text=Hola!%20Quiero%20info%20sobre%20Infantil
+            - text: Consultar por WhatsApp
+        - generic [ref=e191]:
+          - generic [ref=e192]:
+            - heading "Adultos" [level=3] [ref=e193]
+            - paragraph [ref=e194]: Clases para adolescentes y adultos
+          - generic [ref=e195]:
+            - generic [ref=e196]: $ 32.000/mes
+            - generic [ref=e198]: 8 clases/mes
+            - list [ref=e199]:
+              - listitem [ref=e200]:
+                - img [ref=e202]
+                - generic [ref=e204]: Instructor certificado
+              - listitem [ref=e205]:
+                - img [ref=e207]
+                - generic [ref=e209]: Grupos reducidos (máx. 10 adultos)
+              - listitem [ref=e210]:
+                - img [ref=e212]
+                - generic [ref=e214]: Pileta climatizada 28°C
+              - listitem [ref=e215]:
+                - img [ref=e217]
+                - generic [ref=e219]: Horarios flexibles
+              - listitem [ref=e220]:
+                - img [ref=e222]
+                - generic [ref=e224]: Técnica personalizada
+          - link "Consultar por Adultos vía WhatsApp" [ref=e226] [cursor=pointer]:
+            - /url: https://wa.me/5491100000000?text=Hola!%20Quiero%20info%20sobre%20Adultos
+            - text: Consultar por WhatsApp
+        - generic [ref=e228]:
+          - generic [ref=e229]:
+            - heading "AquaGym" [level=3] [ref=e230]
+            - paragraph [ref=e231]: Fitness acuático para mayores de 16 años
+          - generic [ref=e232]:
+            - generic [ref=e233]: $ 35.000/mes
+            - generic [ref=e235]: 6 clases/mes
+            - list [ref=e236]:
+              - listitem [ref=e237]:
+                - img [ref=e239]
+                - generic [ref=e241]: Instructor certificado en fitness acuático
+              - listitem [ref=e242]:
+                - img [ref=e244]
+                - generic [ref=e246]: Grupos de 12 personas
+              - listitem [ref=e247]:
+                - img [ref=e249]
+                - generic [ref=e251]: Pileta climatizada 28°C
+              - listitem [ref=e252]:
+                - img [ref=e254]
+                - generic [ref=e256]: Ejercicios de resistencia
+              - listitem [ref=e257]:
+                - img [ref=e259]
+                - generic [ref=e261]: Bajo impacto en articulaciones
+          - link "Consultar por AquaGym vía WhatsApp" [ref=e263] [cursor=pointer]:
+            - /url: https://wa.me/5491100000000?text=Hola!%20Quiero%20info%20sobre%20AquaGym
+            - text: Consultar por WhatsApp
+      - generic [ref=e265]:
+        - paragraph [ref=e266]: "Inscripción: 2 cuotas de $25.000"
+        - paragraph [ref=e267]: "Métodos de pago: Efectivo, Transferencia, Mercado Pago"
+    - generic [ref=e269]:
+      - generic [ref=e270]:
+        - heading "Nuestra Galería" [level=2] [ref=e271]
+        - paragraph [ref=e272]: Conocé nuestras instalaciones y momentos especiales en Oro Azul.
+      - group "Filtrar galería por categoría" [ref=e273]:
+        - button "Todas" [ref=e274] [cursor=pointer]
+        - button "Pileta" [pressed] [ref=e275] [cursor=pointer]
+        - button "Clases" [ref=e276] [cursor=pointer]
+      - generic [ref=e566]:
+        - generic [ref=e567]:
+          - img "Pileta principal climatizada a 28°C" [ref=e568]
+          - paragraph [ref=e572]: Pileta Climatizada
+        - generic [ref=e574]:
+          - img "Vestuarios modernos y limpios" [ref=e575]
+          - paragraph [ref=e579]: Vestuarios
+    - generic [ref=e307]:
+      - generic [ref=e308]:
+        - heading "Lo Que Dicen Nuestros Clientes" [level=2] [ref=e309]
+        - paragraph [ref=e310]: Experiencias reales de familias que confían en Oro Azul.
+      - generic [ref=e311]:
+        - button "Testimonio anterior" [ref=e312] [cursor=pointer]:
+          - img [ref=e313]
+        - region "Testimonios de clientes" [ref=e315]:
+          - generic [ref=e759]:
+            - generic [ref=e761]: “
+            - generic [ref=e762]:
+              - generic [ref=e763]: L
+              - generic [ref=e764]:
+                - heading "Laura Fernández" [level=4] [ref=e765]
+                - generic "5 de 5 estrellas" [ref=e766]:
+                  - img [ref=e767]
+                  - img [ref=e769]
+                  - img [ref=e771]
+                  - img [ref=e773]
+                  - img [ref=e775]
+            - paragraph [ref=e777]: “El AquaGym me cambió la vida. Llevo 6 meses y bajé 5 kilos, además de mejorar mi postura. Totalmente recomendado.”
+            - generic [ref=e778]: AquaGym
+        - button "Siguiente testimonio" [ref=e338] [cursor=pointer]:
+          - img [ref=e339]
+      - generic [ref=e341]:
+        - button "Ir al testimonio 1" [ref=e435] [cursor=pointer]
+        - button "Ir al testimonio 2" [ref=e436] [cursor=pointer]
+        - button "Ir al testimonio 3" [ref=e437] [cursor=pointer]
+        - button "Ir al testimonio 4" [ref=e438] [cursor=pointer]
+    - generic [ref=e343]:
+      - generic [ref=e344]:
+        - heading "Encontranos" [level=2] [ref=e345]
+        - paragraph [ref=e346]: Vení a conocernos. Te esperamos para que disfrutes del agua.
+      - generic [ref=e347]:
+        - generic [ref=e349]:
+          - generic [ref=e350]:
+            - img [ref=e352]
+            - generic [ref=e355]:
+              - heading "Dirección" [level=3] [ref=e356]
+              - paragraph [ref=e357]: Buenos Aires, Argentina
+          - generic [ref=e358]:
+            - img [ref=e360]
+            - generic [ref=e362]:
+              - heading "Teléfono" [level=3] [ref=e363]
+              - link "+54 11 0000 0000" [ref=e364] [cursor=pointer]:
+                - /url: tel:+541100000000
+          - generic [ref=e365]:
+            - img [ref=e367]
+            - generic [ref=e370]:
+              - heading "Email" [level=3] [ref=e371]
+              - link "info@oroazul.com" [ref=e372] [cursor=pointer]:
+                - /url: mailto:info@oroazul.com
+          - generic [ref=e373]:
+            - img [ref=e375]
+            - generic [ref=e378]:
+              - heading "Horarios" [level=3] [ref=e379]
+              - paragraph [ref=e380]: "Lunes a Viernes: 8:00 - 20:00"
+              - paragraph [ref=e381]: "Sábados: 8:00 - 18:00"
+              - paragraph [ref=e382]: "Domingos: 9:00 - 13:00"
+        - iframe [ref=e384]:
+          - generic [active] [ref=f1e1]:
+            - link "Abrir en Maps (se abre en una nueva pestaña)" [ref=f1e4] [cursor=pointer]:
+              - /url: https://maps.google.com/maps?ll=-34.6,-58.4&z=16&t=m&hl=es&gl=AR&mapclient=embed
+              - text: Abrir en Maps
+              - img [ref=f1e6]
+            - generic [ref=f1e9]:
+              - generic:
+                - button "Combinaciones de teclas"
+              - region "Mapa" [ref=f1e10]
+              - generic [ref=f1e11]:
+                - iframe [ref=f1e33]:
+                  
+                - button "Controles de visualización del mapa" [ref=f1e35] [cursor=pointer]
+                - button "Muestra las imágenes de satélite" [ref=f1e38] [cursor=pointer]:
+                  - generic [ref=f1e42]:
+                    - region [ref=f1e43]
+                    - iframe [ref=f1e49]:
+                      
+                - img "Google" [ref=f1e51]
+                - generic [ref=f1e52]:
+                  - button "Combinaciones de teclas" [ref=f1e58] [cursor=pointer]
+                  - button "Datos del mapa" [ref=f1e64] [cursor=pointer]
+                  - link "Términos (se abre en una nueva pestaña)" [ref=f1e69] [cursor=pointer]:
+                    - /url: https://www.google.com/intl/es_AR/help/terms_maps.html
+                    - text: Términos
+                  - link "Notificar un problema de Maps" [ref=f1e74] [cursor=pointer]:
+                    - /url: https://www.google.com/maps/@-34.6,-58.4,16z/data=!10m1!1e1!12b1?source=apiv3&rapsrc=apiv3
+      - link "Escribinos por WhatsApp" [ref=e386] [cursor=pointer]:
+        - /url: https://wa.me/5491100000000?text=Hola!%20Quiero%20info%20sobre%20las%20clases%20de%20natación
+        - img [ref=e387]
+        - text: Escribinos por WhatsApp
+    - generic [ref=e390]:
+      - generic [ref=e391]:
+        - generic [ref=e392]:
+          - heading "Oro Azul" [level=3] [ref=e393]
+          - paragraph [ref=e394]: Aprendé a nadar toda tu vida
+        - navigation "Footer navigation" [ref=e395]:
+          - link "Horarios" [ref=e396] [cursor=pointer]:
+            - /url: "#horarios"
+          - link "Precios" [ref=e397] [cursor=pointer]:
+            - /url: "#precios"
+          - link "Galería" [ref=e398] [cursor=pointer]:
+            - /url: "#galeria"
+          - link "Testimonios" [ref=e399] [cursor=pointer]:
+            - /url: "#testimonios"
+          - link "Contacto" [ref=e400] [cursor=pointer]:
+            - /url: "#contacto"
+        - generic [ref=e401]:
+          - link "Instagram" [ref=e402] [cursor=pointer]:
+            - /url: https://instagram.com/oroazul.natatorio
+            - img [ref=e403]
+          - link "Facebook" [ref=e405] [cursor=pointer]:
+            - /url: https://facebook.com/oroazulnatatorio
+            - img [ref=e406]
+      - paragraph [ref=e409]: © 2026 Oro Azul Natatorio. Todos los derechos reservados.
+  - generic [ref=e443] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e444]:
+      - img [ref=e445]
+    - generic [ref=e448]:
+      - button "Open issues overlay" [ref=e449]:
+        - generic [ref=e450]:
+          - generic [ref=e451]: "0"
+          - generic [ref=e452]: "1"
+        - generic [ref=e453]: Issue
+      - button "Collapse issues badge" [ref=e454]:
+        - img [ref=e455]
+  - alert [ref=e457]

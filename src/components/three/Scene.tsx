@@ -43,9 +43,9 @@ export default function Scene({ children }: SceneProps) {
         camera={{ position: [0, 14, 24], fov: isMobile ? 65 : 55 }}
         dpr={[1, dpr]}
         gl={{
-          antialias: !isMobile,
+          antialias: true,
           alpha: false,
-          powerPreference: isMobile ? 'low-power' : 'high-performance',
+          powerPreference: isMobile ? 'default' : 'high-performance',
         }}
         style={{
           background: 'linear-gradient(180deg, #0A1628 0%, #0A1628 40%, #006080 60%, #00A5B5 75%, #00CED1 88%, #40E0D0 95%, #7FDBDB 100%)'
