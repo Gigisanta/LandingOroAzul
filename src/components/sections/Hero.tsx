@@ -52,21 +52,11 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           initial={reducedMotion ? undefined : 'hidden'}
           animate="visible"
           transition={reducedMotion ? { delay: 0 } : { delay: 0.4 }}
-          className="text-xl md:text-2xl text-white/90 max-w-2xl mb-10"
+          className="text-xl md:text-2xl text-white/90 max-w-2xl mb-8"
         >
           Clases de natación para todas las edades, rehabilitación acuática y actividades
           recreativas en un ambiente seguro y profesional.
         </motion.p>
-
-        {/* Urgency Badge */}
-        <motion.div
-          variants={reducedMotion ? {} : fadeInUp}
-          initial={reducedMotion ? undefined : 'hidden'}
-          animate="visible"
-          className="mb-6 px-4 py-2 bg-[var(--color-turquoise)]/20 border border-[var(--color-turquoise)]/40 rounded-full"
-        >
-          <span className="text-[var(--color-turquoise)] font-semibold text-sm">Inscripciones abiertas - Cupos limitados</span>
-        </motion.div>
 
         {/* CTAs */}
         <motion.div

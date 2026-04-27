@@ -49,9 +49,8 @@ const fluidWaterVertexShader = /* glsl */ `
     vec3 wave1 = gerstnerWave(pos.xz, 0.08, 25.0, vec2(1.0, 0.3), uTime * 0.4);
     vec3 wave2 = gerstnerWave(pos.xz, 0.05, 15.0, vec2(-0.5, 1.0), uTime * 0.35);
     vec3 wave3 = gerstnerWave(pos.xz, 0.03, 8.0, vec2(0.7, -0.7), uTime * 0.5);
-    vec3 wave4 = gerstnerWave(pos.xz, 0.02, 4.0, vec2(-0.3, -0.9), uTime * 0.6);
 
-    vec3 totalWave = wave1 + wave2 + wave3 + wave4;
+    vec3 totalWave = wave1 + wave2 + wave3;
     pos.x += totalWave.x;
     pos.y += totalWave.y;
     pos.z += totalWave.z;
@@ -60,9 +59,8 @@ const fluidWaterVertexShader = /* glsl */ `
     vec3 n1 = gerstnerNormal(position.xz, 0.08, 25.0, vec2(1.0, 0.3), uTime * 0.4);
     vec3 n2 = gerstnerNormal(position.xz, 0.05, 15.0, vec2(-0.5, 1.0), uTime * 0.35);
     vec3 n3 = gerstnerNormal(position.xz, 0.03, 8.0, vec2(0.7, -0.7), uTime * 0.5);
-    vec3 n4 = gerstnerNormal(position.xz, 0.02, 4.0, vec2(-0.3, -0.9), uTime * 0.6);
 
-    vNormal = normalize(n1 + n2 + n3 + n4);
+    vNormal = normalize(n1 + n2 + n3);
     vWorldPosition = (modelMatrix * vec4(pos, 1.0)).xyz;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
@@ -396,12 +394,12 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false, 
     }
   }, [])
 
-  const segments = isMobile ? 48 : 96
+  const segments = isMobile ? 24 : 40
   const vertexShader = mobileFluidWaterVertexShader
   const fragmentShader = mobileFluidWaterFragmentShader
 
-  const planeWidth = docSize?.width ?? 600
-  const planeHeight = docSize?.height ?? 600
+  const planeWidth = docSize?.width ?? 400
+  const planeHeight = docSize?.height ?? 400
 
   return (
     <mesh

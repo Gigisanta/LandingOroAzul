@@ -27,7 +27,6 @@ function isMobileDevice() {
 }
 
 export default function Scene({ children }: SceneProps) {
-  const [dpr, setDpr] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
   const [docSize, setDocSize] = useState({ width: 600, height: 600 })
   const containerRef = useRef<HTMLDivElement>(null)
@@ -37,14 +36,12 @@ export default function Scene({ children }: SceneProps) {
   useEffect(() => {
     const mobile = isMobileDevice()
     setIsMobile(mobile)
-    // Mobile: cap at 1, desktop: cap at 1.5
-    setDpr(mobile ? 1 : Math.min(window.devicePixelRatio, 1.5))
   }, [])
 
   useEffect(() => {
     const updateSize = () => {
-      const width = Math.max(window.innerWidth, document.body.scrollWidth) * 1.5
-      const height = Math.max(window.innerHeight, document.body.scrollHeight) * 1.5
+      const width = Math.max(window.innerWidth, document.body.scrollWidth) * 1.2
+      const height = Math.max(window.innerHeight, document.body.scrollHeight) * 1.2
       setDocSize({ width, height })
       if (containerRef.current) {
         containerRef.current.style.height = `${document.body.scrollHeight}px`
@@ -67,71 +64,39 @@ export default function Scene({ children }: SceneProps) {
       }}
     >
       <Canvas
-        camera={{ position: [0, 14, 24], fov: isMobile ? 65 : 55 }}
-        dpr={[1, dpr]}
+        camera={{ position: [0, 12, 22], fov: isMobile ? 65 : 55 }}
+        dpr={1}
         gl={{
-          antialias: true,
+          antialias: false,
           alpha: true,
-          powerPreference: isMobile ? 'default' : 'high-performance',
+          powerPreference: 'low-power',
         }}
         style={{ background: 'transparent' }}
       >
-
-        <ambientLight intensity={isMobile ? 1.0 : 1.5} color="#ffffff" />
+        <ambientLight intensity={isMobile ? 0.8 : 1.0} color="#ffffff" />
 
         <directionalLight
           position={[40, 55, 25]}
-          intensity={isMobile ? 1.8 : 2.8}
+          intensity={isMobile ? 1.5 : 2.2}
           color="#FFF8E0"
-          castShadow={!isMobile}
-          shadow-mapSize={[512, 512]}
-          shadow-camera-far={150}
-          shadow-camera-left={isMobile ? -30 : -50}
-          shadow-camera-right={isMobile ? 30 : 50}
-          shadow-camera-top={isMobile ? 30 : 50}
-          shadow-camera-bottom={isMobile ? -30 : -50}
         />
 
         {!isMobile && (
-          <>
-            <directionalLight
-              position={[-25, 35, 20]}
-              intensity={0.8}
-              color="#E0F0FF"
-            />
-
-            <directionalLight
-              position={[0, 25, -35]}
-              intensity={0.45}
-              color="#F0F8FF"
-            />
-
-            <pointLight
-              position={[20, 10, 15]}
-              intensity={1.5}
-              color="#FFE4B5"
-              distance={60}
-              decay={2}
-            />
-
-            <pointLight
-              position={[-15, 5, 5]}
-              intensity={0.6}
-              color="#B8E8FF"
-              distance={40}
-              decay={2}
-            />
-          </>
+          <directionalLight
+            position={[-25, 35, 20]}
+            intensity={0.5}
+            color="#E0F0FF"
+          />
         )}
 
         <AnimatedPool isMobile={isMobile} reducedMotion={reducedMotion} docSize={docSize} opacity={opacity} />
 
-        {!isMobile && (
+        {!isMobile && !reducedMotion && (
           <EffectComposer>
             <Bloom
-              intensity={0.15}
-              luminanceThreshold={0.9}
-              luminanceSmoothing={0.7}
+              intensity={0.2}
+              luminanceThreshold={0.8}
+              luminanceSmoothing={0.4}
               mipmapBlur
             />
           </EffectComposer>

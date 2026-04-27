@@ -72,7 +72,7 @@ export default function Gallery({ images }: GalleryProps) {
       : images.filter((img) => img.category === activeCategory)
 
   return (
-    <section id="galeria" aria-labelledby="galeria-heading" className="py-24 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
+    <section id="galeria" aria-labelledby="galeria-heading" className="py-16 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -80,7 +80,7 @@ export default function Gallery({ images }: GalleryProps) {
           initial={reducedMotion ? undefined : 'hidden'}
           whileInView={reducedMotion ? undefined : 'visible'}
           viewport={{ once: true, margin: '-100px' }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <motion.h2
             id="galeria-heading"

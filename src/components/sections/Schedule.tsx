@@ -90,7 +90,7 @@ export default function Schedule({ activities }: ScheduleProps) {
   }
 
   return (
-    <section id="horarios" aria-labelledby="horarios-heading" className="py-24 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
+    <section id="horarios" aria-labelledby="horarios-heading" className="py-16 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <motion.div
@@ -98,7 +98,7 @@ export default function Schedule({ activities }: ScheduleProps) {
           initial={reducedMotion ? undefined : 'hidden'}
           whileInView={reducedMotion ? undefined : 'visible'}
           viewport={{ once: true, margin: '-100px' }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <motion.h2
             id="horarios-heading"
@@ -170,7 +170,7 @@ export default function Schedule({ activities }: ScheduleProps) {
                 initial={reducedMotion ? undefined : 'hidden'}
                 animate={reducedMotion ? undefined : 'visible'}
                 whileHover={reducedMotion ? {} : cardHoverVariants.hover}
-                className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-6 border border-white/40 shadow-2xl shadow-black/40"
+                className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-5 border border-white/40 shadow-2xl shadow-black/40"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <motion.span
@@ -213,7 +213,7 @@ export default function Schedule({ activities }: ScheduleProps) {
                 initial={reducedMotion ? undefined : 'hidden'}
                 animate={reducedMotion ? undefined : 'visible'}
                 whileHover={reducedMotion ? {} : cardHoverVariants.hover}
-                className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-6 border border-white/40 shadow-2xl shadow-black/40"
+                className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-5 border border-white/40 shadow-2xl shadow-black/40"
               >
                 <h3 className="text-xl font-bold mb-2 text-white">
                   Horarios de {selectedActivity.name}
@@ -249,7 +249,7 @@ export default function Schedule({ activities }: ScheduleProps) {
           initial={reducedMotion ? undefined : 'hidden'}
           whileInView={reducedMotion ? undefined : 'visible'}
           viewport={{ once: true }}
-          className="mt-12 text-center"
+          className="mt-8 text-center"
         >
           <a
             href="#precios"

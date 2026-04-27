@@ -66,7 +66,7 @@ export default function Contact({ business }: ContactProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="contacto" aria-labelledby="contacto-heading" className="py-24 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
+    <section id="contacto" aria-labelledby="contacto-heading" className="py-16 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -74,7 +74,7 @@ export default function Contact({ business }: ContactProps) {
           initial={reducedMotion ? undefined : 'hidden'}
           whileInView={reducedMotion ? undefined : 'visible'}
           viewport={{ once: true, margin: '-100px' }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <motion.h2
             id="contacto-heading"
@@ -217,7 +217,7 @@ export default function Contact({ business }: ContactProps) {
           initial={reducedMotion ? undefined : 'hidden'}
           whileInView={reducedMotion ? undefined : 'visible'}
           viewport={{ once: true }}
-          className="mt-12 text-center"
+          className="mt-8 text-center"
         >
           <motion.a
             href="https://wa.me/5491100000000?text=Hola!%20Quiero%20info%20sobre%20las%20clases%20de%20natación"

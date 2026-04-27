@@ -69,7 +69,7 @@ export default function FAQ() {
   return (
     <section
       id="faq"
-      className="py-24 px-4 relative z-10"
+      className="py-16 px-4 relative z-10"
       style={{ background: 'var(--color-dark)/85' }}
     >
       <div className="max-w-3xl mx-auto">
@@ -77,7 +77,7 @@ export default function FAQ() {
           initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
             Preguntas Frecuentes

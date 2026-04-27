@@ -60,7 +60,7 @@ export default function Benefits() {
   return (
     <section
       id="beneficios"
-      className="py-24 px-4 bg-[var(--color-dark)]/85 overflow-hidden"
+      className="py-16 px-4 bg-[var(--color-dark)]/85 overflow-hidden"
     >
       <div className="max-w-6xl mx-auto">
         <motion.div
@@ -68,7 +68,7 @@ export default function Benefits() {
           initial={reducedMotion ? undefined : 'hidden'}
           whileInView={reducedMotion ? undefined : 'visible'}
           viewport={{ once: true, margin: '-100px' }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <motion.h2
             variants={fadeInUp}
@@ -97,7 +97,7 @@ export default function Benefits() {
               variants={fadeInUp}
               whileHover={reducedMotion ? {} : { scale: 1.03, y: -5 }}
               transition={{ duration: 0.3 }}
-              className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-6 border border-white/40 shadow-2xl shadow-black/40 text-center group"
+              className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-5 border border-white/40 shadow-2xl shadow-black/40 text-center group"
             >
               <motion.div
                 className="text-5xl mb-4 inline-block"

@@ -77,7 +77,7 @@ export default function Footer({ business }: FooterProps) {
         </svg>
       </div>
 
-      <div className="pt-16 pb-12 px-4">
+      <div className="pt-12 pb-8 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo & Brand */}

@@ -302,7 +302,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
     <section
       id="testimonios"
       aria-labelledby="testimonios-heading"
-      className="py-24 px-4 relative z-10"
+      className="py-16 px-4 relative z-10"
       style={{ background: 'var(--color-dark)/85' }}
     >
       <div className="max-w-6xl mx-auto">
@@ -310,7 +310,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
           initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <h2 id="testimonios-heading" className="text-4xl md:text-5xl font-bold mb-4 text-white">
             Lo Que Dicen Nuestros Clientes
@@ -331,7 +331,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
           initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-          className="mt-12 text-center"
+          className="mt-8 text-center"
         >
           <a
             href="#precios"

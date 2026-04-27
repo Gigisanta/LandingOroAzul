@@ -178,7 +178,7 @@ export default function Pricing({ plans }: PricingProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="precios" aria-labelledby="precios-heading" className="py-20 px-4 relative z-10 bg-[var(--color-dark)]/85">
+    <section id="precios" aria-labelledby="precios-heading" className="py-16 px-4 relative z-10 bg-[var(--color-dark)]/85">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -186,7 +186,7 @@ export default function Pricing({ plans }: PricingProps) {
           initial={reducedMotion ? undefined : 'hidden'}
           whileInView={reducedMotion ? undefined : 'visible'}
           viewport={{ once: true, margin: '-100px' }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <motion.h2
             id="precios-heading"
@@ -224,7 +224,7 @@ export default function Pricing({ plans }: PricingProps) {
           whileInView={reducedMotion ? undefined : 'visible'}
           viewport={{ once: true }}
           transition={reducedMotion ? {} : { delay: 0.4 }}
-          className="mt-12 text-center"
+          className="mt-8 text-center"
         >
           <motion.div
             className="inline-block px-6 py-4 rounded-2xl bg-[var(--color-dark)]/70 backdrop-blur-xl border border-white/30 shadow-2xl shadow-black/30"
