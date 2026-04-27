@@ -381,7 +381,7 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false }
     () => ({
       uTime: { value: 0 },
       uWaterColor: { value: new THREE.Color('#4FC3F7') },
-      uDeepColor: { value: new THREE.Color('#0288D1') },
+      uDeepColor: { value: new THREE.Color('#0088A0') },
       uSunColor: { value: new THREE.Color('#FFF8E0') },
     }),
     []
