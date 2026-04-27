@@ -48,7 +48,7 @@ export default function Scene({ children }: SceneProps) {
           powerPreference: isMobile ? 'low-power' : 'high-performance',
         }}
         style={{
-          background: 'linear-gradient(180deg, #006080 0%, #00A5B5 25%, #00CED1 50%, #40E0D0 75%, #7FDBDB 100%)'
+          background: 'linear-gradient(180deg, #0A1628 0%, #006080 30%, #00A5B5 55%, #00CED1 75%, #40E0D0 90%, #7FDBDB 100%)'
         }}
       >
         <fog attach="fog" args={['#0088A0', 80, 100]} />

@@ -48,7 +48,36 @@ export default function Footer({ business }: FooterProps) {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="py-12 px-4" style={{ backgroundColor: 'var(--color-dark)' }}>
+    <footer className="relative" style={{ backgroundColor: 'var(--color-dark)' }}>
+      {/* Wave divider at top */}
+      <div className="absolute -top-1 left-0 right-0 overflow-hidden leading-[0]">
+        <svg
+          viewBox="0 0 1440 100"
+          preserveAspectRatio="none"
+          className="relative block w-full h-[80px]"
+          aria-hidden="true"
+        >
+          <motion.path
+            d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,100 L0,100 Z"
+            fill="var(--color-dark)"
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+          />
+          <motion.path
+            d="M0,60 C480,20 960,80 1440,50 L1440,100 L0,100 Z"
+            fill="var(--color-dark)"
+            opacity="0.5"
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.4, delay: 0.2, ease: "easeInOut" }}
+          />
+        </svg>
+      </div>
+
+      <div className="pt-16 pb-12 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo & Brand */}
@@ -145,6 +174,7 @@ export default function Footer({ business }: FooterProps) {
             © {currentYear} {business.name} Natatorio. Todos los derechos reservados.
           </p>
         </motion.div>
+      </div>
       </div>
     </footer>
   )

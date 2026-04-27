@@ -108,10 +108,10 @@ export default function Navigation({ whatsapp }: NavigationProps) {
           isScrolled ? 'py-1' : 'py-3'
         }`}
         style={{
-          backgroundColor: isScrolled ? 'var(--color-bg-overlay-90)' : 'var(--color-bg-overlay-60)',
-          backdropFilter: isScrolled ? 'blur(16px)' : 'blur(12px)',
-          WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'blur(12px)',
-          boxShadow: isScrolled ? '0 4px 30px rgba(0, 0, 0, 0.4)' : '0 1px 0 rgba(255, 255, 255, 0.08)',
+          backgroundColor: isScrolled ? 'rgba(10, 22, 40, 0.85)' : 'rgba(10, 22, 40, 0.4)',
+          backdropFilter: isScrolled ? 'blur(20px)' : 'blur(16px)',
+          WebkitBackdropFilter: isScrolled ? 'blur(20px)' : 'blur(16px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
         }}
       >
         <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
@@ -122,20 +122,53 @@ export default function Navigation({ whatsapp }: NavigationProps) {
             whileHover={reducedMotion ? {} : { scale: 1.05 }}
             whileTap={reducedMotion ? {} : { scale: 0.95 }}
           >
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-turquoise)] flex items-center justify-center">
-              <svg
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-turquoise)] flex items-center justify-center overflow-hidden relative">
+              {/* Animated water drop icon */}
+              <motion.svg
                 className="w-6 h-6 text-white"
-                fill="none"
-                stroke="currentColor"
                 viewBox="0 0 24 24"
+                fill="currentColor"
+                animate={reducedMotion ? {} : {
+                  scale: [1, 1.15, 1],
+                  y: [0, -2, 0],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+                <path d="M12 2C12 2 5.5 10 5.5 15.5C5.5 19.09 8.41 22 12 22C15.59 22 18.5 19.09 18.5 15.5C18.5 10 12 2 12 2ZM12 20C9.52 20 7.5 17.98 7.5 15.5C7.5 13.34 10.17 9.44 12 6.72C13.83 9.44 16.5 13.34 16.5 15.5C16.5 17.98 14.48 20 12 20Z" />
+                <motion.circle
+                  cx="12"
+                  cy="15"
+                  r="3"
+                  fill="white"
+                  opacity={0.6}
+                  animate={reducedMotion ? {} : {
+                    scale: [0.8, 1.2, 0.8],
+                    opacity: [0.3, 0.6, 0.3],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                 />
-              </svg>
+              </motion.svg>
+              {/* Subtle glow ring */}
+              <motion.div
+                className="absolute inset-0 rounded-xl border-2 border-white/30"
+                animate={reducedMotion ? {} : {
+                  scale: [1, 1.1, 1],
+                  opacity: [0.3, 0, 0.3],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
             </div>
             <span className="text-xl font-bold text-white">Oro Azul</span>
           </motion.a>
