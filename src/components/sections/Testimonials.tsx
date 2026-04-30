@@ -335,7 +335,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
     >
       <div className="max-w-6xl mx-auto">
         <motion.div
-          initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-8"
@@ -356,7 +356,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
 
         {/* CTA */}
         <motion.div
-          initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
           className="mt-8 text-center"

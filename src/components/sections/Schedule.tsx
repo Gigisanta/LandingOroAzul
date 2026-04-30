@@ -211,8 +211,8 @@ export default function Schedule({ activities }: ScheduleProps) {
                   {selectedActivity?.schedule.map((item, index) => (
                     <motion.div
                       key={index}
-                      initial={reducedMotion ? undefined : { opacity: 0, x: 20 }}
-                      animate={reducedMotion ? undefined : { opacity: 1, x: 0 }}
+                      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.08 }}
                       className="flex justify-between items-center py-3 px-4 rounded-lg bg-white/10 hover:bg-white/20 transition-colors group"
                     >

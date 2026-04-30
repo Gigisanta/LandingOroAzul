@@ -73,7 +73,7 @@ export default function FAQ() {
     >
       <div className="max-w-3xl mx-auto">
         <motion.div
-          initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-8"
@@ -90,7 +90,7 @@ export default function FAQ() {
           {faqs.map((faq, index) => (
             <motion.div
               key={faq.id}
-              initial={reducedMotion ? undefined : { opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
             >

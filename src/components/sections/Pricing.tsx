@@ -57,8 +57,8 @@ function PricingCard({ plan, index, reducedMotion, whatsapp }: PricingCardProps)
       >
         {isPopular && (
           <motion.div
-            initial={reducedMotion ? undefined : { scale: 0 }}
-            animate={reducedMotion ? undefined : { scale: 1 }}
+            initial={reducedMotion ? { scale: 1 } : { scale: 0 }}
+            animate={{ scale: 1 }}
             transition={{ delay: 0.3, type: 'spring', stiffness: 300 }}
             className="absolute -top-3 left-1/2 -translate-x-1/2 z-10"
           >
@@ -109,8 +109,8 @@ function PricingCard({ plan, index, reducedMotion, whatsapp }: PricingCardProps)
               <motion.li
                 key={idx}
                 className="flex items-center gap-2 text-base"
-                initial={reducedMotion ? undefined : { opacity: 0, x: -10 }}
-                whileInView={reducedMotion ? undefined : { opacity: 1, x: 0 }}
+                initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.05 }}
               >
