@@ -4,7 +4,12 @@ import { useSyncExternalStore } from 'react'
 
 function getReducedMotionSnapshot(): boolean {
   if (typeof window === 'undefined') return false
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (!window.matchMedia) return false
+  try {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  } catch {
+    return false
+  }
 }
 
 function getServerSnapshot(): boolean {
@@ -12,9 +17,25 @@ function getServerSnapshot(): boolean {
 }
 
 function subscribe(callback: () => void): () => void {
-  const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-  mediaQuery.addEventListener('change', callback)
-  return () => mediaQuery.removeEventListener('change', callback)
+  if (typeof window === 'undefined' || !window.matchMedia) return () => {}
+  let mediaQuery: MediaQueryList | undefined
+  try {
+    mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  } catch {
+    return () => {}
+  }
+  if (mediaQuery.addEventListener) {
+    mediaQuery.addEventListener('change', callback)
+  } else {
+    mediaQuery.addListener(callback)
+  }
+  return () => {
+    if (mediaQuery.removeEventListener) {
+      mediaQuery.removeEventListener('change', callback)
+    } else {
+      mediaQuery.removeListener(callback)
+    }
+  }
 }
 
 export function useReducedMotion(): boolean {

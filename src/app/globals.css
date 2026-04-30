@@ -166,9 +166,42 @@ a, button {
   will-change: opacity;
 }
 
-/* Optimized fallback background for WebGL */
+/* Optimized fallback background for WebGL - animated gradient */
 .fallback-bg {
   background-color: #0A1628;
+}
+
+.fallback-water {
+  position: relative;
+  overflow: hidden;
+}
+
+.fallback-water::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 120% 100% at 50% 40%, rgba(0, 180, 216, 0.2) 0%, transparent 50%);
+  animation: waterPulse 8s ease-in-out infinite;
+}
+
+.fallback-water::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 30% 60%, rgba(2, 136, 209, 0.15) 0%, transparent 50%),
+              radial-gradient(ellipse 60% 50% at 70% 30%, rgba(77, 208, 225, 0.12) 0%, transparent 45%);
+  animation: waterShimmer 12s ease-in-out infinite;
+}
+
+@keyframes waterPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1) translateY(0); }
+  50% { opacity: 0.9; transform: scale(1.05) translateY(-2%); }
+}
+
+@keyframes waterShimmer {
+  0%, 100% { opacity: 0.5; transform: translateX(0) translateY(0); }
+  33% { opacity: 0.7; transform: translateX(1%) translateY(-1%); }
+  66% { opacity: 0.6; transform: translateX(-1%) translateY(1%); }
 }
 
 /* CSS Containment for performance */

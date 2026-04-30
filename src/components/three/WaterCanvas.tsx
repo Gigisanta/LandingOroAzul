@@ -11,19 +11,6 @@ function isMobileDevice() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 }
 
-function getWebGLSupport() {
-  try {
-    const canvas = document.createElement('canvas')
-    const gl2 = canvas.getContext('webgl2')
-    if (gl2) return { supported: true, version: 2 }
-    const gl1 = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
-    if (gl1) return { supported: true, version: 1 }
-    return { supported: false, version: 0 }
-  } catch {
-    return { supported: false, version: 0 }
-  }
-}
-
 function isLowPerformanceDevice() {
   if (typeof window === 'undefined') return false
   const nav = navigator as Navigator & { deviceMemory?: number }
@@ -32,11 +19,13 @@ function isLowPerformanceDevice() {
   ) || /iPhone|iPad/.test(navigator.userAgent)
 }
 
+const INITIAL_WEBGL_INFO = { supported: true, version: 2 }
+
 export default function WaterCanvas() {
   const reducedMotion = useReducedMotion()
   const { opacity } = useWaterVisibility()
   const [isVisible, setIsVisible] = useState(true)
-  const [webglInfo, setWebglInfo] = useState({ supported: false, version: 0 })
+  const [webglInfo] = useState(INITIAL_WEBGL_INFO)
   const [contextLost, setContextLost] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -52,10 +41,6 @@ export default function WaterCanvas() {
   }, [])
 
   useEffect(() => {
-    setWebglInfo(getWebGLSupport())
-  }, [])
-
-  useEffect(() => {
     if (!containerRef.current) return
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
@@ -65,21 +50,21 @@ export default function WaterCanvas() {
     return () => observer.disconnect()
   }, [])
 
-  const shouldReloadRef = useRef(false)
-  const reloadTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const retryCountRef = useRef(0)
+  const maxRetries = 3
 
   const handleContextLost = useCallback((e: Event) => {
     e.preventDefault()
-    shouldReloadRef.current = true
     setContextLost(true)
-    if (reloadTimeoutRef.current) clearTimeout(reloadTimeoutRef.current)
   }, [])
 
   const handleContextRestored = useCallback(() => {
-    if (shouldReloadRef.current) {
-      shouldReloadRef.current = false
-      window.location.reload()
+    retryCountRef.current++
+    if (retryCountRef.current <= maxRetries) {
+      setContextLost(false)
+    } else {
+      retryCountRef.current = 0
     }
   }, [])
 
@@ -92,9 +77,6 @@ export default function WaterCanvas() {
 
   useEffect(() => {
     return () => {
-      if (reloadTimeoutRef.current) {
-        clearTimeout(reloadTimeoutRef.current)
-      }
       if (canvasRef.current) {
         canvasRef.current.removeEventListener('webglcontextlost', handleContextLost)
         canvasRef.current.removeEventListener('webglcontextrestored', handleContextRestored)
@@ -120,7 +102,7 @@ export default function WaterCanvas() {
       }}
     >
       {showFallback && !showCanvas && (
-        <div className="absolute inset-0 fallback-bg" style={{ pointerEvents: 'none' }}>
+        <div className="absolute inset-0 fallback-water" style={{ pointerEvents: 'none' }}>
           <div className="absolute inset-0 bg-gradient-to-b from-[#0A1628] via-[#0D2137] to-[#0A1628] opacity-60" />
           <div
             className="absolute inset-0"
@@ -142,11 +124,11 @@ export default function WaterCanvas() {
             failIfMajorPerformanceCaveat: false,
           }}
           style={{ pointerEvents: 'none', background: 'transparent' }}
-          onCreated={({ gl, scene }) => {
+          onCreated={({ gl }) => {
             gl.setClearColor(0x000000, 0)
             handleCanvasCreated({ gl })
           }}
-          frameloop={reducedMotion ? 'demand' : 'always'}
+          frameloop="always"
           performance={{ min: 0.25 }}
         >
           <directionalLight

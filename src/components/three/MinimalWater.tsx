@@ -370,10 +370,9 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false, 
     if (!meshRef.current) return
     const material = meshRef.current.material as ShaderMaterial
 
-    if (!reducedMotion) {
-      elapsedTime.current += delta
-      material.uniforms.uTime.value = elapsedTime.current
-    }
+    const timeScale = reducedMotion ? 0.08 : 1.0
+    elapsedTime.current += delta * timeScale
+    material.uniforms.uTime.value = elapsedTime.current
 
     const current = material.uniforms.uOpacity.value
     const target = targetOpacity.current

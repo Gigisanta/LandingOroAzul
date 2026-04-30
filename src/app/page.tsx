@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import Navigation from '@/components/sections/Navigation'
 import Hero from '@/components/sections/Hero'
@@ -18,12 +19,25 @@ import landingData from '@/data/landing.json'
 
 const Scene = dynamic(() => import('@/components/three/Scene'), { ssr: false })
 
+function SceneFallback() {
+  return (
+    <div
+      className="fixed inset-0 z-0 fallback-water"
+      style={{
+        background: 'radial-gradient(ellipse 100% 80% at 50% 30%, rgba(0, 180, 216, 0.15) 0%, #0A1628 60%)',
+      }}
+    />
+  )
+}
+
 export default function LandingPage() {
   return (
     <>
       {/* 3D Swimming Pool Background */}
       <div className="fixed inset-0 z-0">
-        <Scene />
+        <Suspense fallback={<SceneFallback />}>
+          <Scene />
+        </Suspense>
       </div>
 
       {/* UI Enhancements */}
