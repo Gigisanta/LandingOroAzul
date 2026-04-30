@@ -68,6 +68,9 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           <motion.h1
             id="hero-heading"
             variants={reducedMotion ? {} : fadeInUp}
+            initial={reducedMotion ? { opacity: 0, y: 20 } : 'hidden'}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]"
           >
             <span className="text-white" style={{ textShadow: '0 2px 12px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4)' }}>Aprendé a nadar</span>
