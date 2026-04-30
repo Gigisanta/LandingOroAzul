@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
@@ -15,6 +15,7 @@ const navLinks = [
 
 interface NavigationProps {
   whatsapp: string
+  businessName?: string
 }
 
 const fadeInDown = {
@@ -26,7 +27,7 @@ const fadeInDown = {
   },
 }
 
-export default function Navigation({ whatsapp }: NavigationProps) {
+export default function Navigation({ whatsapp, businessName = 'Oro Azul' }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isHidden, setIsHidden] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -35,23 +36,35 @@ export default function Navigation({ whatsapp }: NavigationProps) {
   const toggleButtonRef = useRef<HTMLButtonElement>(null)
   const reducedMotion = useReducedMotion()
 
+  const isMobile = useMemo(() => {
+    if (typeof window === 'undefined') return false
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  }, [])
+
   useEffect(() => {
+    let rafId: number | null = null
     const handleScroll = () => {
-      const currentY = window.scrollY
-      const isScrollingDown = currentY > lastScrollYRef.current
+      if (rafId !== null) return
+      rafId = requestAnimationFrame(() => {
+        const currentY = window.scrollY
+        const isScrollingDown = currentY > lastScrollYRef.current
 
-      setIsScrolled(currentY > 50)
-      setIsHidden(isScrollingDown && currentY > 120)
-      lastScrollYRef.current = currentY
+        setIsScrolled(currentY > 50)
+        setIsHidden(isScrollingDown && currentY > 120)
+        lastScrollYRef.current = currentY
 
-      // Close mobile menu on scroll
-      if (isMobileMenuOpen && currentY > 50) {
-        setIsMobileMenuOpen(false)
-      }
+        if (isMobileMenuOpen && currentY > 50) {
+          setIsMobileMenuOpen(false)
+        }
+        rafId = null
+      })
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (rafId !== null) cancelAnimationFrame(rafId)
+    }
   }, [isMobileMenuOpen])
 
   // Close mobile menu on route change/hash change
@@ -105,14 +118,14 @@ export default function Navigation({ whatsapp }: NavigationProps) {
         initial="visible"
         animate={isHidden ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled ? 'py-1' : 'py-3'
         }`}
         style={{
-          backgroundColor: isScrolled ? 'rgba(10, 22, 40, 0.85)' : 'transparent',
-          backdropFilter: isScrolled ? 'blur(20px)' : 'blur(16px)',
-          WebkitBackdropFilter: isScrolled ? 'blur(20px)' : 'blur(16px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          backgroundColor: isScrolled ? 'rgba(10, 22, 40, 0.88)' : 'transparent',
+          backdropFilter: isScrolled && !isMobile ? 'blur(20px)' : 'none',
+          WebkitBackdropFilter: isScrolled && !isMobile ? 'blur(20px)' : 'none',
+          borderBottom: isScrolled ? '1px solid rgba(255, 255, 255, 0.08)' : 'none',
           paddingTop: 'env(safe-area-inset-top)',
         }}
       >
@@ -124,55 +137,17 @@ export default function Navigation({ whatsapp }: NavigationProps) {
             whileHover={reducedMotion ? {} : { scale: 1.05 }}
             whileTap={reducedMotion ? {} : { scale: 0.95 }}
           >
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-turquoise)] flex items-center justify-center overflow-hidden relative">
-              {/* Animated water drop icon */}
-              <motion.svg
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-turquoise)] flex items-center justify-center">
+              <svg
                 className="w-6 h-6 text-white"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                animate={reducedMotion ? {} : {
-                  scale: [1, 1.15, 1],
-                  y: [0, -2, 0],
-                }}
-                transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
               >
                 <path d="M12 2C12 2 5.5 10 5.5 15.5C5.5 19.09 8.41 22 12 22C15.59 22 18.5 19.09 18.5 15.5C18.5 10 12 2 12 2ZM12 20C9.52 20 7.5 17.98 7.5 15.5C7.5 13.34 10.17 9.44 12 6.72C13.83 9.44 16.5 13.34 16.5 15.5C16.5 17.98 14.48 20 12 20Z" />
-                <motion.circle
-                  cx="12"
-                  cy="15"
-                  r="3"
-                  fill="white"
-                  opacity={0.6}
-                  animate={reducedMotion ? {} : {
-                    scale: [0.8, 1.2, 0.8],
-                    opacity: [0.3, 0.6, 0.3],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              </motion.svg>
-              {/* Subtle glow ring */}
-              <motion.div
-                className="absolute inset-0 rounded-xl border-2 border-white/30"
-                animate={reducedMotion ? {} : {
-                  scale: [1, 1.1, 1],
-                  opacity: [0.3, 0, 0.3],
-                }}
-                transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
+                <circle cx="12" cy="15" r="3" fill="white" opacity="0.6" />
+              </svg>
             </div>
-            <span className="text-xl font-bold text-white">Oro Azul</span>
+            <span className="text-xl font-bold text-white">{businessName}</span>
           </motion.a>
 
           {/* Desktop Links */}
@@ -249,7 +224,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 md:hidden"
+            className="fixed inset-0 z-50 md:hidden"
             onAnimationComplete={() => {
               if (isMobileMenuOpen) {
                 mobileMenuRef.current?.querySelector('a')?.focus()
@@ -270,7 +245,7 @@ export default function Navigation({ whatsapp }: NavigationProps) {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute right-0 top-0 bottom-0 w-[85vw] max-w-[320px] p-6 pt-20 backdrop-blur-xl"
+              className="absolute right-0 top-0 bottom-0 w-[85vw] max-w-[320px] p-6 pt-20 backdrop-blur-md"
               style={{ backgroundColor: 'rgba(10, 22, 40, 0.95)', paddingTop: 'calc(env(safe-area-inset-top) + 80px)' }}
               role="dialog"
               aria-modal="true"

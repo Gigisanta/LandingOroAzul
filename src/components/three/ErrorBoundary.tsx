@@ -28,7 +28,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       return (
         this.props.fallback ?? (
           <div
-            className="fixed inset-0 -z-10 flex items-center justify-center"
+            className="fixed inset-0 z-0 flex items-center justify-center"
             style={{ backgroundColor: 'var(--color-dark)' }}
           >
             <div className="text-center p-8">

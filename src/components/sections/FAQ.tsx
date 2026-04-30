@@ -50,11 +50,11 @@ const faqs: FAQItem[] = [
 ]
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   },
 }
 
@@ -69,8 +69,7 @@ export default function FAQ() {
   return (
     <section
       id="faq"
-      className="py-16 px-4 relative z-10"
-      style={{ background: 'var(--color-dark)/85' }}
+      className="py-16 px-4 relative z-10 bg-[var(--color-dark)]/98"
     >
       <div className="max-w-3xl mx-auto">
         <motion.div
@@ -87,28 +86,28 @@ export default function FAQ() {
           </p>
         </motion.div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {faqs.map((faq, index) => (
             <motion.div
               key={faq.id}
-              initial={reducedMotion ? undefined : { opacity: 0, y: 20 }}
+              initial={reducedMotion ? undefined : { opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.4, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="bg-[var(--color-dark)]/80 backdrop-blur-xl rounded-xl border border-white/20 overflow-hidden">
+              <div className="bg-[var(--color-bg-card)] backdrop-blur-xl rounded-xl border border-[var(--color-border-light)] hover:border-[var(--color-border-medium)] overflow-hidden card-transition">
                 <button
                   onClick={() => toggle(faq.id)}
                   aria-expanded={openId === faq.id}
                   aria-controls={`faq-answer-${faq.id}`}
-                  className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left min-h-[44px]"
+                  className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left min-h-[52px] group"
                 >
-                  <span className="font-semibold text-white pr-4">{faq.question}</span>
+                  <span className="font-semibold text-white group-hover:text-[var(--color-turquoise)] transition-colors duration-200 pr-2">{faq.question}</span>
                   <motion.div
-                    animate={{ rotate: openId === faq.id ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex-shrink-0 w-6 h-6 rounded-full bg-white/10 flex items-center justify-center"
+                    animate={{ rotate: openId === faq.id ? 180 : 0, scale: openId === faq.id ? 1.1 : 1 }}
+                    transition={{ duration: 0.25 }}
+                    className="flex-shrink-0 w-7 h-7 rounded-full bg-[var(--color-surface-15)] group-hover:bg-[var(--color-turquoise-20)] flex items-center justify-center transition-colors duration-200"
                   >
-                    <ChevronDown className="w-4 h-4 text-white" />
+                    <ChevronDown className="w-4 h-4 text-white/80 group-hover:text-[var(--color-turquoise)] transition-colors duration-200" />
                   </motion.div>
                 </button>
 
@@ -116,13 +115,13 @@ export default function FAQ() {
                   {openId === faq.id && (
                     <motion.div
                       id={`faq-answer-${faq.id}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
+                      initial={{ maxHeight: 0, opacity: 0 }}
+                      animate={{ maxHeight: 300, opacity: 1 }}
+                      exit={{ maxHeight: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
                     >
-                      <div className="px-6 pb-5 text-white/80 leading-relaxed border-t border-white/10 pt-4">
+                      <div className="px-5 pb-4 text-white/75 leading-relaxed border-t border-[var(--color-border-subtle)] pt-3">
                         {faq.answer}
                       </div>
                     </motion.div>

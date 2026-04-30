@@ -1,20 +1,25 @@
 # Oro Azul - Swimming School Landing Page
 
-A Next.js landing page for **Oro Azul**, a swimming school (natatorio) in Buenos Aires, Argentina. The site features an immersive 3D swimming pool visualization with custom GLSL shaders for realistic water effects using Gerstner waves, protected by an ErrorBoundary for production resilience.
+A Next.js landing page for **Oro Azul**, a swimming school (natatorio) in Buenos Aires, Argentina. The site features an immersive **full-screen 3D swimming pool visualization** with visible pool floor tiles, lane markers, and realistic water animation using Gerstner waves, protected by an ErrorBoundary for production resilience.
 
 ## Overview
 
-Oro Azul offers swimming classes for all ages, aquatic rehabilitation, and recreational activities. The landing page showcases these services with a stunning 3D pool background that creates an immersive aquatic experience for visitors.
+Oro Azul offers swimming classes for all ages, aquatic rehabilitation, and recreational activities. The landing page showcases these services with a stunning **full-screen swimming pool background** that creates an immersive aquatic experience. The pool fills the viewport width with visible floor, walls, and animated water surface.
 
 ### Key Features
 
-- **3D Swimming Pool Visualization**: Realistic swimming pool rendered in WebGL
-- **Custom Water Shader**: Animated wave effects using Gerstner waves
+- **Full-Screen Swimming Pool**: Pool fills viewport width with transparent water
+- **Visible Pool Floor**: Tiles with lane markers visible through water
+- **Pool Walls**: All 4 walls visible at pool edges
+- **Realistic Gerstner Waves**: 4 overlapping waves for natural water motion
+- **Sun Reflections**: Specular highlights on water surface
+- **Optimized for All Devices**: Desktop uses full shader complexity; mobile uses simplified version
+- **iOS WebGL Fixes**: failIfMajorPerformanceCaveat disabled, WebGL2 with WebGL1 fallback
 - **ErrorBoundary Protection**: Graceful fallback for 3D rendering failures
 - **CSS Design Tokens**: Centralized color and typography variables
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
 - **Reduced Motion Support**: Respects user accessibility preferences
-- **Multi-section Layout**: Hero, Schedule, Pricing, Gallery, Testimonials, Contact
+- **Proper Z-Index Stacking**: All sections layered correctly above water background
 
 ## Tech Stack
 
@@ -37,77 +42,97 @@ Oro Azul offers swimming classes for all ages, aquatic rehabilitation, and recre
 src/
 ├── app/
 │   ├── layout.tsx          # Root layout with fonts and metadata
-│   ├── page.tsx            # Main landing page
+│   ├── page.tsx            # Main landing page (uses WaterCanvas)
 │   └── globals.css         # Global styles
 ├── components/
-│   ├── sections/           # Page sections
-│   │   ├── Navigation.tsx  # Fixed navigation with CTA
-│   │   ├── Hero.tsx        # Hero with 3D background
+│   ├── sections/           # Page sections (all at z-10 above water)
+│   │   ├── Navigation.tsx  # Fixed navigation (z-50)
+│   │   ├── Hero.tsx        # Hero section
+│   │   ├── Benefits.tsx    # Benefits section
 │   │   ├── Schedule.tsx    # Class schedule by activity
-│   │   ├── Pricing.tsx     # Pricing plans
-│   │   ├── Gallery.tsx     # Image gallery with motion.a
+│   │   ├── Pricing.tsx    # Pricing plans
+│   │   ├── Gallery.tsx    # Image gallery
 │   │   ├── Testimonials.tsx # Customer testimonials
-│   │   ├── Contact.tsx     # Contact form
-│   │   └── Footer.tsx      # Site footer
+│   │   ├── FAQ.tsx        # FAQ accordion
+│   │   ├── Contact.tsx    # Contact form
+│   │   └── Footer.tsx     # Site footer
 │   └── three/              # 3D scene components
-│       ├── Scene.tsx       # Main 3D canvas with ErrorBoundary
-│       └── MinimalWater.tsx # Water surface with Gerstner waves
+│       ├── Scene.tsx       # Thin wrapper for WaterCanvas
+│       ├── WaterCanvas.tsx # Full-screen WebGL canvas
+│       └── MinimalWater.tsx # Full-screen ocean water shader
 ├── data/
 │   └── landing.json       # Static content data
 └── hooks/
-    └── useReducedMotion.ts # Accessibility hook
+    ├── useReducedMotion.ts # Accessibility hook
+    └── useWaterVisibility.ts # Scroll-based water opacity
 ```
 
 ## 3D Scene Architecture
 
-The 3D scene is built with React Three Fiber and protected by an ErrorBoundary for graceful failure handling.
+### WaterCanvas Component (`WaterCanvas.tsx`)
 
-### Scene Component (`Scene.tsx`)
+The main 3D canvas wrapper:
+- `fixed inset-0 -z-10` positioning for full-screen background
+- WebGL2 with WebGL1 fallback chain
+- `failIfMajorPerformanceCaveat: false` for iOS compatibility
+- DPR capped at 1 on mobile for performance
+- Gradient fallback when WebGL unavailable
 
-The main canvas wrapper that sets up the R3F Canvas with:
-- Camera position: `[0, 25, 30]` with 45 FOV
-- High-performance WebGL context
-- Sky gradient background
-- Ambient and directional lighting
-- ErrorBoundary wrapping for production resilience
+### MinimalWater (`MinimalWater.tsx`)
 
-### MinimalWater Shader (`MinimalWater.tsx`)
+**Swimming Pool Visualization** - Pool dimensions 30x50 units filling viewport width.
 
-Custom GLSL shader creating realistic water surface with Gerstner waves:
+**Components:**
+- Pool floor (30x50 units) with tile pattern and lane markers
+- 4 pool walls (visible at edges)
+- Transparent water surface (30x50 units) with Gerstner wave animation
 
-**Vertex Shader Features:**
-- Gerstner wave algorithm for realistic ocean-like motion
-- Multiple wave frequencies and amplitudes
-- Dynamic normal calculation for reflections
+**Water Surface Vertex Shader Features:**
+- 4 Gerstner waves with varying directions, frequencies, and amplitudes
 - Time-based animation
+- Foam generation at wave crests
 
-**Fragment Shader Features:**
-- Depth-based color gradient (deep to shallow)
-- Specular highlights using Blinn-Phong lighting
-- Fresnel effect for view-dependent reflections
-- Sun reflection simulation
-- Transparency with edge opacity
+**Water Surface Fragment Shader Features:**
+- Transparent water (75% opacity) revealing pool floor
+- Diffuse and specular lighting
+- Sun reflections on water surface
+- Foam at wave crests
 
-## Water Shader Reference
+**Pool Floor Shader Features:**
+- Tile pattern with grout lines
+- Lane markers (6 lanes)
+- Animated caustic light patterns
+- Edge darkening for depth
 
-### Vertex Shader Uniforms
+**Pool Wall Shader Features:**
+- Tile texture
+- Water line effect (lighter band at water level)
+- Depth shading
+
+**Mobile Optimizations:**
+- Simplified wave calculation (2 sine waves instead of Gerstner)
+- Lower geometry subdivision (48x48 vs 64x64)
+- Simplified lighting model
+
+### Water Shader Uniforms
 
 | Uniform | Type | Description |
 |---------|------|-------------|
 | `uTime` | float | Animation time from clock |
-| `uColor` | vec3 | Surface water color |
-| `uDeepColor` | vec3 | Deep water color |
-| `uHighlightColor` | vec3 | Specular highlight color |
-| `uSkyColor` | vec3 | Sky reflection color |
+| `uWaterColor` | vec3 | Surface water color (#4FC3F7) |
+| `uDeepColor` | vec3 | Deep water color (#0288D1) |
+| `uSunColor` | vec3 | Sun reflection color (#FFFDE7) |
+| `uOpacity` | float | Water opacity (0-1) |
+| `uWaveHeight` | float | Wave amplitude multiplier |
 
-### Pool Dimensions
+## Z-Index Stacking
 
-- Width: 22 units
-- Length: 34 units
-- Depth: 3 units
-- Wall thickness: 0.4 units
-- Deck width: 3 units
-- Lane count: 6
+```
+z-10:   WaterCanvas (fixed background)
+z-10:   All sections (Hero, Benefits, Schedule, Pricing, Gallery, Testimonials, FAQ, Contact, Footer)
+z-50:   Navigation
+z-[5]:  Hero gradient overlay (between water and content)
+```
 
 ## Data Structure
 
@@ -147,28 +172,35 @@ npm run build
 npm start
 ```
 
-## Development
-
-The development server runs on port 3001:
-```bash
-npm run dev  # Starts on http://localhost:3001
-```
-
 ## Design Decisions
 
-### Why Custom GLSL Shaders?
+### Full-Screen Water Background
 
-Pre-built water materials often lack the specific look needed for a natatorio. Custom shaders provide:
-- Control over wave frequency and amplitude
-- Tunable optical properties (refraction, reflection)
-- Performance optimization for mobile
-- Consistent visual style across devices
-- Gerstner wave algorithm for realistic ocean-like motion
+The water fills the entire viewport behind all content, creating an immersive aquatic atmosphere. Key implementation details:
+
+- Water plane is 150x150 units, camera at [0, 25, 30] sees approximately 100+ units of water
+- No pool boundaries - pure ocean aesthetic
+- Water fades slightly at edges for seamless blending
+
+### Why Gerstner Waves?
+
+Gerstner waves provide physically-accurate ocean simulation:
+- Circular particle motion creates realistic wave profiles
+- Multiple overlapping waves create natural interference patterns
+- Steepness parameter controls wave sharpness
+
+### iOS Compatibility
+
+Fixed issues that caused black screen and choppy animation:
+- `failIfMajorPerformanceCaveat: false` - allows software rendering
+- WebGL2 try-first with WebGL1 fallback
+- DPR capped at 1 on mobile devices
+- Simplified mobile shaders with fewer calculations
 
 ### Reduced Motion
 
 The `useReducedMotion` hook detects system preferences and disables:
-- Wave animation
+- Wave animation (uTime frozen at 0)
 - Scroll indicator animation
 - Framer Motion stagger effects
 
@@ -184,6 +216,8 @@ The project uses CSS custom properties defined in `globals.css` for consistent t
   --color-accent: oklch(...);
   --color-surface: oklch(...);
   --color-text: oklch(...);
+  --color-dark: oklch(...);
+  --color-turquoise: oklch(...);
 
   /* Typography */
   --font-family: 'Plus Jakarta Sans', sans-serif;
@@ -200,37 +234,14 @@ The project uses CSS custom properties defined in `globals.css` for consistent t
 }
 ```
 
-Typography is loaded via `next/font/google` with Plus Jakarta Sans for optimal performance.
-
-## Swimming Pool Web Design Best Practices
-
-Based on industry research:
-
-1. **Visual Impact**: Swimming pool websites rely heavily on visual appeal. Crystal-clear water surfaces with natural reflections and realistic movement are essential.
-
-2. **Color Palette**: Bright blues (#00A8E8), clean whites, and aquatic aesthetics create trust and convey cleanliness.
-
-3. **3D Visualization**: Modern pool websites use 3D rendering to showcase pool designs with accurate lighting, materials, and water effects.
-
-4. **Key Elements**:
-   - Realistic water shaders with Gerstner waves
-   - Proper refraction and reflection
-   - Lane markers for authenticity
-   - Graceful degradation for older browsers
-
-5. **Reference Sites**:
-   - Orange Pools (wave animations)
-   - Myrtha Pools (Virtual Trainer)
-   - DanThree Studio (photorealistic 3D)
-
 ## Browser Support
 
 - Chrome 90+
 - Firefox 88+
-- Safari 14+
+- Safari 14+ (including iOS Safari)
 - Edge 90+
 
-WebGL 2.0 required for full shader support.
+WebGL 1.0 minimum required (WebGL 2.0 preferred for better performance).
 
 ## License
 

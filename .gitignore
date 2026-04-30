@@ -27,7 +27,16 @@ npm-debug.log*
 
 # Testing
 coverage/
+*.tsbuildinfo
 
 # Misc
-*.tsbuildinfo
 .vercel
+
+# Playwright
+.playwright-mcp/
+test-results/
+
+# Screenshots (development artifacts)
+*.png
+*.jpg
+*.jpeg

@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, memo } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 interface Testimonial {
@@ -64,7 +64,7 @@ const carouselVariants = {
   }),
 }
 
-function StarRating({ rating }: { rating: number }) {
+const StarRating = memo(function StarRating({ rating }: { rating: number }) {
   return (
     <div className="flex gap-0.5" aria-label={`${rating} de 5 estrellas`}>
       {[1, 2, 3, 4, 5].map((star) => (
@@ -80,24 +80,25 @@ function StarRating({ rating }: { rating: number }) {
       ))}
     </div>
   )
-}
+})
 
-function TestimonialCard({ testimonial, reducedMotion }: { testimonial: Testimonial; reducedMotion: boolean }) {
+const TestimonialCard = memo(function TestimonialCard({ testimonial, reducedMotion }: { testimonial: Testimonial; reducedMotion: boolean }) {
   return (
     <motion.div
       className="w-full h-full"
       style={{ perspective: 1000 }}
     >
       <motion.div
-        initial={{ scale: 1, rotateX: 0 }}
-        whileHover={reducedMotion ? {} : { scale: 1.02, rotateX: 2 }}
+        initial={{ scale: 1 }}
+        whileHover={reducedMotion ? {} : { scale: 1.02 }}
         transition={{ duration: 0.4 }}
-        className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-6 border border-white/40 relative overflow-hidden shadow-2xl shadow-black/40 h-full"
+        className="bg-[var(--color-dark)]/85 backdrop-blur-xl md:backdrop-blur-md rounded-2xl p-6 border border-white/40 relative overflow-hidden shadow-2xl shadow-black/40 h-full"
         style={{ transformStyle: 'preserve-3d' }}
       >
         {/* Gradient overlay */}
         <div
           className="absolute inset-0 opacity-30 pointer-events-none"
+          suppressHydrationWarning
           style={{
             background: 'linear-gradient(135deg, var(--color-primary) 0%, transparent 50%, var(--color-turquoise) 100%)',
           }}
@@ -106,6 +107,7 @@ function TestimonialCard({ testimonial, reducedMotion }: { testimonial: Testimon
         {/* Static border glow */}
         <div
           className="absolute inset-0 rounded-2xl opacity-20 pointer-events-none"
+          suppressHydrationWarning
           style={{
             background: 'linear-gradient(135deg, var(--color-turquoise), var(--color-primary))',
             filter: 'blur(8px)',
@@ -149,13 +151,24 @@ function TestimonialCard({ testimonial, reducedMotion }: { testimonial: Testimon
       </motion.div>
     </motion.div>
   )
-}
+})
 
 function TestimonialCarousel({ testimonials, reducedMotion }: { testimonials: Testimonial[]; reducedMotion: boolean }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [direction, setDirection] = useState(1)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const carouselRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!carouselRef.current) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsPaused(!entry.isIntersecting),
+      { threshold: 0.1 }
+    )
+    observer.observe(carouselRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   const goTo = useCallback(
     (index: number) => {
@@ -206,6 +219,7 @@ function TestimonialCarousel({ testimonials, reducedMotion }: { testimonials: Te
         </motion.button>
 
         <div
+          ref={carouselRef}
           className="relative"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
@@ -249,27 +263,45 @@ function TestimonialCarousel({ testimonials, reducedMotion }: { testimonials: Te
       {/* Navigation dots */}
       <div className="flex justify-center gap-3 mt-8 min-w-[44px] min-h-[44px] items-center">
         {testimonials.map((_, index) => (
-          <motion.button
+          <button
             key={index}
             onClick={() => goTo(index)}
-            animate={{
-              width: index === currentIndex ? 32 : 10,
-              backgroundColor: index === currentIndex
-                ? 'var(--color-turquoise)'
-                : 'var(--color-surface-25)',
-            }}
-            whileHover={{ scale: 1.2 }}
-            className="h-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)]"
+            className={`h-2.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)] ${
+              index === currentIndex
+                ? 'w-8 bg-[var(--color-turquoise)]'
+                : 'w-2.5 bg-white/25'
+            }`}
             aria-label={`Ir al testimonio ${index + 1}`}
           />
         ))}
+      </div>
+
+      {/* Pause/Play Control */}
+      <div className="flex justify-center mt-4">
+        <motion.button
+          onClick={() => setIsPaused(!isPaused)}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white min-w-[44px] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)]"
+          aria-label={isPaused ? 'Reanudar carousel' : 'Pausar carousel'}
+        >
+          {isPaused ? (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          ) : (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          )}
+        </motion.button>
       </div>
     </div>
   )
 }
 
-function TestimonialGrid({ testimonials, reducedMotion }: { testimonials: Testimonial[]; reducedMotion: boolean }) {
-  const visibleTestimonials = testimonials.slice(0, 3)
+const TestimonialGrid = memo(function TestimonialGrid({ testimonials, reducedMotion }: { testimonials: Testimonial[]; reducedMotion: boolean }) {
+  const visibleTestimonials = testimonials
 
   return (
     <div className="hidden md:block">
@@ -277,7 +309,7 @@ function TestimonialGrid({ testimonials, reducedMotion }: { testimonials: Testim
         variants={reducedMotion ? {} : staggerContainer}
         initial={reducedMotion ? undefined : 'hidden'}
         animate={reducedMotion ? undefined : 'visible'}
-        className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
         {visibleTestimonials.map((testimonial, index) => (
           <motion.div
@@ -293,7 +325,7 @@ function TestimonialGrid({ testimonials, reducedMotion }: { testimonials: Testim
       </motion.div>
     </div>
   )
-}
+})
 
 export default function Testimonials({ testimonials }: TestimonialsProps) {
   const reducedMotion = useReducedMotion()
@@ -302,8 +334,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
     <section
       id="testimonios"
       aria-labelledby="testimonios-heading"
-      className="py-16 px-4 relative z-10"
-      style={{ background: 'var(--color-dark)/85' }}
+      className="py-16 px-4 relative z-10 bg-[var(--color-dark)]/98"
     >
       <div className="max-w-6xl mx-auto">
         <motion.div

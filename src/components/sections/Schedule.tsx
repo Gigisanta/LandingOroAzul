@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check } from 'lucide-react'
+import { Check, Baby, Waves, Dumbbell, Users } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 interface ScheduleItem {
@@ -24,29 +24,29 @@ interface ScheduleProps {
 }
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   },
 }
 
 const fadeInLeft = {
-  hidden: { opacity: 0, x: -50 },
+  hidden: { opacity: 0, x: -30 },
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   },
 }
 
 const fadeInRight = {
-  hidden: { opacity: 0, x: 50 },
+  hidden: { opacity: 0, x: 30 },
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   },
 }
 
@@ -66,9 +66,30 @@ const cardHoverVariants = {
   },
 }
 
+const getActivityIcon = (id: string, icon: string): React.ReactNode => {
+  const iconMap: Record<string, React.ReactNode> = {
+    bebes: <Baby className="w-6 h-6" />,
+    ninos: <Waves className="w-6 h-6" />,
+    adultos: <Users className="w-6 h-6" />,
+    aquagym: <Dumbbell className="w-6 h-6" />,
+    libre: <Waves className="w-6 h-6" />,
+  }
+  return iconMap[id] || <span className="text-2xl">{icon}</span>
+}
+
 export default function Schedule({ activities }: ScheduleProps) {
-  const [selectedActivity, setSelectedActivity] = useState<Activity>(activities[0])
+  const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(activities[0])
   const reducedMotion = useReducedMotion()
+
+  if (!activities || activities.length === 0) {
+    return (
+      <section id="horarios-unavailable" className="relative z-10 py-16 px-4 bg-[var(--color-dark)]/98">
+        <div className="max-w-6xl mx-auto text-center text-white/70">
+          No hay actividades disponibles.
+        </div>
+      </section>
+    )
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     let newIndex = index
@@ -90,7 +111,7 @@ export default function Schedule({ activities }: ScheduleProps) {
   }
 
   return (
-    <section id="horarios" aria-labelledby="horarios-heading" className="py-16 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
+    <section id="horarios" aria-labelledby="horarios-heading" className="relative z-10 py-16 px-4 bg-[var(--color-dark)]/98 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <motion.div
@@ -130,9 +151,9 @@ export default function Schedule({ activities }: ScheduleProps) {
               key={activity.id}
               role="tab"
               id={`tab-${activity.id}`}
-              aria-selected={selectedActivity.id === activity.id}
+              aria-selected={selectedActivity?.id === activity.id}
               aria-controls={`panel-${activity.id}`}
-              tabIndex={selectedActivity.id === activity.id ? 0 : -1}
+              tabIndex={selectedActivity?.id === activity.id ? 0 : -1}
               onClick={() => setSelectedActivity(activity)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               variants={reducedMotion ? {} : fadeInUp}
@@ -143,13 +164,13 @@ export default function Schedule({ activities }: ScheduleProps) {
                 flex items-center gap-2 min-h-[44px] min-w-[44px]
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2
                 ${
-                  selectedActivity.id === activity.id
+                  selectedActivity?.id === activity.id
                     ? 'bg-[var(--color-turquoise)] text-[var(--color-dark)] shadow-lg shadow-[var(--color-turquoise)]/20'
                     : 'bg-white/10 text-white/80 border border-white/20 hover:bg-white/20 hover:border-white/40 hover:text-white'
                 }
               `}
             >
-              <span className="text-lg">{activity.icon}</span>
+              {getActivityIcon(activity.id, activity.icon)}
               <span>{activity.name}</span>
             </motion.button>
           ))}
@@ -158,10 +179,10 @@ export default function Schedule({ activities }: ScheduleProps) {
         {/* Content */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={selectedActivity.id}
+            key={selectedActivity?.id}
             role="tabpanel"
-            id={`panel-${selectedActivity.id}`}
-            aria-labelledby={`tab-${selectedActivity.id}`}
+            id={`panel-${selectedActivity?.id}`}
+            aria-labelledby={`tab-${selectedActivity?.id}`}
           >
             <div className="grid md:grid-cols-2 gap-6">
               {/* Activity Info Card */}
@@ -173,23 +194,23 @@ export default function Schedule({ activities }: ScheduleProps) {
                 className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-5 border border-white/40 shadow-2xl shadow-black/40"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <motion.span
-                    className="text-4xl"
+                  <motion.div
                     whileHover={reducedMotion ? {} : { scale: 1.2, rotate: 5 }}
                     transition={{ type: 'spring', stiffness: 300 }}
+                    className="text-4xl w-12 h-12 flex items-center justify-center rounded-full bg-[var(--color-turquoise)]/20"
                   >
-                    {selectedActivity.icon}
-                  </motion.span>
+                    {selectedActivity && getActivityIcon(selectedActivity.id, selectedActivity.icon)}
+                  </motion.div>
                   <div>
                     <h3 className="text-2xl font-bold text-white">
-                      {selectedActivity.name}
+                      {selectedActivity?.name}
                     </h3>
-                    <p className="text-white/90">{selectedActivity.ages}</p>
+                    <p className="text-white/90">{selectedActivity?.ages}</p>
                   </div>
                 </div>
 
                 <ul className="space-y-3">
-                  {selectedActivity.features.map((feature, index) => (
+                  {selectedActivity?.features.map((feature, index) => (
                     <motion.li
                       key={index}
                       variants={reducedMotion ? {} : fadeInUp}
@@ -216,12 +237,12 @@ export default function Schedule({ activities }: ScheduleProps) {
                 className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-5 border border-white/40 shadow-2xl shadow-black/40"
               >
                 <h3 className="text-xl font-bold mb-2 text-white">
-                  Horarios de {selectedActivity.name}
+                  Horarios de {selectedActivity?.name}
                 </h3>
                 <p className="text-white/90 text-base mb-4">Días y horarios disponibles</p>
 
                 <div className="space-y-2">
-                  {selectedActivity.schedule.map((item, index) => (
+                  {selectedActivity?.schedule.map((item, index) => (
                     <motion.div
                       key={index}
                       initial={reducedMotion ? undefined : { opacity: 0, x: 20 }}

@@ -48,36 +48,23 @@ export default function Footer({ business }: FooterProps) {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="relative" style={{ backgroundColor: 'var(--color-dark)' }}>
+    <footer className="relative z-10 bg-[var(--color-dark)]">
       {/* Wave divider at top */}
       <div className="absolute -top-1 left-0 right-0 overflow-hidden leading-[0]">
         <svg
-          viewBox="0 0 1440 100"
+          viewBox="0 0 1440 60"
           preserveAspectRatio="none"
-          className="relative block w-full h-[80px]"
+          className="relative block w-full h-[60px]"
           aria-hidden="true"
         >
-          <motion.path
-            d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,100 L0,100 Z"
+          <path
+            d="M0,30 C360,50 720,10 1080,30 C1260,40 1380,35 1440,30 L1440,60 L0,60 Z"
             fill="var(--color-dark)"
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-          />
-          <motion.path
-            d="M0,60 C480,20 960,80 1440,50 L1440,100 L0,100 Z"
-            fill="var(--color-dark)"
-            opacity="0.5"
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.4, delay: 0.2, ease: "easeInOut" }}
           />
         </svg>
       </div>
 
-      <div className="pt-12 pb-8 px-4">
+      <div className="pt-16 pb-8 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo & Brand */}

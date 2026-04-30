@@ -9,18 +9,18 @@ interface PricingPlan {
   name: string
   classes: number
   price: number
-  currency: string
+  currency?: string
   description?: string
   features: string[]
   isDefault?: boolean
 }
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 50 },
+  hidden: { opacity: 0, y: 40 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   },
 }
 
@@ -28,12 +28,12 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
   },
 }
 
 const scaleIn = {
-  hidden: { opacity: 0, scale: 0.8 },
+  hidden: { opacity: 0, scale: 0.9 },
   visible: {
     opacity: 1,
     scale: 1,
@@ -54,26 +54,27 @@ interface PricingCardProps {
   plan: PricingPlan
   index: number
   reducedMotion: boolean
+  whatsapp: string
 }
 
-function PricingCard({ plan, index, reducedMotion }: PricingCardProps) {
+function PricingCard({ plan, index, reducedMotion, whatsapp }: PricingCardProps) {
   const isPopular = plan.isDefault
 
   return (
     <motion.div
       variants={fadeInUp}
       custom={index}
-      whileHover={reducedMotion ? {} : { y: -8, transition: { duration: 0.3 } }}
+      whileHover={reducedMotion ? {} : { y: -6, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
       tabIndex={0}
       role="article"
       aria-label={`Plan ${plan.name}: ${plan.classes} clases por mes a ${plan.price} pesos`}
-      className={`relative ${isPopular ? 'scale-[1.02] overflow-hidden' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)] rounded-2xl`}
+      className={`relative group ${isPopular ? 'scale-[1.02] overflow-hidden' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)] rounded-2xl`}
     >
       <div
-        className={`h-full flex flex-col rounded-2xl p-6 transition-all duration-300 ${
+        className={`h-full flex flex-col rounded-2xl p-6 transition-all duration-250 ${
           isPopular
-            ? 'bg-[var(--color-turquoise)]/25 backdrop-blur-xl border border-[var(--color-turquoise)]/50 shadow-2xl shadow-black/30'
-            : 'bg-[var(--color-dark)]/85 backdrop-blur-xl hover:bg-[var(--color-dark)]/90 border border-white/40 shadow-2xl shadow-black/40'
+            ? 'bg-[var(--color-turquoise)]/20 backdrop-blur-xl border border-[var(--color-turquoise)]/40 shadow-[var(--shadow-card)]'
+            : 'bg-[var(--color-bg-card)] backdrop-blur-xl hover:bg-[var(--color-bg-card-hover)] border border-[var(--color-border-light)] hover:border-[var(--color-border-medium)] shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)]'
         }`}
       >
         {isPopular && (
@@ -81,13 +82,13 @@ function PricingCard({ plan, index, reducedMotion }: PricingCardProps) {
             initial={reducedMotion ? undefined : { scale: 0 }}
             animate={reducedMotion ? undefined : { scale: 1 }}
             transition={{ delay: 0.3, type: 'spring', stiffness: 300 }}
-            className="absolute -top-3 left-1/2 -translate-x-1/2"
+            className="absolute -top-3 left-1/2 -translate-x-1/2 z-10"
           >
             <span
-              className="px-4 py-1 text-xs font-semibold text-white rounded-full"
+              className="px-4 py-1.5 text-xs font-bold text-white rounded-full shadow-lg"
               style={{ backgroundColor: 'var(--color-primary)' }}
             >
-              Más Popular
+              ⭐ Más Popular
             </span>
           </motion.div>
         )}
@@ -118,8 +119,7 @@ function PricingCard({ plan, index, reducedMotion }: PricingCardProps) {
 
           <div className="text-center mb-4">
             <motion.span
-              className="inline-block px-3 py-1 text-xs font-medium rounded-full text-white"
-              style={{ backgroundColor: 'var(--color-turquoise-dark)' }}
+              className="inline-block px-3 py-1 text-xs font-medium rounded-full text-white bg-[var(--color-primary)]"
               whileHover={reducedMotion ? {} : { scale: 1.1 }}
             >
               {plan.classes} clases/mes
@@ -152,14 +152,14 @@ function PricingCard({ plan, index, reducedMotion }: PricingCardProps) {
           whileHover={reducedMotion ? {} : { scale: 1.02 }}
         >
           <a
-            href={`https://wa.me/5491100000000?text=Hola!%20Quiero%20info%20sobre%20${encodeURIComponent(plan.name)}`}
+            href={`https://wa.me/${whatsapp}?text=Hola!%20Quiero%20info%20sobre%20${encodeURIComponent(plan.name)}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Consultar por ${plan.name} vía WhatsApp`}
             className={`w-full py-3 px-4 rounded-lg font-semibold text-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 min-h-[44px] flex items-center justify-center ${
               isPopular
                 ? 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white focus-visible:ring-[var(--color-primary)]'
-                : 'bg-[var(--color-turquoise)] hover:bg-[var(--color-turquoise-dark)] text-white focus-visible:ring-[var(--color-turquoise)]'
+                : 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white focus-visible:ring-[var(--color-primary)]'
             }`}
           >
             Consultar por WhatsApp
@@ -172,13 +172,14 @@ function PricingCard({ plan, index, reducedMotion }: PricingCardProps) {
 
 interface PricingProps {
   plans: PricingPlan[]
+  whatsapp: string
 }
 
-export default function Pricing({ plans }: PricingProps) {
+export default function Pricing({ plans, whatsapp }: PricingProps) {
   const reducedMotion = useReducedMotion()
 
   return (
-    <section id="precios" aria-labelledby="precios-heading" className="py-16 px-4 relative z-10 bg-[var(--color-dark)]/85">
+    <section id="precios" aria-labelledby="precios-heading" className="py-16 px-4 relative z-10 bg-[var(--color-dark)]/98">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -213,7 +214,7 @@ export default function Pricing({ plans }: PricingProps) {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8"
         >
           {plans.map((plan, index) => (
-            <PricingCard key={plan.id} plan={plan} index={index} reducedMotion={reducedMotion} />
+            <PricingCard key={plan.id} plan={plan} index={index} reducedMotion={reducedMotion} whatsapp={whatsapp} />
           ))}
         </motion.div>
 
@@ -255,10 +256,10 @@ export default function Pricing({ plans }: PricingProps) {
           className="mt-8 text-center"
         >
           <a
-            href="https://wa.me/5491100000000?text=Hola!%20Quiero%20reservar%20una%20clase%20gratis"
+            href={`https://wa.me/${whatsapp}?text=Hola!%20Quiero%20reservar%20una%20clase%20gratis`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block px-8 py-3 min-h-[44px] bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold rounded-lg transition-colors duration-200 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+            className="inline-block px-8 py-3 min-h-[44px] bg-[var(--color-primary-dark)] hover:bg-[var(--color-primary)] text-white font-semibold rounded-lg transition-colors duration-200 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
           >
             Reservar clase gratis
           </a>

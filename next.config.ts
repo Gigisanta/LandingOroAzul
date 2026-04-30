@@ -2,6 +2,7 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -13,7 +14,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config, { isServer }) => {
+webpack: (config, { isServer }) => {
     if (!isServer) {
       config.optimization.splitChunks = {
         chunks: 'all',
@@ -24,13 +25,29 @@ const nextConfig: NextConfig = {
             test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
             name: 'three-vendor',
             chunks: 'all',
+            priority: 40,
+            reuseExistingChunk: true,
+          },
+          framer: {
+            test: /[\\/]node_modules[\\/](framer-motion)[\\/]/,
+            name: 'framer-vendor',
+            chunks: 'all',
+            priority: 35,
+            reuseExistingChunk: true,
+          },
+          icons: {
+            test: /[\\/]node_modules[\\/](lucide-react|@phosphor-icons)[\\/]/,
+            name: 'icons-vendor',
+            chunks: 'all',
             priority: 30,
+            reuseExistingChunk: true,
           },
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
-            priority: 20,
+            priority: 10,
+            reuseExistingChunk: true,
           },
         },
       }

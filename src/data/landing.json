@@ -30,6 +30,7 @@
       "classes": 8,
       "price": 28000,
       "currency": "ARS",
+      "isDefault": true,
       "description": "Clases para niños de 4 a 12 años",
       "features": [
         "Profesor certificado",

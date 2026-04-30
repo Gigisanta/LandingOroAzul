@@ -1,8 +1,22 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { MapPin, Phone, Mail, Clock } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle, AlertCircle, User, MessageSquare } from 'lucide-react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useState } from 'react'
+
+interface FormData {
+  name: string
+  email: string
+  phone: string
+  message: string
+}
+
+interface FormErrors {
+  name?: string
+  email?: string
+  message?: string
+}
 
 interface Business {
   name: string
@@ -65,8 +79,72 @@ const iconHoverVariants = {
 export default function Contact({ business }: ContactProps) {
   const reducedMotion = useReducedMotion()
 
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+  })
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {}
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'El nombre es requerido'
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'El email es requerido'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Ingresá un email válido'
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = 'El mensaje es requerido'
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'El mensaje debe tener al menos 10 caracteres'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+    if (errors[name as keyof FormErrors]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }))
+    }
+  }
+
+  const handleSubmit = async (e: React.SubmitEvent) => {
+    e.preventDefault()
+    setSubmitStatus('idle')
+
+    if (!validateForm()) {
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      setSubmitStatus('success')
+      setFormData({ name: '', email: '', phone: '', message: '' })
+    } catch {
+      setSubmitStatus('error')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
-    <section id="contacto" aria-labelledby="contacto-heading" className="py-16 px-4 bg-[var(--color-dark)]/85 overflow-hidden">
+    <section id="contacto" aria-labelledby="contacto-heading" className="relative z-10 py-16 px-4 bg-[var(--color-dark)]/98 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -199,7 +277,7 @@ export default function Contact({ business }: ContactProps) {
             className="rounded-2xl overflow-hidden h-80 md:h-full min-h-[320px] border border-white/20"
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.5!2d-58.4!3d-34.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDM2JzAwLjAiUyA1OMKwMjQnMDAuMCJX!5e0!3m2!1ses!2sar!4v1600000000000!5m2!1ses!2sar"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3285.5!2d-58.4!3d-34.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcca3b4ef90cbb%3A0x1f2e1b4f0e8c8e2!2sBuenos%20Aires%2C%20Argentina!5e0!3m2!1ses!2ses!4v1700000000000!5m2!1ses!2ses"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -207,6 +285,7 @@ export default function Contact({ business }: ContactProps) {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Ubicación Oro Azul"
+              suppressHydrationWarning
             />
           </motion.div>
         </div>
@@ -220,7 +299,7 @@ export default function Contact({ business }: ContactProps) {
           className="mt-8 text-center"
         >
           <motion.a
-            href="https://wa.me/5491100000000?text=Hola!%20Quiero%20info%20sobre%20las%20clases%20de%20natación"
+            href={`https://wa.me/${business.whatsapp}?text=Hola!%20Quiero%20info%20sobre%20las%20clases%20de%20natación`}
             target="_blank"
             rel="noopener noreferrer"
             whileHover={reducedMotion ? {} : { scale: 1.05, y: -3 }}
@@ -232,6 +311,164 @@ export default function Contact({ business }: ContactProps) {
             </svg>
             Escribinos por WhatsApp
           </motion.a>
+        </motion.div>
+
+        <motion.div
+          variants={fadeInUp}
+          initial={reducedMotion ? undefined : 'hidden'}
+          whileInView={reducedMotion ? undefined : 'visible'}
+          viewport={{ once: true }}
+          className="mt-12 max-w-xl mx-auto"
+        >
+          <h3 className="text-2xl font-bold mb-6 text-white text-center">
+            Envianos un mensaje
+          </h3>
+
+          {submitStatus === 'success' && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 bg-green-500/15 border border-green-500/30 rounded-xl flex items-center gap-3 text-green-400"
+            >
+              <CheckCircle className="w-5 h-5 flex-shrink-0" />
+              <p>¡Mensaje enviado! Te responderemos pronto.</p>
+            </motion.div>
+          )}
+
+          {submitStatus === 'error' && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 bg-red-500/15 border border-red-500/30 rounded-xl flex items-center gap-3 text-red-400"
+            >
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <p>Algo salió mal. Intentá de nuevo más tarde.</p>
+            </motion.div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-1.5">
+                Nombre <span className="text-red-400">*</span>
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 pointer-events-none" />
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Tu nombre completo"
+                  className={`w-full pl-10 pr-4 py-3 bg-white/5 border rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--color-turquoise)] transition-colors ${
+                    errors.name ? 'border-red-500' : 'border-white/10'
+                  }`}
+                />
+              </div>
+              {errors.name && (
+                <p className="mt-1 text-sm text-red-400">{errors.name}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-1.5">
+                Email <span className="text-red-400">*</span>
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 pointer-events-none" />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="tu@email.com"
+                  className={`w-full pl-10 pr-4 py-3 bg-white/5 border rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--color-turquoise)] transition-colors ${
+                    errors.email ? 'border-red-500' : 'border-white/10'
+                  }`}
+                />
+              </div>
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-white/80 mb-1.5">
+                Teléfono <span className="text-white/40">(opcional)</span>
+              </label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 pointer-events-none" />
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="+54 11 1234-5678"
+                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--color-turquoise)] transition-colors"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium text-white/80 mb-1.5">
+                Mensaje <span className="text-red-400">*</span>
+              </label>
+              <div className="relative">
+                <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-white/40 pointer-events-none" />
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  placeholder="¿En qué podemos ayudarte?"
+                  rows={4}
+                  className={`w-full pl-10 pr-4 py-3 bg-white/5 border rounded-xl text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--color-turquoise)] transition-colors resize-none ${
+                    errors.message ? 'border-red-500' : 'border-white/10'
+                  }`}
+                />
+              </div>
+              {errors.message && (
+                <p className="mt-1 text-sm text-red-400">{errors.message}</p>
+              )}
+            </div>
+
+            <motion.button
+              type="submit"
+              disabled={isSubmitting}
+              whileHover={reducedMotion ? {} : { scale: 1.02 }}
+              whileTap={reducedMotion ? {} : { scale: 0.98 }}
+              className="w-full py-3 px-6 min-h-[44px] bg-[var(--color-turquoise)] hover:bg-[var(--color-turquoise)]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors duration-200 flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                  Enviando...
+                </span>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  Enviar mensaje
+                </>
+              )}
+            </motion.button>
+          </form>
         </motion.div>
       </div>
     </section>

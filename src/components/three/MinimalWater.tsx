@@ -188,7 +188,7 @@ const desktopFragmentShader = /* glsl */ `
     float edge = smoothstep(0.0, 0.1, vUv.x) * smoothstep(1.0, 0.9, vUv.x);
     edge *= smoothstep(0.0, 0.1, vUv.y) * smoothstep(1.0, 0.9, vUv.y);
 
-    gl_FragColor = vec4(color, 0.94 * edge * uOpacity);
+    gl_FragColor = vec4(color, 0.60 * edge * uOpacity);
   }
 `
 
@@ -335,7 +335,7 @@ const mobileFragmentShader = /* glsl */ `
     float edge = smoothstep(0.0, 0.08, vUv.x) * smoothstep(1.0, 0.92, vUv.x);
     edge *= smoothstep(0.0, 0.08, vUv.y) * smoothstep(1.0, 0.92, vUv.y);
 
-    gl_FragColor = vec4(color, 0.94 * edge * uOpacity);
+    gl_FragColor = vec4(color, 0.60 * edge * uOpacity);
   }
 `
 
@@ -349,6 +349,7 @@ interface MinimalWaterProps {
 export default function MinimalWater({ isMobile = false, reducedMotion = false, docSize, opacity = 1.0 }: MinimalWaterProps) {
   const meshRef = useRef<Mesh | null>(null)
   const targetOpacity = useRef(1.0)
+  const elapsedTime = useRef(0)
 
   useEffect(() => {
     targetOpacity.current = opacity
@@ -357,20 +358,21 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false, 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uWaterColor: { value: new Color('#5DD9E8') },
-      uDeepColor: { value: new Color('#1A9EAA') },
+      uWaterColor: { value: new Color('#4DD0E1') },
+      uDeepColor: { value: new Color('#006064') },
       uSunColor: { value: new Color('#FFF8E0') },
       uOpacity: { value: 1.0 },
     }),
     []
   )
 
-  useFrame(({ clock }) => {
+  useFrame((_, delta) => {
     if (!meshRef.current) return
     const material = meshRef.current.material as ShaderMaterial
 
     if (!reducedMotion) {
-      material.uniforms.uTime.value = clock.getElapsedTime()
+      elapsedTime.current += delta
+      material.uniforms.uTime.value = elapsedTime.current
     }
 
     const current = material.uniforms.uOpacity.value
@@ -392,7 +394,7 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false, 
   }, [])
 
   // Balanced segment counts
-  const segments = isMobile ? 36 : 64
+  const segments = isMobile ? 28 : 64
 
   const vertexShader = isMobile ? mobileVertexShader : desktopVertexShader
   const fragmentShader = isMobile ? mobileFragmentShader : desktopFragmentShader
@@ -412,6 +414,7 @@ export default function MinimalWater({ isMobile = false, reducedMotion = false, 
         fragmentShader={fragmentShader}
         uniforms={uniforms}
         transparent
+        depthWrite={false}
         side={2}
       />
     </mesh>
