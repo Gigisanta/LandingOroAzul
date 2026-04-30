@@ -38,41 +38,6 @@ const benefits: Benefit[] = [
   },
 ]
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-}
-
-const cardVariants = {
-  rest: { scale: 1, y: 0 },
-  hover: {
-    scale: 1.02,
-    y: -4,
-    transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const iconVariants = {
-  rest: { scale: 1, rotate: 0 },
-  hover: {
-    scale: 1.1,
-    rotate: 5,
-    transition: { type: 'spring' as const, stiffness: 300, damping: 15 },
-  },
-}
-
 export default function Benefits() {
   const reducedMotion = useReducedMotion()
 
@@ -83,45 +48,47 @@ export default function Benefits() {
     >
       <div className="max-w-6xl mx-auto">
         <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0, y: 20 } : { opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-12"
         >
           <motion.h2
-            variants={fadeInUp}
+            initial={reducedMotion ? { opacity: 0, y: 20 } : { opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white"
           >
             ¿Por Qué Elegir Oro Azul?
           </motion.h2>
           <motion.p
-            variants={fadeInUp}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
             className="text-base md:text-lg text-white/70 max-w-2xl mx-auto"
           >
             Más de 10 años formando nadadores felices y seguros en el agua.
           </motion.p>
         </motion.div>
 
-        <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
-          viewport={{ once: true, margin: '-50px' }}
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6"
-        >
-          {benefits.map((benefit) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+          {benefits.map((benefit, index) => (
             <motion.div
               key={benefit.id}
-              variants={fadeInUp}
-              whileHover={reducedMotion ? {} : 'hover'}
-              initial="rest"
-              animate="rest"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={reducedMotion ? {} : { y: -4, scale: 1.02 }}
               className="group relative bg-[var(--color-bg-card)] backdrop-blur-xl rounded-2xl p-6 border border-[var(--color-border-light)] shadow-[var(--shadow-card)] cursor-pointer card-transition"
               style={{ contain: 'layout paint' }}
             >
               <motion.div
-                variants={reducedMotion ? {} : iconVariants}
+                whileHover={reducedMotion ? {} : { scale: 1.1, rotate: 5 }}
+                transition={{ type: 'spring', stiffness: 300 }}
                 className="mb-5 inline-flex p-4 rounded-xl bg-[var(--color-turquoise-15)]"
               >
                 <benefit.icon
@@ -145,7 +112,7 @@ export default function Benefits() {
               />
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

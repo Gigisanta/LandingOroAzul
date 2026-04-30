@@ -3,40 +3,7 @@
 import { motion } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const fadeInUpDelayed = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.15 },
-  },
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.2 },
-  },
-}
-
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
+// Animation variants removed - using inline props for reducedMotion compatibility
 
 interface HeroProps {
   businessName?: string
@@ -60,17 +27,16 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
 
       <div className="relative z-20 w-full max-w-5xl mx-auto flex flex-col items-center text-center">
         <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          animate="visible"
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
           className="flex flex-col items-center"
         >
           <motion.h1
             id="hero-heading"
-            variants={reducedMotion ? {} : fadeInUp}
-            initial={reducedMotion ? { opacity: 0, y: 20 } : 'hidden'}
+            initial={reducedMotion ? { opacity: 0, y: 20 } : { opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]"
           >
             <span className="text-white" style={{ textShadow: '0 2px 12px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4)' }}>Aprendé a nadar</span>
@@ -84,7 +50,9 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           </motion.h1>
 
           <motion.p
-            variants={reducedMotion ? {} : fadeInUpDelayed}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="text-lg md:text-xl lg:text-2xl text-white/85 max-w-2xl mb-10 leading-relaxed"
             style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.4)' }}
           >
@@ -93,16 +61,20 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           </motion.p>
 
           <motion.div
-            variants={reducedMotion ? {} : staggerContainer}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col sm:flex-row gap-4 mb-16"
           >
             <motion.a
-              variants={reducedMotion ? {} : scaleIn}
+              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
               href="#horarios"
               className="group relative px-8 py-3.5 min-h-[48px] bg-[var(--color-turquoise)] hover:bg-[var(--color-turquoise-dark)] text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
               style={{ boxShadow: 'var(--shadow-button), 0 0 0 0 rgba(0, 180, 216, 0)' }}
               whileHover={reducedMotion ? {} : { y: -2, boxShadow: 'var(--shadow-button-hover), 0 0 20px rgba(0, 180, 216, 0.3)' }}
               whileTap={reducedMotion ? {} : { scale: 0.98 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
               <span>Ver horarios</span>
               <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,8 +82,9 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
               </svg>
             </motion.a>
             <motion.a
-              variants={reducedMotion ? {} : scaleIn}
-              transition={{ delay: 0.05 }}
+              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               href="#precios"
               className="group px-8 py-3.5 min-h-[48px] border-2 border-white/30 hover:border-white/60 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-dark)]"
               whileHover={reducedMotion ? {} : { y: -2, backgroundColor: 'rgba(255,255,255,0.1)' }}
@@ -128,9 +101,9 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
         <motion.div
           role="region"
           aria-label="Estadísticas del club"
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          animate="visible"
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
           className="flex flex-wrap justify-center gap-10 md:gap-16 lg:gap-20"
         >
           {[
@@ -140,9 +113,11 @@ export default function Hero({ businessName = 'Oro Azul' }: HeroProps) {
           ].map((stat, index) => (
             <motion.div
               key={index}
-              variants={reducedMotion ? {} : fadeInUpDelayed}
-              className="text-center will-change-transform"
+              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
               whileHover={reducedMotion ? {} : { scale: 1.05 } }
+              transition={{ duration: 0.7, delay: 0.15 * index, ease: [0.16, 1, 0.3, 1] }}
+              className="text-center will-change-transform"
             >
               <div
                 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-2"

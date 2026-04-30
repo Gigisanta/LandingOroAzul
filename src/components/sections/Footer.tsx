@@ -17,31 +17,7 @@ interface FooterProps {
   business: Business
 }
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-}
-
-const socialIconVariants = {
-  rest: { scale: 1, rotate: 0 },
-  hover: {
-    scale: 1.2,
-    rotate: 5,
-    transition: { type: 'spring' as const, stiffness: 400, damping: 10 },
-  },
-}
+// Animation variants removed - using inline props for reducedMotion compatibility
 
 export default function Footer({ business }: FooterProps) {
   const reducedMotion = useReducedMotion()
@@ -69,10 +45,10 @@ export default function Footer({ business }: FooterProps) {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo & Brand */}
           <motion.div
-            variants={reducedMotion ? {} : fadeInUp}
-            initial={reducedMotion ? undefined : 'hidden'}
-            whileInView={reducedMotion ? undefined : 'visible'}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="text-center md:text-left"
           >
             <h3 className="text-2xl font-bold text-white mb-2">{business.name}</h3>
@@ -83,11 +59,10 @@ export default function Footer({ business }: FooterProps) {
 
           {/* Links */}
           <motion.nav
-            variants={reducedMotion ? {} : staggerContainer}
-            initial={reducedMotion ? undefined : 'hidden'}
-            whileInView={reducedMotion ? undefined : 'visible'}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-wrap justify-center gap-6"
             aria-label="Footer navigation"
           >
@@ -101,8 +76,11 @@ export default function Footer({ business }: FooterProps) {
               <motion.a
                 key={link.href}
                 href={link.href}
-                variants={reducedMotion ? {} : fadeInUp}
+                initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 whileHover={reducedMotion ? {} : { scale: 1.1, color: 'var(--color-turquoise)' }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.05 * link.href.length }}
                 className="text-white/80 hover:text-white text-base transition-colors min-h-11 min-w-11 flex items-center px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)] rounded"
               >
                 {link.label}
@@ -112,11 +90,10 @@ export default function Footer({ business }: FooterProps) {
 
           {/* Social */}
           <motion.div
-            variants={reducedMotion ? {} : staggerContainer}
-            initial={reducedMotion ? undefined : 'hidden'}
-            whileInView={reducedMotion ? undefined : 'visible'}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="flex gap-4"
           >
             <motion.a
@@ -124,8 +101,8 @@ export default function Footer({ business }: FooterProps) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              variants={reducedMotion ? {} : socialIconVariants}
-              whileHover={reducedMotion ? {} : 'hover'}
+              whileHover={reducedMotion ? {} : { scale: 1.2, rotate: 5 }}
+              transition={{ type: 'spring', stiffness: 400 }}
               className="w-11 h-11 rounded-full flex items-center justify-center bg-white/10 hover:bg-[var(--color-turquoise)]/20 transition-colors min-w-11 min-h-11"
             >
               <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -137,8 +114,8 @@ export default function Footer({ business }: FooterProps) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              variants={reducedMotion ? {} : socialIconVariants}
-              whileHover={reducedMotion ? {} : 'hover'}
+              whileHover={reducedMotion ? {} : { scale: 1.2, rotate: 5 }}
+              transition={{ type: 'spring', stiffness: 400 }}
               className="w-11 h-11 rounded-full flex items-center justify-center bg-white/10 hover:bg-[var(--color-turquoise)]/20 transition-colors min-w-11 min-h-11"
             >
               <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -150,11 +127,10 @@ export default function Footer({ business }: FooterProps) {
 
         {/* Copyright */}
         <motion.div
-          variants={fadeInUp}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8 pt-8 border-t border-white/10 text-center"
         >
           <p className="text-white/70 text-base">

@@ -23,44 +23,7 @@ const categories = [
   { id: 'classes', label: 'Clases' },
 ]
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const fadeInScale = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
-  },
-}
-
-const imageHoverVariants = {
-  rest: { scale: 1 },
-  hover: {
-    scale: 1.06,
-    transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const overlayVariants = {
-  rest: { opacity: 0 },
-  hover: { opacity: 1 },
-}
+// Animation variants removed - using inline props for reducedMotion compatibility
 
 export default function Gallery({ images }: GalleryProps) {
   const [activeCategory, setActiveCategory] = useState('all')
@@ -109,21 +72,27 @@ export default function Gallery({ images }: GalleryProps) {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-8"
         >
           <motion.h2
             id="galeria-heading"
-            variants={reducedMotion ? {} : fadeInUp}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >
             Nuestra Galería
           </motion.h2>
           <motion.p
-            variants={fadeInUp}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-lg text-white/70 max-w-2xl mx-auto"
           >
             Conocé nuestras instalaciones y momentos especiales en Oro Azul.
@@ -132,10 +101,10 @@ export default function Gallery({ images }: GalleryProps) {
 
         {/* Category Tabs */}
         <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-wrap justify-center gap-2 mb-10"
           role="group"
           aria-label="Filtrar galería por categoría"
@@ -145,9 +114,11 @@ export default function Gallery({ images }: GalleryProps) {
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               aria-pressed={activeCategory === cat.id}
-              variants={reducedMotion ? {} : fadeInUp}
+              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               whileHover={reducedMotion ? {} : { scale: 1.05, y: -2 }}
               whileTap={reducedMotion ? {} : { scale: 0.95 }}
+              transition={{ duration: 0.5, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
               className={`px-5 py-3 rounded-full font-medium text-base transition-all duration-200 min-h-[44px] flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 ${
                 activeCategory === cat.id
                   ? 'bg-[var(--color-turquoise)] text-[var(--color-dark)] shadow-lg shadow-[var(--color-turquoise)]/20'
@@ -163,10 +134,10 @@ export default function Gallery({ images }: GalleryProps) {
         <AnimatePresence mode="wait">
           <motion.div
             key={activeCategory}
-            variants={reducedMotion ? {} : staggerContainer}
-            initial={reducedMotion ? undefined : 'hidden'}
-            whileInView={reducedMotion ? undefined : 'visible'}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
           >
             {filteredImages.map((image, index) => {
@@ -175,10 +146,11 @@ export default function Gallery({ images }: GalleryProps) {
               <motion.button
                 key={image.id}
                 onClick={() => handleImageClick(image)}
-                variants={reducedMotion ? {} : fadeInScale}
-                whileHover={reducedMotion ? {} : 'hover'}
-                initial={reducedMotion ? undefined : 'rest'}
-                animate="rest"
+                initial={reducedMotion ? { opacity: 0, scale: 0.9 } : { opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                whileHover={reducedMotion ? {} : { scale: 1.06 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
                 aria-label={image.altText || image.title || 'Ver imagen de galería'}
                 className={`relative overflow-hidden rounded-xl group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-turquoise)] aspect-square ${
                   isLarge ? 'md:col-span-2 md:row-span-2' : ''
@@ -200,7 +172,8 @@ export default function Gallery({ images }: GalleryProps) {
 
                 <motion.div
                   className="absolute inset-0 flex items-end p-4"
-                  variants={reducedMotion ? {} : overlayVariants}
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
                   {image.title && (

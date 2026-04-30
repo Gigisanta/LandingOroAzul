@@ -15,31 +15,7 @@ interface PricingPlan {
   isDefault?: boolean
 }
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
-  },
-}
-
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
+// Animation variants removed - using inline props for reducedMotion compatibility
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('es-AR', {
@@ -62,8 +38,10 @@ function PricingCard({ plan, index, reducedMotion, whatsapp }: PricingCardProps)
 
   return (
     <motion.div
-      variants={fadeInUp}
-      custom={index}
+      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       whileHover={reducedMotion ? {} : { y: -6, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
       tabIndex={0}
       role="article"
@@ -183,21 +161,27 @@ export default function Pricing({ plans, whatsapp }: PricingProps) {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-8"
         >
           <motion.h2
             id="precios-heading"
-            variants={reducedMotion ? {} : fadeInUp}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >
             Nuestros Planes
           </motion.h2>
           <motion.p
-            variants={fadeInUp}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-lg text-white/70 max-w-2xl mx-auto"
           >
             Encontrá el plan perfecto para vos. Todas las clases incluyen acceso a nuestras
@@ -207,10 +191,10 @@ export default function Pricing({ plans, whatsapp }: PricingProps) {
 
         {/* Pricing Grid */}
         <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8"
         >
           {plans.map((plan, index) => (
@@ -220,11 +204,10 @@ export default function Pricing({ plans, whatsapp }: PricingProps) {
 
         {/* Additional Info */}
         <motion.div
-          variants={scaleIn}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0, scale: 0.9 } : { opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={reducedMotion ? {} : { delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8 text-center"
         >
           <motion.div
@@ -248,11 +231,10 @@ export default function Pricing({ plans, whatsapp }: PricingProps) {
 
         {/* Urgent CTA */}
         <motion.div
-          variants={scaleIn}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0, scale: 0.9 } : { opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={reducedMotion ? {} : { delay: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8 text-center"
         >
           <a

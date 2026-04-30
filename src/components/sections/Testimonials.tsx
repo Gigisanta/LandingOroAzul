@@ -30,13 +30,7 @@ const fadeInUp = {
   },
 }
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-}
+// staggerContainer removed - using inline props for reducedMotion compatibility
 
 const carouselVariants = {
   enter: (direction: number) => ({
@@ -306,15 +300,18 @@ const TestimonialGrid = memo(function TestimonialGrid({ testimonials, reducedMot
   return (
     <div className="hidden md:block">
       <motion.div
-        variants={reducedMotion ? {} : staggerContainer}
-        initial={reducedMotion ? undefined : 'hidden'}
-        animate={reducedMotion ? undefined : 'visible'}
+        initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
         {visibleTestimonials.map((testimonial, index) => (
           <motion.div
             key={testimonial.id}
-            variants={fadeInUp}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
             <TestimonialCard
               testimonial={testimonial}

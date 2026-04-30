@@ -32,49 +32,7 @@ interface ContactProps {
   business: Business
 }
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const fadeInLeft = {
-  hidden: { opacity: 0, x: -40 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const fadeInRight = {
-  hidden: { opacity: 0, x: 40 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-}
-
-const iconHoverVariants = {
-  rest: { scale: 1, rotate: 0 },
-  hover: {
-    scale: 1.15,
-    rotate: 5,
-    transition: { type: 'spring' as const, stiffness: 400, damping: 10 },
-  },
-}
+// Animation variants removed - using inline props for reducedMotion compatibility
 
 export default function Contact({ business }: ContactProps) {
   const reducedMotion = useReducedMotion()
@@ -148,21 +106,27 @@ export default function Contact({ business }: ContactProps) {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-8"
         >
           <motion.h2
             id="contacto-heading"
-            variants={reducedMotion ? {} : fadeInUp}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >
             Encontranos
           </motion.h2>
           <motion.p
-            variants={fadeInUp}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-lg text-white/70 max-w-2xl mx-auto"
           >
             Vení a conocernos. Te esperamos para que disfrutes del agua.
@@ -172,20 +136,24 @@ export default function Contact({ business }: ContactProps) {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Contact Info */}
           <motion.div
-            variants={reducedMotion ? {} : staggerContainer}
-            initial={reducedMotion ? undefined : 'hidden'}
-            whileInView={reducedMotion ? undefined : 'visible'}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="space-y-6">
               {business.address && (
                 <motion.div
-                  variants={fadeInLeft}
+                  initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: -40 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   whileHover={reducedMotion ? {} : { x: 10 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   className="flex items-start gap-4 group"
                 >
                   <motion.div
-                    variants={reducedMotion ? {} : iconHoverVariants}
+                    whileHover={reducedMotion ? {} : { scale: 1.15, rotate: 5 }}
+                    transition={{ type: 'spring', stiffness: 400 }}
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-shadow"
                     style={{ backgroundColor: 'var(--color-turquoise-10)' }}
                   >
@@ -200,12 +168,16 @@ export default function Contact({ business }: ContactProps) {
 
               {business.phone && (
                 <motion.div
-                  variants={fadeInLeft}
+                  initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: -40 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   whileHover={reducedMotion ? {} : { x: 10 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                   className="flex items-start gap-4 group"
                 >
                   <motion.div
-                    variants={reducedMotion ? {} : iconHoverVariants}
+                    whileHover={reducedMotion ? {} : { scale: 1.15, rotate: 5 }}
+                    transition={{ type: 'spring', stiffness: 400 }}
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ backgroundColor: 'var(--color-turquoise-10)' }}
                   >
@@ -225,12 +197,16 @@ export default function Contact({ business }: ContactProps) {
 
               {business.email && (
                 <motion.div
-                  variants={fadeInLeft}
+                  initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: -40 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   whileHover={reducedMotion ? {} : { x: 10 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                   className="flex items-start gap-4 group"
                 >
                   <motion.div
-                    variants={reducedMotion ? {} : iconHoverVariants}
+                    whileHover={reducedMotion ? {} : { scale: 1.15, rotate: 5 }}
+                    transition={{ type: 'spring', stiffness: 400 }}
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ backgroundColor: 'var(--color-turquoise-10)' }}
                   >
@@ -249,12 +225,16 @@ export default function Contact({ business }: ContactProps) {
               )}
 
               <motion.div
-                variants={fadeInLeft}
+                initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 whileHover={reducedMotion ? {} : { x: 10 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="flex items-start gap-4 group"
               >
                 <motion.div
-                  variants={reducedMotion ? {} : iconHoverVariants}
+                  whileHover={reducedMotion ? {} : { scale: 1.15, rotate: 5 }}
+                  transition={{ type: 'spring', stiffness: 400 }}
                   className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ backgroundColor: 'var(--color-turquoise-10)' }}
                 >
@@ -272,8 +252,11 @@ export default function Contact({ business }: ContactProps) {
 
           {/* Map */}
           <motion.div
-            variants={fadeInRight}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
             whileHover={reducedMotion ? {} : { scale: 1.02 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="rounded-2xl overflow-hidden h-80 md:h-full min-h-[320px] border border-white/20"
           >
             <iframe
@@ -292,10 +275,10 @@ export default function Contact({ business }: ContactProps) {
 
         {/* WhatsApp CTA */}
         <motion.div
-          variants={fadeInUp}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8 text-center"
         >
           <motion.a
@@ -314,10 +297,10 @@ export default function Contact({ business }: ContactProps) {
         </motion.div>
 
         <motion.div
-          variants={fadeInUp}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mt-12 max-w-xl mx-auto"
         >
           <h3 className="text-2xl font-bold mb-6 text-white text-center">

@@ -23,48 +23,7 @@ interface ScheduleProps {
   activities: Activity[]
 }
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const fadeInLeft = {
-  hidden: { opacity: 0, x: -30 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const fadeInRight = {
-  hidden: { opacity: 0, x: 30 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-}
-
-const cardHoverVariants = {
-  rest: { scale: 1, transition: { duration: 0.3 } },
-  hover: {
-    scale: 1.02,
-    transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
-  },
-}
+// Animation variants removed - using inline props for reducedMotion compatibility
 
 const getActivityIcon = (id: string, icon: string): React.ReactNode => {
   const iconMap: Record<string, React.ReactNode> = {
@@ -115,21 +74,27 @@ export default function Schedule({ activities }: ScheduleProps) {
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <motion.div
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-8"
         >
           <motion.h2
             id="horarios-heading"
-            variants={reducedMotion ? {} : fadeInUp}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="text-4xl md:text-5xl font-bold mb-4 text-white"
           >
             Nuestros Horarios
           </motion.h2>
           <motion.p
-            variants={fadeInUp}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-lg text-white/70 max-w-2xl mx-auto"
           >
             Encontrá la clase perfecta para vos. Actividades para todas las edades y niveles.
@@ -140,10 +105,10 @@ export default function Schedule({ activities }: ScheduleProps) {
         <motion.div
           role="tablist"
           aria-label="Actividades"
-          variants={reducedMotion ? {} : staggerContainer}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-wrap justify-center gap-2 mb-10"
         >
           {activities.map((activity, index) => (
@@ -156,9 +121,11 @@ export default function Schedule({ activities }: ScheduleProps) {
               tabIndex={selectedActivity?.id === activity.id ? 0 : -1}
               onClick={() => setSelectedActivity(activity)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              variants={reducedMotion ? {} : fadeInUp}
+              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               whileHover={reducedMotion ? {} : { scale: 1.05 }}
               whileTap={reducedMotion ? {} : { scale: 0.95 }}
+              transition={{ duration: 0.5, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
               className={`
                 px-5 py-3 rounded-xl font-medium text-base transition-all duration-200
                 flex items-center gap-2 min-h-[44px] min-w-[44px]
@@ -187,10 +154,10 @@ export default function Schedule({ activities }: ScheduleProps) {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Activity Info Card */}
               <motion.div
-                variants={reducedMotion ? {} : fadeInLeft}
-                initial={reducedMotion ? undefined : 'hidden'}
-                animate={reducedMotion ? undefined : 'visible'}
-                whileHover={reducedMotion ? {} : cardHoverVariants.hover}
+                initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                whileHover={reducedMotion ? {} : { scale: 1.02 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-5 border border-white/40 shadow-2xl shadow-black/40"
               >
                 <div className="flex items-center gap-3 mb-4">
@@ -213,11 +180,10 @@ export default function Schedule({ activities }: ScheduleProps) {
                   {selectedActivity?.features.map((feature, index) => (
                     <motion.li
                       key={index}
-                      variants={reducedMotion ? {} : fadeInUp}
-                      className="flex items-start gap-3"
-                      initial={reducedMotion ? undefined : 'hidden'}
-                      animate={reducedMotion ? undefined : 'visible'}
+                      initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
+                      className="flex items-start gap-3"
                     >
                       <div className="w-5 h-5 rounded-full bg-[var(--color-turquoise)]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <Check className="w-3 h-3 text-[var(--color-turquoise)]" />
@@ -230,10 +196,10 @@ export default function Schedule({ activities }: ScheduleProps) {
 
               {/* Schedule Card */}
               <motion.div
-                variants={reducedMotion ? {} : fadeInRight}
-                initial={reducedMotion ? undefined : 'hidden'}
-                animate={reducedMotion ? undefined : 'visible'}
-                whileHover={reducedMotion ? {} : cardHoverVariants.hover}
+                initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                whileHover={reducedMotion ? {} : { scale: 1.02 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="bg-[var(--color-dark)]/85 backdrop-blur-xl rounded-2xl p-5 border border-white/40 shadow-2xl shadow-black/40"
               >
                 <h3 className="text-xl font-bold mb-2 text-white">
@@ -266,10 +232,10 @@ export default function Schedule({ activities }: ScheduleProps) {
 
         {/* CTA */}
         <motion.div
-          variants={reducedMotion ? {} : fadeInUp}
-          initial={reducedMotion ? undefined : 'hidden'}
-          whileInView={reducedMotion ? undefined : 'visible'}
+          initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8 text-center"
         >
           <a
