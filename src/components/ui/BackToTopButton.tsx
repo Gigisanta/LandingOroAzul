@@ -10,11 +10,18 @@ export default function BackToTopButton() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsVisible(window.scrollY > 600)
+      // Add hysteresis: show at 600px, hide at 500px (100px buffer)
+      const shouldBeVisible = window.scrollY > 600
+      if (shouldBeVisible && !isVisible) {
+        setIsVisible(true)
+      } else if (!shouldBeVisible && isVisible && window.scrollY < 500) {
+        setIsVisible(false)
+      }
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // Initial check
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isVisible])
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' })

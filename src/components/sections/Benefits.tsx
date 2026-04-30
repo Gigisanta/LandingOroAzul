@@ -50,14 +50,14 @@ export default function Benefits() {
         <motion.div
           initial={reducedMotion ? { opacity: 0, y: 20 } : { opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
+          viewport={{ once: true, margin: '0px' }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-12"
         >
           <motion.h2
             initial={reducedMotion ? { opacity: 0, y: 20 } : { opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
+            viewport={{ once: true, margin: '0px' }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white"
           >
@@ -80,7 +80,7 @@ export default function Benefits() {
               key={benefit.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
+              viewport={{ once: true, margin: '0px' }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               whileHover={reducedMotion ? {} : { y: -4, scale: 1.02 }}
               className="group relative bg-[var(--color-bg-card)] backdrop-blur-xl rounded-2xl p-6 border border-[var(--color-border-light)] shadow-[var(--shadow-card)] cursor-pointer card-transition"

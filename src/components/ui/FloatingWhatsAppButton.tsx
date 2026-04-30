@@ -15,11 +15,18 @@ export default function FloatingWhatsAppButton({ whatsapp }: FloatingWhatsAppBut
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsVisible(window.scrollY > 400)
+      // Add hysteresis: show at 400px, hide at 300px (100px buffer)
+      const shouldBeVisible = window.scrollY > 400
+      if (shouldBeVisible && !isVisible) {
+        setIsVisible(true)
+      } else if (!shouldBeVisible && isVisible && window.scrollY < 300) {
+        setIsVisible(false)
+      }
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // Initial check
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isVisible])
 
   return (
     <AnimatePresence>
