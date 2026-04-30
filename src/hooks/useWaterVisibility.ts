@@ -12,13 +12,13 @@ interface UseWaterVisibilityReturn {
 
 const SECTION_CONFIG: Record<string, { opacity: number; visibility: WaterVisibility }> = {
   'inicio': { opacity: 1.0, visibility: 'full' },
-  'beneficios': { opacity: 0.6, visibility: 'partial' },
-  'horarios': { opacity: 0.6, visibility: 'partial' },
-  'precios': { opacity: 0.6, visibility: 'partial' },
-  'galeria': { opacity: 0.65, visibility: 'partial' },
-  'testimonios': { opacity: 0.6, visibility: 'partial' },
-  'faq': { opacity: 0.6, visibility: 'partial' },
-  'contacto': { opacity: 0.6, visibility: 'partial' },
+  'beneficios': { opacity: 0.9, visibility: 'partial' },
+  'horarios': { opacity: 0.85, visibility: 'partial' },
+  'precios': { opacity: 0.85, visibility: 'partial' },
+  'galeria': { opacity: 0.85, visibility: 'partial' },
+  'testimonios': { opacity: 0.85, visibility: 'partial' },
+  'faq': { opacity: 0.85, visibility: 'partial' },
+  'contacto': { opacity: 0.85, visibility: 'partial' },
 }
 
 const DEFAULT_SECTION = 'inicio'
@@ -27,11 +27,20 @@ const DEFAULT_OPACITY = SECTION_CONFIG[DEFAULT_SECTION].opacity
 export function useWaterVisibility(): UseWaterVisibilityReturn {
   const [visibility, setVisibility] = useState<WaterVisibility>(SECTION_CONFIG[DEFAULT_SECTION].visibility)
   const [currentSection, setCurrentSection] = useState(DEFAULT_SECTION)
-  const [opacity, setOpacity] = useState(DEFAULT_OPACITY)
+  const [opacity, setOpacity] = useState(1.0) // Start at full opacity
   const sectionRatiosRef = useRef<Record<string, number>>({})
   const observerRef = useRef<IntersectionObserver | null>(null)
+  const initializedRef = useRef(false)
 
   useEffect(() => {
+    // Fallback: after 1 second, ensure we're at full opacity if no section detected
+    const fallbackTimeout = setTimeout(() => {
+      if (!initializedRef.current) {
+        setOpacity(1.0)
+        setVisibility('full')
+        initializedRef.current = true
+      }
+    }, 1000)
     const sectionIds = Object.keys(SECTION_CONFIG)
 
     const updateActiveSection = () => {
@@ -47,6 +56,7 @@ export function useWaterVisibility(): UseWaterVisibilityReturn {
       }
 
       if (activeSection !== DEFAULT_SECTION || maxRatio > 0) {
+        initializedRef.current = true
         const config = SECTION_CONFIG[activeSection] || SECTION_CONFIG[DEFAULT_SECTION]
         setCurrentSection(activeSection)
         setOpacity(config.opacity)
@@ -76,6 +86,7 @@ export function useWaterVisibility(): UseWaterVisibilityReturn {
         observerRef.current.disconnect()
       }
       sectionRatiosRef.current = {}
+      clearTimeout(fallbackTimeout)
     }
   }, [])
 
